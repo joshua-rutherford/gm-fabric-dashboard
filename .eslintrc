@@ -26,7 +26,7 @@
         "react/jsx-max-props-per-line": 1,
         "react/jsx-no-bind": 0,
         "react/jsx-no-duplicate-props": 1,
-        "react/jsx-no-literals": 1,
+        "react/jsx-no-literals": 0,
         "react/jsx-no-undef": 1,
         "react/jsx-sort-props": 1,
         "react/jsx-uses-react": 1,
@@ -51,7 +51,7 @@
         "es6": true,
         "browser": true
     },
-    "extends": "eslint:recommended",
+	"extends": "react-app",
     "ecmaFeatures": {
         "jsx": true,
         "experimentalObjectRestSpread": true,

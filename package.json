@@ -3,10 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "jquery": "^3.2.1",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-burger-menu": "^1.10.14",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.3",
+    "react-router": "^3.0.0",
+    "redux": "^3.6.0",
+    "redux-burger-menu": "^0.1.0",
+    "redux-devtools": "^3.3.2",
+    "redux-logger": "^3.0.0",
+    "redux-thunk": "^2.2.0",
+    "uikit": "^3.0.0-beta.18"
   },
   "devDependencies": {
+    "enzyme": "^2.7.1",
+    "react-addons-test-utils": "^15.4.2",
     "react-scripts": "0.9.5"
   },
   "scripts": {
@@ -14,5 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
   }
 }

@@ -10,6 +10,7 @@
 /build
 
 # misc
+.vscode/chrome
 .DS_Store
 .env
 npm-debug.log*
