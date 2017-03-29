@@ -6,6 +6,10 @@ import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import Container from './components/Container';
 import store from './store';
+import SummaryGrid from './components/SummaryGrid';
+import HTTPGrid from './components/HTTPGrid';
+import JVMGrid from './components/JVMGrid';
+import FinagleGrid from './components/FinagleGrid';
 import '../node_modules/uikit/dist/css/uikit.min.css';
 import './style/index.css';
 
@@ -18,8 +22,24 @@ ReactDOM.render(
       <Route
         component={Container}
         path="/"
-      />
+      >
+        <IndexRoute
+          component={SummaryGrid}
+        />
+        <Route
+          component={HTTPGrid}
+          path="http"
+        />
+        <Route
+          component={JVMGrid}
+          path="jvm"
+        />
+        <Route
+          component={FinagleGrid}
+          path="finagle"
+        />
+      </Route>
     </Router>
-  </Provider >,
+  </Provider>,
   document.getElementById('root')
 );

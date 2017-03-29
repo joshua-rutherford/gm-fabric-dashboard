@@ -1,6 +1,4 @@
 import { combineReducers } from 'redux';
-import { twitterServer } from './twitterServer.js';
+import { metrics } from './metrics';
 
-export default combineReducers({
-  twitterServer
-});
+export default combineReducers({ metrics });
