@@ -7,24 +7,16 @@ HTTPConnectionsLineChart.propTypes = {
 };
 
 export default function HTTPConnectionsLineChart({ metricsArr }) {
-  // Filter the metrics array to find objects containing metrics.data['http/connections']
-  const filteredMetricsArr = metricsArr.filter(metrics => metrics.data['http/connections']);
-
-  if (filteredMetricsArr.length === 0) {
-    return (
-      <div className="uk-card uk-card-default uk-card-body">
-        <h3 className="uk-card-title">HTTP Connections</h3>
-        <p>Microservice has not yet been connected to</p>
-      </div>
-    );
-  };
-
   // Map the metrics array and generate array of objects with an array of objects
   // with timestamps and the # of HTTP connections
-  const httpConnections = filteredMetricsArr.map(function (metrics) {
+  const httpConnections = metricsArr.map(function (metrics) {
     const date = new Date(metrics.date);
     const prettyDate = dateFormat(date, "h:MMtt");
-    return { name: prettyDate, httpConnections: metrics.data['http/connections'] };
+    return {
+      name: prettyDate,
+      // If `http/connections` isn't present in metrics.json, assume it equals 0
+      httpConnections: Object.keys(metrics.data).includes('http/connections') ? metrics.data['http/connections'] : 0
+    };
   });
 
   return (

@@ -10,6 +10,7 @@ import SummaryGrid from './components/SummaryGrid';
 import HTTPGrid from './components/HTTPGrid';
 import JVMGrid from './components/JVMGrid';
 import FinagleGrid from './components/FinagleGrid';
+import Admin from './components/Admin';
 import '../node_modules/uikit/dist/css/uikit.min.css';
 import './style/index.css';
 
@@ -37,6 +38,10 @@ ReactDOM.render(
         <Route
           component={FinagleGrid}
           path="finagle"
+        />
+        <Route
+          component={Admin}
+          path="admin"
         />
       </Route>
     </Router>

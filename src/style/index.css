@@ -1,0 +1,38 @@
+main {
+  border-left: 1px solid #E5E5E5;
+  padding-left: 20px;
+}
+
+.uk-offcanvas-bar {
+  background: #fff;
+  color: #000;
+}
+
+.uk-offcanvas-bar ul * {
+  color: #000;
+}
+
+.uk-nav-default>li>a {
+    color: #999 !important;
+}
+
+.uk-container {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.on-canvas-sidebar {
+  left: 30px;
+}
+
+.on-canvas-sidebar-divider {
+  color: #999
+}
+
+.hamburger {
+  color: #ddd
+}
+
+.hamburger:hover {
+  color: #fff
+}

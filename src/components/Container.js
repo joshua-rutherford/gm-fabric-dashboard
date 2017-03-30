@@ -2,9 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Navbar from './Navbar';
-import Sidebar from './Sidebar';
+import OffCanvasSidebar from './OffCanvasSidebar';
+import OnCanvasSidebar from './OnCanvasSidebar';
 import { fetchMetrics } from '../actions/index';
-
 
 class Container extends Component {
 
@@ -13,8 +13,8 @@ class Container extends Component {
     // This should be configurable in the future
     this.props.fetchMetrics();
     this.refreshMetrics = setInterval(this.props.fetchMetrics, 5000);
-
   }
+
   componentWillUnmount() {
     clearInterval(this.refreshMetrics);
   }
@@ -22,10 +22,21 @@ class Container extends Component {
   render() {
     return (
       <div>
-        <Sidebar />
-        <div className="uk-container uk-background-muted">
+        <OffCanvasSidebar />
+        <div className="uk-container uk-container-expand ">
           <Navbar />
-          {this.props.children}
+          <div
+            className="uk-background-muted"
+            data-uk-grid
+            data-uk-grid-margin
+          >
+            <div className="uk-width-1-5@m uk-width-1-6@l uk-visible@m uk-tile uk-tile-default on-canvas-sidebar">
+              <OnCanvasSidebar />
+            </div>
+            <main className="uk-width-4-5@m uk-width-5-6@l">
+              {this.props.children}
+            </main>
+          </div>
         </div>
       </div>
     );

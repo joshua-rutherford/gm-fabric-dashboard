@@ -1,7 +1,6 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
 
-class SummaryGrid extends Component {
+class Admin extends Component {
   render() {
     return (
       <div>
@@ -11,7 +10,7 @@ class SummaryGrid extends Component {
         >
           <div className="uk-width-1-2@m">
             <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">Data Tx Rates</h3>
+              <h3 className="uk-card-title">Polling Settings</h3>
               <img
                 alt="Fill Murray"
                 src="https://placeimg.com/300/200/animals"
@@ -20,7 +19,7 @@ class SummaryGrid extends Component {
           </div>
           <div className="uk-width-1-2@m">
             <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">Advisor Moods</h3>
+              <h3 className="uk-card-title">User Preferences</h3>
               <img
                 alt="Fill Murray"
                 src="https://placeimg.com/300/200/arch"
@@ -29,7 +28,7 @@ class SummaryGrid extends Component {
           </div>
           <div className="uk-width-1-2@m">
             <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">Random Walks</h3>
+              <h3 className="uk-card-title">Notification Settings</h3>
               <img
                 alt="Fill Murray"
                 src="https://placeimg.com/300/200/nature"
@@ -48,15 +47,7 @@ class SummaryGrid extends Component {
         </div>
       </div>
     );
-  };
-};
+  }
+}
 
-SummaryGrid.propTypes = {
-  metrics: PropTypes.array.isRequired
-};
-
-function mapStateToProps({ metrics }) {
-  return { metrics };
-};
-
-export default connect(mapStateToProps)(SummaryGrid);
+export default Admin;

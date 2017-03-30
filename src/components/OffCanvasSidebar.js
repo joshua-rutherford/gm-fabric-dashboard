@@ -4,7 +4,7 @@ import { Link, IndexLink } from 'react-router';
 const Sidebar = () => {
   return (
     <div
-      data-uk-offcanvas="overlay: true"
+      data-uk-offcanvas="mode: push; overlay: true"
       id="sidebar"
     >
       <div className="uk-offcanvas-bar">
@@ -16,7 +16,7 @@ const Sidebar = () => {
           <li><Link to="/http">HTTP</Link></li>
           <li><Link to="/jvm">JVM</Link></li>
           <li><Link to="/finagle">Finagle</Link></li>
-          <li className="uk-nav-divider" />
+          <li><Link to="/admin">Admin</Link></li>
           <li>
             <a
               href="https://github.com/DecipherNow/gm-fabric-dashboard"

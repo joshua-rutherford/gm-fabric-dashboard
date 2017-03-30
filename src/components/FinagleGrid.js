@@ -5,12 +5,11 @@ class FinagleGrid extends Component {
   render() {
     return (
       <div>
-        <h1 className="uk-heading-line uk-text-center"><span>Finagle</span></h1>
         <div
           className="uk-grid-match uk-grid-small uk-text-center"
           data-uk-grid
         >
-          <div className="uk-width-1-2@m">
+          <div className="uk-width-1-2@l">
             <div className="uk-card uk-card-default uk-card-body">
               <h3 className="uk-card-title">Data Tx Rates</h3>
               <img
@@ -19,7 +18,7 @@ class FinagleGrid extends Component {
               />
             </div>
           </div>
-          <div className="uk-width-1-2@m">
+          <div className="uk-width-1-2@l">
             <div className="uk-card uk-card-default uk-card-body">
               <h3 className="uk-card-title">Advisor Moods</h3>
               <img
@@ -28,7 +27,7 @@ class FinagleGrid extends Component {
               />
             </div>
           </div>
-          <div className="uk-width-1-2@m">
+          <div className="uk-width-1-2@l">
             <div className="uk-card uk-card-default uk-card-body">
               <h3 className="uk-card-title">Random Walks</h3>
               <img
@@ -37,7 +36,7 @@ class FinagleGrid extends Component {
               />
             </div>
           </div>
-          <div className="uk-width-1-2@m">
+          <div className="uk-width-1-2@l">
             <div className="uk-card uk-card-default uk-card-body">
               <h3 className="uk-card-title">Fauna Breeding</h3>
               <img
