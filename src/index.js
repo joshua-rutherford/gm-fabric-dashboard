@@ -10,7 +10,7 @@ import SummaryGrid from './components/SummaryGrid';
 import HTTPGrid from './components/HTTPGrid';
 import JVMGrid from './components/JVMGrid';
 import FinagleGrid from './components/FinagleGrid';
-import Admin from './components/Admin';
+import SettingsGrid from './components/SettingsGrid';
 import '../node_modules/uikit/dist/css/uikit.min.css';
 import './style/index.css';
 
@@ -40,8 +40,8 @@ ReactDOM.render(
           path="finagle"
         />
         <Route
-          component={Admin}
-          path="admin"
+          component={SettingsGrid}
+          path="settings"
         />
       </Route>
     </Router>

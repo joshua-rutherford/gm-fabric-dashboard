@@ -32,8 +32,8 @@ const OnCanvasSidebar = () => {
       <li>
         <Link
           className="uk-link-muted"
-          to="admin"
-        >Admin</Link>
+          to="settings"
+        >Settings</Link>
       </li>
       <li className="uk-nav-divider on-canvas-sidebar-divider" />
       <li>

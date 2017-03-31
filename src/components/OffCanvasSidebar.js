@@ -16,7 +16,7 @@ const Sidebar = () => {
           <li><Link to="/http">HTTP</Link></li>
           <li><Link to="/jvm">JVM</Link></li>
           <li><Link to="/finagle">Finagle</Link></li>
-          <li><Link to="/admin">Admin</Link></li>
+          <li><Link to="/settings">Settings</Link></li>
           <li>
             <a
               href="https://github.com/DecipherNow/gm-fabric-dashboard"

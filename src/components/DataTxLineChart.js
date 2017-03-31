@@ -12,16 +12,33 @@ export default function DataTxLineChart({ metricsArr }) {
   const INTERVAL_HACK = 5;
   // Map the metrics array and generate array of objects with an array of objects
   // with timestamps and the net change since the last metrics snapshot. The initial snapshot
-	// is considered a net change of zero
+  // is considered a net change of zero
   const deltas = metricsArr.map(function (metrics, index) {
     const date = new Date(metrics.date);
     const prettyDate = dateFormat(date, "h:MMtt");
+    // If this is the first snapshot, we don't have a basis of comparison to understand the net change, so just map the element to
+    // an object with 0 up and 0 down.
     if (index === 0) {
       return {
         timestamp: prettyDate,
-        bpsDown: 0,
-        bpsUp: 0
+        kbpsDown: 0,
+        kbpsUp: 0
       };
+    } else if (
+      // If either the current metrics snapshot or the previous metrics snapshot does not have the 'http/sent_bytes' attribute,
+      // then we don't have two pieces of data to compare to determine the net change, so just map the element to an object with 0 up 
+      // and 0 down. We assume that twitter-server populates both 'http/sent_bytes' and 'http/received_bytes' at effectively the same
+      // time as part of a normal request/response cycle.
+      !(Object.keys(metrics.data).includes('http/sent_bytes'))
+      || !(Object.keys(metricsArr[index - 1].data).includes('http/sent_bytes'))
+    ) {
+      return {
+        timestamp: prettyDate,
+        kbpsDown: 0,
+        kbpsUp: 0
+      };
+      // We finally have two metrics snapshots with the 'http/received_bytes' and 'http/sent_bytes' attributes, so we map to objects
+      // with net change values, convert to KBps, and normalize over the interval.
     } else {
       return {
         timestamp: prettyDate,
