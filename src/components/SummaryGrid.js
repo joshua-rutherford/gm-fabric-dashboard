@@ -2,6 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 class SummaryGrid extends Component {
+  static propTypes = {
+    metrics: PropTypes.array.isRequired
+  };
   render() {
     return (
       <div>
@@ -49,10 +52,6 @@ class SummaryGrid extends Component {
       </div>
     );
   };
-};
-
-SummaryGrid.propTypes = {
-  metrics: PropTypes.array.isRequired
 };
 
 function mapStateToProps({ metrics }) {

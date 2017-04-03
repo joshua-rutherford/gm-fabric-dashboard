@@ -11,7 +11,7 @@ export default function DataTxLineChart({ metricsArr }) {
   // to derive the "per second" value, I need the refresh interval to live in the Redux store
   const INTERVAL_HACK = 5;
   // Map the metrics array and generate array of objects with an array of objects
-  // with timestamps and the net change since the last metrics snapshot. The initial snapshot
+  // with time stamps and the net change since the last metrics snapshot. The initial snapshot
   // is considered a net change of zero
   const deltas = metricsArr.map(function (metrics, index) {
     const date = new Date(metrics.date);

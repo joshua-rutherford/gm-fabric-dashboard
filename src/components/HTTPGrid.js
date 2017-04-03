@@ -6,6 +6,10 @@ import HTTPStats from './HTTPStats';
 import DataTotals from './DataTotals';
 
 class HTTPGrid extends Component {
+  static propTypes = {
+    metrics: PropTypes.array.isRequired
+  };
+  
   render() {
     return (
       <div>
@@ -32,10 +36,6 @@ class HTTPGrid extends Component {
       </div>
     );
   };
-};
-
-HTTPGrid.propTypes = {
-  metrics: PropTypes.array.isRequired
 };
 
 function mapStateToProps({ metrics }) {

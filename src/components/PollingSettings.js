@@ -1,28 +1,29 @@
 import React, { Component, PropTypes } from 'react';
 import InputRange from 'react-input-range';
 import _ from 'lodash';
+import { Actions } from 'jumpstate';
 
 class PollingSettings extends Component {
-  static propTypes = {
-    isPolling: PropTypes.bool.isRequired,
-    setInterval: PropTypes.func.isRequired,
-    togglePolling: PropTypes.func.isRequired
-  }
   // This state is solely to allow smooth animation on the slider and the ability to debounce the 
   // dispatch of the setInterval action creator.
+
+  static propTypes = {
+    interval: PropTypes.number.isRequired,
+    isPolling: PropTypes.bool.isRequired
+  }
+
   state = {
-    localInterval: 15,
-    debouncedSetInterval: _.debounce(this.props.setInterval, 1000)
+    localInterval: this.props.interval / 1000,
+    debouncedSetInterval: _.debounce(Actions.setInterval, 1000)
   }
   render() {
+    const buttonClass = this.props.isPolling ? 'uk-button uk-button-danger' : 'uk-button uk-button-primary';
     return (
       <div className="uk-card uk-card-default uk-card-body">
         <h3 className="uk-card-title">Nonfunctional Dummy Settings</h3>
         <button
-          className="uk-button"
-          onClick={() => {
-            this.props.togglePolling();
-          }}
+          className={buttonClass}
+          onClick={() => Actions.togglePolling()}
         >{this.props.isPolling ? 'Stop Polling' : 'Start Polling'}
         </button>
         <h4>Polling Interval (seconds)</h4>

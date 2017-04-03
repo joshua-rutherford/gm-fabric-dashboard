@@ -2,6 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 class FinagleGrid extends Component {
+  static propTypes = {
+    metrics: PropTypes.array.isRequired
+  };
+  
   render() {
     return (
       <div>
@@ -49,10 +53,6 @@ class FinagleGrid extends Component {
       </div>
     );
   };
-};
-
-FinagleGrid.propTypes = {
-  metrics: PropTypes.array.isRequired
 };
 
 function mapStateToProps({ metrics }) {

@@ -9,7 +9,7 @@ HTTPConnectionsLineChart.propTypes = {
 export default function HTTPConnectionsLineChart ({ metricsArr }) {
 
   // Map the metrics array and generate array of objects with an array of objects 
-  // with timestamps and the # of HTTP connections
+  // with time stamps and the # of HTTP connections
   const httpConnections = metricsArr.map(function (metrics) {
     const date = new Date(metrics.date);
     const prettyDate = dateFormat(date, "HH:MM:ss");

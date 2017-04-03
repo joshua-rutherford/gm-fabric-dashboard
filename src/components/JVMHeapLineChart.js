@@ -9,7 +9,7 @@ JVMHeapLineChart.propTypes = {
 export default function JVMHeapLineChart({ metricsArr }) {
   const BYTES_TO_MB = 1048576;
   // Map the metrics array and generate array of objects with an array of objects
-  // with timestamps and the # of HTTP connections
+  // with time stamps and the # of HTTP connections
   const maxHeap = metricsArr.length > 0 ? metricsArr[metricsArr.length - 1].data['jvm/heap/max'] / BYTES_TO_MB : 0;
   const httpConnections = metricsArr.map(function (metrics) {
     const date = new Date(metrics.date);

@@ -1,22 +1,18 @@
 import React, { Component, PropTypes } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import Navbar from './Navbar';
 import OffCanvasSidebar from './OffCanvasSidebar';
 import OnCanvasSidebar from './OnCanvasSidebar';
-import { fetchMetrics } from '../actions/index';
+import { Actions } from 'jumpstate';
 
 class Container extends Component {
-
-  componentDidMount() {
-    // Currently we are refreshing the metrics every 15 secs.
-    // This should be configurable in the future
-    this.props.fetchMetrics();
-    this.refreshMetrics = setInterval(this.props.fetchMetrics, 5000);
+  static propTypes = {
+    children: PropTypes.any
   }
 
-  componentWillUnmount() {
-    clearInterval(this.refreshMetrics);
+  // Perform an initial fetch of metrics on mount.
+  // This triggers hooks which initialize polling using the default parameters
+  componentDidMount() {
+    Actions.fetchMetrics();
   }
 
   render() {
@@ -43,12 +39,4 @@ class Container extends Component {
   };
 }
 
-Container.propTypes = {
-  fetchMetrics: PropTypes.func.isRequired
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchMetrics }, dispatch);
-}
-
-export default connect(null, mapDispatchToProps)(Container);
+export default Container;

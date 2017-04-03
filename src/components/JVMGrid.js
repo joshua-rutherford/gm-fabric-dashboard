@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import JVMHeapLineChart from './JVMHeapLineChart';
 
 class JVMGrid extends Component {
+  static propTypes = {
+    metrics: PropTypes.array.isRequired
+  };
+  
   render() {
     return (
       <div>
@@ -44,10 +48,6 @@ class JVMGrid extends Component {
       </div>
     );
   };
-};
-
-JVMGrid.propTypes = {
-  metrics: PropTypes.array.isRequired
 };
 
 function mapStateToProps({ metrics }) {

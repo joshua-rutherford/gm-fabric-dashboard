@@ -11,7 +11,7 @@ const Navbar = () => {
             href="#"
           >
             <img
-              alt='Graymatter Logo'
+              alt='Gray Matter Logo'
               className="logo"
               src={logo}
               style={{ width: '200px' }}

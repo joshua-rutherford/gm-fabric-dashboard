@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PollingSettings from './PollingSettings';
 import UIkit from 'uikit';
-import { clearMetrics, togglePolling, setInterval } from '../actions/index';
 import 'react-input-range/lib/css/index.css';
+import { Actions } from 'jumpstate';
 
+SettingsGrid.propTypes = {
+  settings: PropTypes.object.isRequired,
+};
 
-const SettingsGrid = (props) => {
+function SettingsGrid (props) {
   return (
     <div>
       <div
@@ -16,9 +18,8 @@ const SettingsGrid = (props) => {
       >
         <div className="uk-width-1-2@m">
           <PollingSettings 
+            interval={props.settings.interval}
             isPolling={props.settings.isPolling} 
-            setInterval={props.setInterval} 
-            togglePolling={props.togglePolling} 
           />
         </div>
         <div className="uk-width-1-2@m">
@@ -28,7 +29,7 @@ const SettingsGrid = (props) => {
               className="uk-button uk-button-danger"
               onClick={() => {
                 UIkit.modal.confirm('Are you sure that you want to clear the cached metrics data? This action in irreversible.')
-                  .then(() => props.clearMetrics());
+                  .then(() => Actions.clearMetrics());
               }}
             >Clear Metrics Cache</button>
           </div>
@@ -56,16 +57,9 @@ const SettingsGrid = (props) => {
   );
 };
 
-SettingsGrid.propTypes = {
-  clearMetrics: PropTypes.func.isRequired
-};
 
 function mapStateToProps({ settings }) {
   return { settings };
 };
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ clearMetrics, togglePolling, setInterval }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsGrid);
+export default connect(mapStateToProps)(SettingsGrid);
