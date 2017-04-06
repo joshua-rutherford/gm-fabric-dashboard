@@ -17,14 +17,15 @@ class PollingSettings extends Component {
     debouncedSetInterval: _.debounce(Actions.setInterval, 1000)
   }
   render() {
-    const buttonClass = this.props.isPolling ? 'uk-button uk-button-danger' : 'uk-button uk-button-primary';
+    const {isPolling} = this.props;
+    const buttonClass = isPolling ? 'uk-button uk-button-danger' : 'uk-button uk-button-primary';
     return (
       <div className="uk-card uk-card-default uk-card-body">
-        <h3 className="uk-card-title">Nonfunctional Dummy Settings</h3>
+        <h3 className="uk-card-title">Polling</h3>
         <button
           className={buttonClass}
           onClick={() => Actions.togglePolling()}
-        >{this.props.isPolling ? 'Stop Polling' : 'Start Polling'}
+        >{isPolling ? 'Stop Polling' : 'Start Polling'}
         </button>
         <h4>Polling Interval (seconds)</h4>
         <InputRange

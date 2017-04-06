@@ -1,12 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { getLatestAttribute } from '../utils';
+import FinagleTimerStats from './FinagleTimerStats';
+import FinaglePendingTasksStats from './FinaglePendingTasksStats';
+import FinagleFuturePoolStats from './FinagleFuturePoolStats';
+import FinagleClientRegistryStats from './FinagleClientRegistryStats';
 
 class FinagleGrid extends Component {
   static propTypes = {
-    metrics: PropTypes.array.isRequired
+    finagle: PropTypes.object
   };
-  
+
   render() {
+    const { finagle } = this.props;
     return (
       <div>
         <div
@@ -14,40 +20,35 @@ class FinagleGrid extends Component {
           data-uk-grid
         >
           <div className="uk-width-1-2@l">
-            <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">Data Tx Rates</h3>
-              <img
-                alt="Fill Murray"
-                src="https://placeimg.com/300/200/animals"
-              />
-            </div>
+            <FinagleTimerStats
+              timerDeviationAverage={getLatestAttribute(finagle, 'timer.deviationMs.avg')}
+              timerDeviationCount={getLatestAttribute(finagle, 'timer.deviationMs.count')}
+              timerDeviationMax={getLatestAttribute(finagle, 'timer.deviationMs.max')}
+              timerDeviationMin={getLatestAttribute(finagle, 'timer.deviationMs.min')}
+              timerDeviationSum={getLatestAttribute(finagle, 'timer.deviationMs.sum')}
+            />
           </div>
           <div className="uk-width-1-2@l">
-            <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">Advisor Moods</h3>
-              <img
-                alt="Fill Murray"
-                src="https://placeimg.com/300/200/arch"
-              />
-            </div>
+            <FinaglePendingTasksStats
+              pendingTasksAverage={getLatestAttribute(finagle, 'timer.pendingTasks.avg')}
+              pendingTasksCount={getLatestAttribute(finagle, 'timer.pendingTasks.count')}
+              pendingTasksMax={getLatestAttribute(finagle, 'timer.pendingTasks.max')}
+              pendingTasksMin={getLatestAttribute(finagle, 'timer.pendingTasks.min')}
+              pendingTasksSum={getLatestAttribute(finagle, 'timer.pendingTasks.sum')}
+            />
           </div>
           <div className="uk-width-1-2@l">
-            <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">Random Walks</h3>
-              <img
-                alt="Fill Murray"
-                src="https://placeimg.com/300/200/nature"
-              />
-            </div>
+            <FinagleFuturePoolStats
+              activeTasks={getLatestAttribute(finagle, 'futurePool.activeTasks')}
+              completedTasks={getLatestAttribute(finagle, 'futurePool.completedTasks')}
+              poolSize={getLatestAttribute(finagle, 'timer.poolSize')}
+            />
           </div>
           <div className="uk-width-1-2@l">
-            <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">Fauna Breeding</h3>
-              <img
-                alt="Fill Murray"
-                src="https://placeimg.com/300/200/people"
-              />
-            </div>
+            <FinagleClientRegistryStats
+              initialResolution={getLatestAttribute(finagle, 'clientregistry.initialresolutionMs')}
+              size={getLatestAttribute(finagle, 'clientregistry.size')}
+            />
           </div>
         </div>
       </div>
@@ -55,8 +56,8 @@ class FinagleGrid extends Component {
   };
 };
 
-function mapStateToProps({ metrics }) {
-  return { metrics };
+function mapStateToProps({ metrics: { finagle } }) {
+  return { finagle };
 };
 
 export default connect(mapStateToProps)(FinagleGrid);

@@ -2,15 +2,30 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { State, Effect, Actions, Hook, CreateJumpstateMiddleware } from 'jumpstate';
 import { createLogger } from 'redux-logger';
 import reduxPromise from 'redux-promise';
+import _ from 'lodash';
+import { camelize } from 'humps';
+import { routerReducer } from 'react-router-redux';
 
 // State Objects
 const metrics = State({
-  initial: [],
+  initial: {},
   fetchMetricsSuccess(state, payload) {
-    return [...state, { date: Date.now(), data: payload }];
+    // Transform each snapshot into a hierarchy of nested objects, where the lowest level is an object
+    // of key value pairs, where the key is the time stamp in UNIX time and the value is the value of
+    // the metric at that timestamp.
+    const snapshot = {};
+    const time = Date.now();
+    for (let key in payload) {
+      // Change from slash delimited to dot delimited and from snake case to camel case to be able to
+      // use the lodash set method to build a idiomatic JSON hierarchy of data
+      let path = camelize(key.replace(/\//gi, '.'));
+      _.setWith(snapshot, `${path}.${time}`, payload[key], Object);
+    }
+    // Deep merge the new snapshot into the existing state object.
+    return _.merge({}, state, snapshot);
   },
   clearMetrics(state, payload) {
-    return [];
+    return {};
   }
 });
 
@@ -37,11 +52,10 @@ const settings = State({
 
 // Effects
 Effect('fetchMetrics', (endpoint) => {
-  fetch(endpoint || 'admin/metrics.json', { mode: 'cors' }) // TODO: Fix this hack
+  fetch(endpoint || '/admin/metrics.json', { mode: 'cors' }) // TODO: Fix this hack
     .then(results => Actions.fetchMetricsSuccess(results.json()));
 });
 Effect('startPolling', ({ endpoint, interval }) => {
-  console.log(`starting polling of ${endpoint} every ${interval}ms`)
   window.refreshMetricsInterval = setInterval((endpoint) => Actions.fetchMetrics(endpoint), interval);
 });
 Effect('stopPolling', (endpoint, interval) => {
@@ -50,10 +64,9 @@ Effect('stopPolling', (endpoint, interval) => {
 
 // Hooks
 
-// Automatically start polling the default endpoint using the default interval on initial pageload.
+// Automatically start polling the default endpoint using the default interval on initial page load.
 Hook((action, getState) => {
   if (!getState().settings.pollingHasInitialized) {
-    console.log(`Initializing Polling of ${getState().settings.metricsEndpoint} every ${getState().settings.interval}`);
     Actions.setPollingAsInitialized();
     Actions.startPolling({
       endpoint: getState().settings.metricsEndpoint,
@@ -103,7 +116,7 @@ Hook((action, getState) => {
 
 // Putting it all together
 export default createStore(
-  combineReducers({ metrics, settings }),
+  combineReducers({ metrics, settings, routing: routerReducer }),
   applyMiddleware(
     reduxPromise,
     CreateJumpstateMiddleware(),

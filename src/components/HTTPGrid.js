@@ -4,33 +4,44 @@ import HTTPConnectionsAreaChart from './HTTPConnectionsAreaChart';
 import DataTxLineChart from './DataTxLineChart';
 import HTTPStats from './HTTPStats';
 import DataTotals from './DataTotals';
+import { getLatestAttribute, getAttributeOverTime, getAttributeChangesOverTime, mergeResults } from '../utils';
 
 class HTTPGrid extends Component {
   static propTypes = {
-    metrics: PropTypes.array.isRequired
+    http: PropTypes.object,
+    jvm: PropTypes.object
   };
-  
+
   render() {
+    const { jvm, http } = this.props;
     return (
       <div>
         <div
-          className="uk-grid-match uk-text-center"
+          className="uk-grid-match uk-grid-small uk-text-center"
           data-uk-grid
-          data-uk-grid-small
-          data-uk-height-match="row: false"
-          data-uk-sortable
         >
           <div className="uk-width-1-2@l">
-            <HTTPStats metricsArr={this.props.metrics} />
+            <HTTPStats
+              appUptime={getLatestAttribute(jvm, 'uptime')}
+              totalHTTPRequests={getLatestAttribute(http, 'requests')}
+              totalSuccessfulHTTPRequests={getLatestAttribute(http, 'success')}
+            />
           </div>
           <div className="uk-width-1-2@l">
-            <DataTotals metricsArr={this.props.metrics} />
+            <DataTotals
+              receivedBytes={getLatestAttribute(http, 'receivedBytes')}
+              sentBytes={getLatestAttribute(http, 'sentBytes')}
+            />
           </div>
           <div className="uk-width-1-2@l">
-            <HTTPConnectionsAreaChart metricsArr={this.props.metrics} />
+            <HTTPConnectionsAreaChart
+              connectionsArr={getAttributeOverTime(http, 'connections')}
+            />
           </div>
           <div className="uk-width-1-2@l">
-            <DataTxLineChart metricsArr={this.props.metrics} />
+            <DataTxLineChart
+              receivedAndSentBytesPerSecondArr={mergeResults(getAttributeChangesOverTime(http, 'sentBytes'), getAttributeChangesOverTime(http, 'receivedBytes'))}
+            />
           </div>
         </div>
       </div>
@@ -38,8 +49,8 @@ class HTTPGrid extends Component {
   };
 };
 
-function mapStateToProps({ metrics }) {
-  return { metrics };
+function mapStateToProps({ metrics: { http, jvm } }) {
+  return { http, jvm };
 };
 
 export default connect(mapStateToProps)(HTTPGrid);

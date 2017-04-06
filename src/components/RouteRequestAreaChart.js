@@ -1,24 +1,27 @@
 import React, { PropTypes } from 'react';
 import { AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-HTTPConnectionsLineChart.propTypes = {
-  connectionsArr: PropTypes.array.isRequired
+JVMHeapLineChart.propTypes = {
+  requestsPerSecondArr: PropTypes.array.isRequired,
+  routeName: PropTypes.string.isRequired,
+  verbName: PropTypes.string.isRequired
 };
 
-export default function HTTPConnectionsLineChart({ connectionsArr }) {
+export default function JVMHeapLineChart({ routeName, verbName, requestsPerSecondArr }) {
   return (
+
     <div className="uk-card uk-card-default uk-card-body">
-      <h3 className="uk-card-title">HTTP Connections</h3>
+      <h3 className="uk-card-title">{`${verbName} /${routeName}`}</h3>
       <ResponsiveContainer
         height="80%"
         width="90%"
       >
-        <AreaChart data={connectionsArr}>
+        <AreaChart data={requestsPerSecondArr}>
           <Area
-            dataKey="connections"
+            dataKey="requestsPerSecond"
             fill="#F3F3F3"
             isAnimationActive={false}
-            name="# Active HTTP Connections"
+            name={`${verbName} requests to /${routeName} per second`}
             stroke="#aaaaaa"
             type="monotone"
           />
@@ -26,7 +29,6 @@ export default function HTTPConnectionsLineChart({ connectionsArr }) {
           <XAxis
             dataKey="prettyTime"
             interval="preserveStartEnd"
-            minTickGap={10}
             padding={{ left: 25 }}
           />
           <YAxis allowDecimals={false} />

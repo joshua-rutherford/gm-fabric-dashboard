@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, IndexLink } from 'react-router';
+import OnCanvasSidebar from './OnCanvasSidebar';
 
 const Sidebar = () => {
   return (
@@ -8,28 +8,12 @@ const Sidebar = () => {
       id="sidebar"
     >
       <div className="uk-offcanvas-bar">
-        <ul
-          className="uk-nav-parent-icon uk-nav-default"
-          data-uk-nav="multiple: true"
-        >
-          <li><IndexLink to="/">Summary</IndexLink></li>
-          <li><Link to="/http">HTTP</Link></li>
-          <li><Link to="/jvm">JVM</Link></li>
-          <li><Link to="/finagle">Finagle</Link></li>
-          <li><Link to="/settings">Settings</Link></li>
-          <li>
-            <a
-              href="https://github.com/DecipherNow/gm-fabric-dashboard"
-              target="_blank"
-            >
-              <span
-                className="uk-margin-small-right"
-                data-uk-icon="icon: github"
-              />
-              View on GitHub
-            </a>
-          </li>
-        </ul>
+        <button
+          className="uk-offcanvas-close uk-align-right"
+          data-uk-close
+          type="button"
+        />
+        <OnCanvasSidebar />
       </div>
     </div>
   );

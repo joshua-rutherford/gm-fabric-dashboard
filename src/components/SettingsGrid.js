@@ -6,10 +6,10 @@ import 'react-input-range/lib/css/index.css';
 import { Actions } from 'jumpstate';
 
 SettingsGrid.propTypes = {
-  settings: PropTypes.object.isRequired,
+  settings: PropTypes.object
 };
 
-function SettingsGrid (props) {
+function SettingsGrid ({settings}) {
   return (
     <div>
       <div
@@ -18,8 +18,8 @@ function SettingsGrid (props) {
       >
         <div className="uk-width-1-2@m">
           <PollingSettings 
-            interval={props.settings.interval}
-            isPolling={props.settings.isPolling} 
+            interval={settings.interval}
+            isPolling={settings.isPolling} 
           />
         </div>
         <div className="uk-width-1-2@m">
@@ -48,7 +48,7 @@ function SettingsGrid (props) {
             <h3 className="uk-card-title">Fauna Breeding</h3>
             <img
               alt="Fill Murray"
-              src="https://placeimg.com/300/200/people"
+              src="https://placeimg.com/300/200/nature"
             />
           </div>
         </div>

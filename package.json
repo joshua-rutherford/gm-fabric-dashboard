@@ -5,6 +5,7 @@
   "dependencies": {
     "dateformat": "^2.0.0",
     "filesize": "^3.5.6",
+    "humps": "^2.0.0",
     "jquery": "^3.2.1",
     "jumpstate": "^2.2.2",
     "lodash": "^4.17.4",
@@ -14,13 +15,12 @@
     "react-input-range": "^1.1.2",
     "react-redux": "^5.0.3",
     "react-router": "^3.0.0",
-    "react-sparklines": "^1.6.0",
+    "react-router-redux": "^4.0.8",
     "recharts": "^0.21.2",
     "redux": "^3.6.0",
     "redux-devtools": "^3.3.2",
     "redux-logger": "^3.0.0",
     "redux-promise": "^0.5.3",
-    "redux-thunk": "^2.2.0",
     "uikit": "^3.0.0-beta.18"
   },
   "devDependencies": {

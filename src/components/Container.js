@@ -17,7 +17,7 @@ class Container extends Component {
 
   render() {
     return (
-      <div>
+      <div className="uk-offcanvas-content">
         <OffCanvasSidebar />
         <div className="uk-container uk-container-expand ">
           <Navbar />

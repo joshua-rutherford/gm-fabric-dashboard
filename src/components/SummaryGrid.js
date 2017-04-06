@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 class SummaryGrid extends Component {
   static propTypes = {
-    metrics: PropTypes.array.isRequired
+    metrics: PropTypes.object.isRequired
   };
   render() {
     return (
@@ -44,7 +44,7 @@ class SummaryGrid extends Component {
               <h3 className="uk-card-title">Fauna Breeding</h3>
               <img
                 alt="Fill Murray"
-                src="https://placeimg.com/300/200/people"
+                src="https://placeimg.com/300/200/nature"
               />
             </div>
           </div>

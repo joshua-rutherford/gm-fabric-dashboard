@@ -1,24 +1,26 @@
 import React, { PropTypes } from 'react';
 import { AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-HTTPConnectionsLineChart.propTypes = {
-  connectionsArr: PropTypes.array.isRequired
+JVMHeapLineChart.propTypes = {
+  currentLoadedArr: PropTypes.array.isRequired,
+  totalLoaded: PropTypes.number.isRequired,
+  totalUnloaded: PropTypes.number.isRequired
 };
 
-export default function HTTPConnectionsLineChart({ connectionsArr }) {
+export default function JVMHeapLineChart({ currentLoadedArr, totalLoaded, totalUnloaded }) {
   return (
     <div className="uk-card uk-card-default uk-card-body">
-      <h3 className="uk-card-title">HTTP Connections</h3>
+      <h3 className="uk-card-title">Classes</h3>
       <ResponsiveContainer
         height="80%"
         width="90%"
       >
-        <AreaChart data={connectionsArr}>
+        <AreaChart data={currentLoadedArr}>
           <Area
-            dataKey="connections"
+            dataKey="currentLoaded"
             fill="#F3F3F3"
             isAnimationActive={false}
-            name="# Active HTTP Connections"
+            name="Current Loaded Classes"
             stroke="#aaaaaa"
             type="monotone"
           />
@@ -26,13 +28,14 @@ export default function HTTPConnectionsLineChart({ connectionsArr }) {
           <XAxis
             dataKey="prettyTime"
             interval="preserveStartEnd"
-            minTickGap={10}
             padding={{ left: 25 }}
           />
           <YAxis allowDecimals={false} />
           <Tooltip />
         </AreaChart>
       </ResponsiveContainer>
+      <div>Total Loaded: {totalLoaded}</div>
+      <div>Total Unloaded: {totalUnloaded}</div>
     </div>
   );
 }

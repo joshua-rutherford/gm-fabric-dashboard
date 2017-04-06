@@ -11,15 +11,20 @@ import HTTPGrid from './components/HTTPGrid';
 import JVMGrid from './components/JVMGrid';
 import FinagleGrid from './components/FinagleGrid';
 import SettingsGrid from './components/SettingsGrid';
+import RouteGrid from './components/RouteGrid';
+import { syncHistoryWithStore } from 'react-router-redux';
 import '../node_modules/uikit/dist/css/uikit.min.css';
 import './style/index.css';
 
 // load the UIKit Icon plugin
 UIkit.use(Icons);
 
+// Wire up React Router with Redux
+const history = syncHistoryWithStore(browserHistory, store);
+
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={browserHistory} >
+    <Router history={history} >
       <Route
         component={Container}
         path="/"
@@ -42,6 +47,10 @@ ReactDOM.render(
         <Route
           component={SettingsGrid}
           path="settings"
+        />
+        <Route
+          component={RouteGrid}
+          path="route/:routeName"
         />
       </Route>
     </Router>

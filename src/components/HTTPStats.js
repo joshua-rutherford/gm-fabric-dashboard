@@ -2,16 +2,18 @@ import React, { PropTypes } from 'react';
 import ms from 'ms';
 
 HTTPStats.propTypes = {
-  metricsArr: PropTypes.array.isRequired
+  appUptime: PropTypes.number.isRequired,
+  totalHTTPRequests: PropTypes.number.isRequired,
+  totalSuccessfulHTTPRequests: PropTypes.number.isRequired
 };
 
-export default function HTTPStats({ metricsArr }) {
+export default function HTTPStats({ appUptime, totalHTTPRequests, totalSuccessfulHTTPRequests }) {
   return (
     <div className="uk-card uk-card-default uk-card-body">
       <h3 className="uk-card-title">HTTP Stats</h3>
-      <p>Uptime: {metricsArr.length > 0 ? ms(metricsArr[metricsArr.length - 1].data['jvm/uptime'], { long: true }) : ''} </p>
-      <p>Total HTTP Requests: {metricsArr.length > 0 ? metricsArr[metricsArr.length - 1].data['http/requests'] : ''} </p>
-      <p>Successful HTTP Requests: {metricsArr.length > 0 ? metricsArr[metricsArr.length - 1].data['http/success'] : ''} </p>
+      <p>Uptime: {ms(appUptime)} </p>
+      <p>Total HTTP Requests: {totalHTTPRequests} </p>
+      <p>Successful HTTP Requests: {totalSuccessfulHTTPRequests} </p>
     </div>
   );
 }
