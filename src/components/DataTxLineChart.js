@@ -6,9 +6,9 @@ DataTxLineChart.propTypes = {
 };
 
 export default function DataTxLineChart({ receivedAndSentBytesPerSecondArr }) {
-  const deltas = receivedAndSentBytesPerSecondArr.map(({time, prettyTime, receivedBytesPerSecond, sentBytesPerSecond}) => ({
-    time, 
-    prettyTime, 
+  const deltas = receivedAndSentBytesPerSecondArr.map(({ time, prettyTime, receivedBytesPerSecond, sentBytesPerSecond }) => ({
+    time,
+    prettyTime,
     receivedKilobytesPerSecond: Math.round(receivedBytesPerSecond / 1024),
     sentKilobytesPerSecond: Math.round(sentBytesPerSecond / 1024)
   }));
@@ -17,6 +17,7 @@ export default function DataTxLineChart({ receivedAndSentBytesPerSecondArr }) {
     <div className="uk-card uk-card-default uk-card-body">
       <h3 className="uk-card-title">Data Transfer Rates (KBps)</h3>
       <ResponsiveContainer
+        aspect={2}
         height="80%"
         width="90%"
       >

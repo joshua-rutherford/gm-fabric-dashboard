@@ -9,6 +9,9 @@
 # production
 /build
 
+# Ignore the CSS file generate by less
+/src/style/index.css
+
 # misc
 .vscode/chrome
 .DS_Store

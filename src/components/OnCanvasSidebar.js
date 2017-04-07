@@ -30,7 +30,10 @@ function OnCanvasSidebar({ pathname, route }) {
             {Object.keys(route).map(route => {
               const pathName = `/route/${route}`;
               return (
-                <li className={pathname === { pathName } ? 'uk-active' : ''} key={route}>
+                <li
+                  className={pathname === { pathName } ? 'uk-active' : ''}
+                  key={route}
+                >
                   <Link
                     className="uk-link-muted"
                     to={`/route/${route}`}

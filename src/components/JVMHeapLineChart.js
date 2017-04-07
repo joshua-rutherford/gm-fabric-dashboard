@@ -22,6 +22,7 @@ export default function JVMHeapLineChart({ maxHeap, usedAndCommittedHeapArr }) {
     <div className="uk-card uk-card-default uk-card-body">
       <h3 className="uk-card-title">Heap</h3>
       <ResponsiveContainer
+        aspect={2}
         height="80%"
         width="90%"
       >

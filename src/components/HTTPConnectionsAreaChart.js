@@ -10,6 +10,7 @@ export default function HTTPConnectionsLineChart({ connectionsArr }) {
     <div className="uk-card uk-card-default uk-card-body">
       <h3 className="uk-card-title">HTTP Connections</h3>
       <ResponsiveContainer
+        aspect={2}
         height="80%"
         width="90%"
       >

@@ -25,12 +25,21 @@
   },
   "devDependencies": {
     "enzyme": "^2.7.1",
+    "less": "^2.7.2",
+    "npm-run-all": "^4.0.2",
+    "npm-watch": "^0.1.8",
     "react-addons-test-utils": "^15.4.2",
     "react-scripts": "0.9.5"
   },
+  "watch": {
+    "build-css": "src/style/index.less"
+  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build-css": "lessc -ru src/style/index.less src/style/index.css",
+    "watch": "npm-watch",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch start-js",
+    "build": "npm run build-css && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
