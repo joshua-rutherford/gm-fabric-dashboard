@@ -29,7 +29,9 @@
     "npm-run-all": "^4.0.2",
     "npm-watch": "^0.1.8",
     "react-addons-test-utils": "^15.4.2",
-    "react-scripts": "0.9.5"
+    "react-scripts": "0.9.5",
+    "stylelint": "^7.10.1",
+    "stylelint-config-standard": "^16.0.0"
   },
   "watch": {
     "build-css": {
@@ -46,6 +48,7 @@
     "watch": "npm-watch",
     "start-js": "react-scripts start",
     "start": "npm-run-all -p watch start-js",
+    "lint-css": "stylelint 'src/style/**/*.less'",
     "build": "npm run build-css && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

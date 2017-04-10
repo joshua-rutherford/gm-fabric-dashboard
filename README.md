@@ -52,7 +52,11 @@ npm install
 
 #### `npm start` to develop features and crush bugs
 
-This runs the app in the development mode and automatically opens [http://localhost:3000](http://localhost:3000) in your browser. You can open the source code in your editor of choice, and the page will reload if you make edits. If you are a VSCode user, this projecrts supports in-editor debugging via the [Debugger for Chrome extension](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome).
+This runs the app in the development mode and automatically opens [http://localhost:3000](http://localhost:3000) in your browser. You can open the source code in your editor of choice, and the page will reload if you make edits. 
+
+We suggest use of [EditorConfig](http://editorconfig.org/#download), [ESList](http://eslint.org/docs/user-guide/integrations), and [stylelint](https://stylelint.io/user-guide/complementary-tools/#editor-plugins) plugins in your editor to use the projects style rules.
+
+Additionally, if you are a VSCode user, this project supports in-editor debugging via the [Debugger for Chrome extension](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome) and has a custom dictionary for the [Code Spellchecker extension](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
 
 #### `npm test` to enhance front-end unit test coverage
 
@@ -63,3 +67,8 @@ See the Create React App section about [running tests](https://github.com/facebo
 
 This builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
+
+#### `npm run lint-css` to validate that css follows the project style
+
+This will lint the LESS source files via the CLI. This option should only be required if you are
+unable to install a stylelint plugin for your editor of choice.
