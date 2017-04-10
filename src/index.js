@@ -21,7 +21,6 @@ import './style/index.css';
 // load the UIKit Icon plugin
 UIkit.use(Icons);
 
-console.log('REACT_APP_BASE_URL is ', process.env.REACT_APP_BASE_URL);
 // Use browserHistory if available. Otherwise, fallback to hashHistory.
 // Define a base URL for the project if REACT_APP_BASE_URL exists on process.env
 const basename = process.env.REACT_APP_BASE_URL ? `/${process.env.REACT_APP_BASE_URL}` : '/';
@@ -31,6 +30,22 @@ const customHistory = useRouterHistory(
 
 // Wire up React Router with Redux
 const history = syncHistoryWithStore(customHistory, store);
+
+// Load react-a11y in dev mode
+if (process.env.NODE_ENV === 'development') {
+  const a11y = require('react-a11y');
+  const commentListFailures = (name, id, msg) => {
+    // Filter out known accessibility defects with submitted GitHub Issues
+    if (
+      name === 'AnimationDecorator(ComposedDataDecorator(LineChart))'
+      || name === 'AnimationDecorator(ComposedDataDecorator(AreaChart))'
+      || name === 'Slider'
+      ) return false;
+    return true;
+  };
+
+  a11y(React, { filterFn: commentListFailures });
+}
 
 ReactDOM.render(
   <Provider store={store}>

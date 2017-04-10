@@ -9,6 +9,7 @@ const Sidebar = () => {
     >
       <div className="uk-offcanvas-bar">
         <button
+          aria-label="Close Menu"
           className="uk-offcanvas-close uk-align-right"
           data-uk-close
           type="button"

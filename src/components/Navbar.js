@@ -9,6 +9,7 @@ const Navbar = () => {
         <a
           className="uk-navbar-item uk-logo"
           href="#"
+          role="button"
         >
           <img
             alt='Decipher Logo'
@@ -33,6 +34,7 @@ const Navbar = () => {
       </div>
       <div className="uk-navbar-right uk-hidden@m">
         <a
+          aria-label="Open Menu"
           className="uk-navbar-item hamburger"
           data-uk-icon="icon: table; ratio: 2"
           data-uk-toggle="target: #sidebar"
