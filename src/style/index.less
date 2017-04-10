@@ -1,47 +1,15 @@
 // Import UIKit default theme
 @import 'node_modules/uikit/src/less/uikit.theme.less';
 
-/* Gray Matter Fabric Custom Theme for UIKit v3  */
-@global-background: #fff;
-@global-muted-background: #ddd;
-@global-primary-background: green;
-@global-secondary-background: black;
 
-* {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
-};
+// Base
+@import 'typography.less';
+@import 'layout.less';
 
-/* Navbar Styles */
-@navbar-nav-item-height: 60px;
 
-#product-logo {
-  margin-left: 20px;
-}
+// Components
+@import 'components/navbar.less';
 
-#logo-text {
-  margin-left: 5px;
-  font-size: xx-large;
-  color: #30B44A;
-}
 
-// Warning: Increasing the border width above 1px impacts uk-grid flows
-.uk-navbar {
-  border-bottom: 1px solid #ddd;
-}
-
-/* Fill the entire width of the page */
-.uk-container {
-  padding-left: 0px;
-  padding-right: 0px;
-}
-
-/* Separate the main content area from the sidebar */
-main {
-  border-left: 1px solid #E5E5E5;
-  padding-left: 20px;
-}
-
-/* Reposition the sidebar to compensate for unusual default positioning*/
-.on-canvas-sidebar {
-  left: 30px;
-}
+// Views
+@import 'views/view-service-instance-dashboard.less';

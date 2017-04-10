@@ -1,0 +1,28 @@
+// components/navbar.less
+@import '../variables.less';
+@import '../mixins.less';
+
+
+// Local Variables
+@navbar-nav-item-height: 60px; // Warning: Increasing the border width above 1px impacts uk-grid flows
+@navbar-bottom-border-color: #ddd;
+@logo-text-color: #30B44A;
+
+
+// Helpers
+
+
+// Styles
+.uk-navbar {
+  border-bottom: 1px solid @navbar-bottom-border-color;
+}
+
+#product-logo {
+  margin-left: 20px;
+}
+
+#logo-text {
+  margin-left: 5px;
+  font-size: xx-large;
+  color: @logo-text-color;
+}
