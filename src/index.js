@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { Router, Route, IndexRoute, useRouterHistory } from 'react-router';
+import { createHistory, createHashHistory } from 'history';
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import Container from './components/Container';
@@ -20,8 +21,16 @@ import './style/index.css';
 // load the UIKit Icon plugin
 UIkit.use(Icons);
 
+console.log('REACT_APP_BASE_URL is ', process.env.REACT_APP_BASE_URL);
+// Use browserHistory if available. Otherwise, fallback to hashHistory.
+// Define a base URL for the project if REACT_APP_BASE_URL exists on process.env
+const basename = process.env.REACT_APP_BASE_URL ? `/${process.env.REACT_APP_BASE_URL}` : '/';
+const customHistory = useRouterHistory(
+  !!(window.history && window.history.pushState) ? createHistory : createHashHistory
+)({ basename });
+
 // Wire up React Router with Redux
-const history = syncHistoryWithStore(browserHistory, store);
+const history = syncHistoryWithStore(customHistory, store);
 
 ReactDOM.render(
   <Provider store={store}>
