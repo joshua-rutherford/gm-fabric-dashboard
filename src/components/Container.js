@@ -19,10 +19,13 @@ class Container extends Component {
     return (
       <div className="uk-offcanvas-content">
         <OffCanvasSidebar />
-        <div className="uk-container uk-container-expand ">
+        <div
+          className="uk-container uk-container-expand"
+          id="app-container"
+        >
           <Navbar />
           <div
-            className="uk-background-muted"
+            className="uk-background-default"
             data-uk-grid
             data-uk-grid-margin
           >

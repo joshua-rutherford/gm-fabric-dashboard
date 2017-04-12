@@ -30,24 +30,6 @@ class JVMGrid extends Component {
               totalUnloaded={getLatestAttribute(jvm, 'classes.totalUnloaded')}
             />
           </div>
-          <div className="uk-width-1-2@l">
-            <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">Advisor Moods</h3>
-              <img
-                alt="Fill Murray"
-                src="https://placeimg.com/300/200/arch"
-              />
-            </div>
-          </div>
-          <div className="uk-width-1-2@l">
-            <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">Random Walks</h3>
-              <img
-                alt="Fill Murray"
-                src="https://placeimg.com/300/200/nature"
-              />
-            </div>
-          </div>
         </div>
       </div>
     );

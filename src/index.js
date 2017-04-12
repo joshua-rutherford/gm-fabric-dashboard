@@ -6,6 +6,7 @@ import { createHistory, createHashHistory } from 'history';
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import Container from './components/Container';
+import JSONComponent from './components/JSONComponent';
 import store from './store';
 import SummaryGrid from './components/SummaryGrid';
 import HTTPGrid from './components/HTTPGrid';
@@ -37,10 +38,12 @@ if (process.env.NODE_ENV === 'development') {
   const commentListFailures = (name, id, msg) => {
     // Filter out known accessibility defects with submitted GitHub Issues
     if (
-      name === 'AnimationDecorator(ComposedDataDecorator(LineChart))'
-      || name === 'AnimationDecorator(ComposedDataDecorator(AreaChart))'
-      || name === 'Slider'
-      ) return false;
+      name === 'AnimationDecorator(ComposedDataDecorator(LineChart))' // See Issue 47
+      || name === 'AnimationDecorator(ComposedDataDecorator(AreaChart))' // See Issue 47
+      || name === 'Slider' // See Issue 48
+      || name === 'JSONNestedNode' // Resolved momentarily in new PR
+      || name === 'JSONArrow' // Resolved momentarily in new PR
+    ) return false;
     return true;
   };
 
@@ -68,6 +71,10 @@ ReactDOM.render(
         <Route
           component={FinagleGrid}
           path="finagle"
+        />
+        <Route
+          component={JSONComponent}
+          path="json"
         />
         <Route
           component={SettingsGrid}

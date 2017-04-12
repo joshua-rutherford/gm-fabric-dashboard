@@ -1,0 +1,48 @@
+// components/navbar.less
+@import '../variables.less';
+@import '../mixins.less';
+
+// Local Variables
+@summary-grid-border-color: #CCC;
+
+// Helpers
+
+// Styles
+
+#summary-grid-header-section {
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-top: 20px;
+
+  .uk-container {
+    h2 {
+      margin-top: 20px;
+    }
+
+    #summary-header-grid {
+      div {
+        .summary-header-grid-item
+      }
+    }
+  }
+}
+
+.summary-header-grid-item {
+  padding: 10px;
+  border-left: thin solid @summary-grid-border-color;
+}
+
+#summary-grid-body-section {
+  padding-left: 150px;
+  padding-right: 150px;
+
+  .uk-panel {
+    h3 {
+      margin-top: 30px;
+    }
+
+    .uk-text-small {
+      margin-top: 20px;
+    }
+  }
+}

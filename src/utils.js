@@ -29,6 +29,13 @@ export function getAttributeOverTime(props, path) {
   return [];
 }
 
+export function getAttributeForSparkline(props, path) {
+  const attributesOverTime = getAttributeOverTime(props, path);
+  if (!attributesOverTime.length) return [];
+  let dataKey = _.without(_.keys(_.last(attributesOverTime)), 'time', 'prettyTime')[0];
+  return attributesOverTime.map(obj => obj[dataKey]);
+}
+
 export function getAttributeChangesOverTime (props, path) {
   // console.log(`Calling getAttributeChangesOverTime with ${path});
   let attributesOverTime = getAttributeOverTime(props, path);
@@ -51,6 +58,13 @@ export function getAttributeChangesOverTime (props, path) {
   });
   // console.log('Returning from getAttributeChangesOverTime with', attributeChangesOverTime);
   return attributeChangesOverTime;
+}
+
+export function getAttributeChangesForSparkline(props, path) {
+  const attributesChangesOverTime = getAttributeChangesOverTime(props, path);
+  if (!attributesChangesOverTime.length) return [];
+  let dataKey = _.without(_.keys(_.last(attributesChangesOverTime)), 'time', 'prettyTime')[0];
+  return attributesChangesOverTime.map(obj => obj[dataKey]);
 }
 
 export function mergeResults (one, two) {

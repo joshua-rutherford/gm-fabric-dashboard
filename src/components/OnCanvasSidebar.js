@@ -56,6 +56,12 @@ function OnCanvasSidebar({ pathname, route }) {
           to="/finagle"
         >Finagle</Link>
       </li>
+      <li className={pathname === '/json' ? 'uk-active' : ''}>
+        <Link
+          className="uk-link-muted"
+          to="/json"
+        >JSON</Link>
+      </li>
       <li className={pathname === '/settings' ? 'uk-active' : ''}>
         <Link
           className="uk-link-muted"

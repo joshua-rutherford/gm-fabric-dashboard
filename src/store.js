@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { State, Effect, Actions, Hook, CreateJumpstateMiddleware } from 'jumpstate';
 import { createLogger } from 'redux-logger';
-import reduxPromise from 'redux-promise';
+import { notification } from 'uikit';
 import _ from 'lodash';
 import { camelize } from 'humps';
 import { routerReducer } from 'react-router-redux';
@@ -34,7 +34,8 @@ const settings = State({
     isPolling: true,
     pollingHasInitialized: false,
     interval: 15000,
-    metricsEndpoint: 'admin/metrics.json'
+    metricsEndpoint: 'admin/metrics.json',
+    pollingFailures: 0
   },
   setPollingAsInitialized(state, payload) {
     return { ...state, pollingHasInitialized: true };
@@ -47,13 +48,29 @@ const settings = State({
   },
   setMetricsEndpoint(state, payload) {
     return { ...state, metricsEndpoint: payload };
+  },
+  incrementPollingFailures(state, payload) {
+    const pollingFailures = state.pollingFailures + 1;
+    return { ...state, pollingFailures };
+  },
+  resetPollingFailures(state, payload) {
+    return { ...state, pollingFailures: 0 };
   }
 });
 
 // Effects
 Effect('fetchMetrics', (endpoint) => {
-  fetch(endpoint || '/admin/metrics.json', { mode: 'cors' }) // TODO: Fix this hack
-    .then(results => Actions.fetchMetricsSuccess(results.json()));
+  fetch(endpoint || '/admin/metrics.json', { "mode": "cors" }) // TODO: Fix this hack
+    .then(results => results.json())
+    .then(resultsAsJSON => {
+      Actions.resetPollingFailures();
+      return Actions.fetchMetricsSuccess(resultsAsJSON);
+    })
+    .catch(err => Actions.fetchMetricsFailure(err));
+});
+Effect('fetchMetricsFailure', (err) => {
+  notification('Fetching /admin/metrics.json failed', { status: 'danger' });
+  Actions.incrementPollingFailures();
 });
 Effect('startPolling', ({ endpoint, interval }) => {
   window.refreshMetricsInterval = setInterval((endpoint) => Actions.fetchMetrics(endpoint), interval);
@@ -79,6 +96,21 @@ Hook((action, getState) => {
 Hook((action, getState) => {
   if (action.type === 'togglePolling' && !getState().settings.isPolling) {
     Actions.stopPolling();
+  }
+});
+
+// Stop polling after three failures and reset failure counter
+// The Notification will persist for 24 hours unless manually dismissed by the user.
+Hook((action, getState) => {
+  if (getState().settings.pollingFailures > 2) {
+    notification('Automatically disabling the fetching of metrics after three attempts. You can turn polling back on in Settings.',
+      {
+        status: 'danger',
+        timeout: 86400000
+      }
+    );
+    Actions.resetPollingFailures();
+    Actions.togglePolling();
   }
 });
 
@@ -118,7 +150,6 @@ Hook((action, getState) => {
 export default createStore(
   combineReducers({ metrics, settings, routing: routerReducer }),
   applyMiddleware(
-    reduxPromise,
     CreateJumpstateMiddleware(),
     createLogger({ collapsed: true })
   )
