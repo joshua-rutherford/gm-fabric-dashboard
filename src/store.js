@@ -13,14 +13,34 @@ const metrics = State({
     // Transform each snapshot into a hierarchy of nested objects, where the lowest level is an object
     // of key value pairs, where the key is the time stamp in UNIX time and the value is the value of
     // the metric at that timestamp.
-    const snapshot = {};
-    const time = Date.now();
-    for (let key in payload) {
-      // Change from slash delimited to dot delimited and from snake case to camel case to be able to
-      // use the lodash set method to build a idiomatic JSON hierarchy of data
-      let path = camelize(key.replace(/\//gi, '.'));
-      _.setWith(snapshot, `${path}.${time}`, payload[key], Object);
-    }
+    let snapshot = {};
+    let time = Date.now();
+    _.forIn(payload, (value, key) => {
+      if (key === 'threads') {
+        let threadIds = Object.keys(value);
+        const results = threadIds.map(id => ({
+          name: value[id].thread,
+          id: id,
+          priority: value[id].priority,
+          state: value[id].state,
+          daemon: value[id].daemon,
+          stack: value[id].stack
+        }));
+        // Threads Table is the latest state of all threads ready for display in a table component
+        _.setWith(snapshot, `threadsTable`, results);
+        // Threads is a structure similar to the other metrics that is able to use the utility
+        // functions to render time charts.
+        results.forEach(resultObj => {
+          _.setWith(snapshot, `threads.${resultObj.name}.jvm-id-${resultObj.id}.${time}`, resultObj);
+        });
+      }
+      else {
+        let path = camelize(key.replace(/\//gi, '.'));
+        // Change from slash delimited to dot delimited and from snake case to camel case to be able to
+        // use the lodash set method to build a idiomatic JSON hierarchy of data
+        _.setWith(snapshot, `${path}.${time}`, value);
+      }
+    });
     // Deep merge the new snapshot into the existing state object.
     return _.merge({}, state, snapshot);
   },
@@ -34,7 +54,7 @@ const settings = State({
     isPolling: true,
     pollingHasInitialized: false,
     interval: 15000,
-    metricsEndpoint: 'admin/metrics.json',
+    metricsEndpoints: ['/admin/metrics.json', '/admin/threads'],
     pollingFailures: 0
   },
   setPollingAsInitialized(state, payload) {
@@ -46,8 +66,8 @@ const settings = State({
   setInterval(state, payload) {
     return { ...state, interval: payload };
   },
-  setMetricsEndpoint(state, payload) {
-    return { ...state, metricsEndpoint: payload };
+  setMetricsEndpoints(state, payload) {
+    return { ...state, metricsEndpoints: payload };
   },
   incrementPollingFailures(state, payload) {
     const pollingFailures = state.pollingFailures + 1;
@@ -59,23 +79,30 @@ const settings = State({
 });
 
 // Effects
-Effect('fetchMetrics', (endpoint) => {
-  fetch(endpoint || '/admin/metrics.json', { "mode": "cors" }) // TODO: Fix this hack
-    .then(results => results.json())
-    .then(resultsAsJSON => {
-      Actions.resetPollingFailures();
-      return Actions.fetchMetricsSuccess(resultsAsJSON);
+Effect('fetchMetrics', (endpoints) => {
+  if (!endpoints) return;
+  Promise.all(endpoints.map(endpoint => fetch(endpoint)))
+    .then(responses => Promise.all(responses.map(response => response.json())))
+    .then(jsons => {
+      let results = {};
+      jsons.forEach(json => { results = { ...results, ...json }; });
+      return results;
     })
+    .then(json => Actions.fetchMetricsSuccess(json))
     .catch(err => Actions.fetchMetricsFailure(err));
 });
 Effect('fetchMetricsFailure', (err) => {
   notification('Fetching /admin/metrics.json failed', { status: 'danger' });
   Actions.incrementPollingFailures();
 });
-Effect('startPolling', ({ endpoint, interval }) => {
-  window.refreshMetricsInterval = setInterval((endpoint) => Actions.fetchMetrics(endpoint), interval);
+Effect('startPolling', function ({ endpoints, interval }) {
+  const refreshMetricsFunctionFactory = (endpoints) => () => {
+    const eps = endpoints;
+    if (eps && eps.length) Actions.fetchMetrics(eps);
+  };
+  window.refreshMetricsInterval = window.setInterval(refreshMetricsFunctionFactory(endpoints), interval);
 });
-Effect('stopPolling', (endpoint, interval) => {
+Effect('stopPolling', (endpoints, interval) => {
   clearInterval(window.refreshMetricsInterval);
 });
 
@@ -86,7 +113,7 @@ Hook((action, getState) => {
   if (!getState().settings.pollingHasInitialized) {
     Actions.setPollingAsInitialized();
     Actions.startPolling({
-      endpoint: getState().settings.metricsEndpoint,
+      endpoints: getState().settings.metricsEndpoints,
       interval: getState().settings.interval
     });
   };
@@ -102,7 +129,10 @@ Hook((action, getState) => {
 // Stop polling after three failures and reset failure counter
 // The Notification will persist for 24 hours unless manually dismissed by the user.
 Hook((action, getState) => {
-  if (getState().settings.pollingFailures > 2) {
+  const pollingFailures = getState().settings.pollingFailures;
+  if (action.type === 'fetchMetricsSuccess' && pollingFailures > 0) {
+    Actions.resetPollingFailures();
+  } else if (getState().settings.pollingFailures > 2) {
     notification('Automatically disabling the fetching of metrics after three attempts. You can turn polling back on in Settings.',
       {
         status: 'danger',
@@ -118,18 +148,7 @@ Hook((action, getState) => {
 Hook((action, getState) => {
   if (action.type === 'togglePolling' && getState().settings.isPolling) {
     Actions.startPolling({
-      endpoint: getState().settings.metricsEndpoint,
-      interval: getState().settings.interval
-    });
-  }
-});
-
-// Stop the interval, change the endpoint, and restart when state.settings.metricsEndpoint is changed while polling is live
-Hook((action, getState) => {
-  if (action.type === 'setInterval' && getState().settings.isPolling) {
-    Actions.stopPolling();
-    Actions.startPolling({
-      endpoint: getState().settings.metricsEndpoint,
+      endpoints: getState().settings.metricsEndpoints,
       interval: getState().settings.interval
     });
   }
@@ -137,10 +156,10 @@ Hook((action, getState) => {
 
 // Stop the interval, change the endpoint, and restart when state.settings.interval is changed while polling is live
 Hook((action, getState) => {
-  if (action.type === 'setInterval' && getState().settings.setMetricsEndpoint) {
+  if (action.type === 'setInterval') {
     Actions.stopPolling();
     Actions.startPolling({
-      endpoint: getState().settings.metricsEndpoint,
+      endpoints: getState().settings.metricsEndpoints,
       interval: getState().settings.interval
     });
   }

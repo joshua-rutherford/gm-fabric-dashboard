@@ -24,39 +24,62 @@ class SummaryGrid extends Component {
               data-uk-grid
               id="summary-header-grid"
             >
-              <div className="summary-header-grid-item">
-                <h3 className="uk-text-small uk-text-muted uk-text-uppercase">Uptime</h3>
-                <p>{ms(getLatestAttribute(jvm, 'uptime'))}</p>
-              </div>
-              <div>
-                <h3 className="uk-text-small uk-text-muted uk-text-uppercase">Threads</h3>
-                <p>{getLatestAttribute(jvm, 'thread.count')}</p>
-                <Sparklines
-                  data={getAttributeForSparkline(jvm, 'thread.count')}
-                  margin={5}
+              <div className="summary-header-grid-item uk-card">
+                <h3 className="uk-card-title uk-text-small uk-text-muted uk-text-uppercase">Uptime</h3>
+                <div
+                  className="uk-card-body"
+                  style={{ paddingLeft: '5px', paddingRight: '5px' }}
                 >
-                  <SparklinesLine color="green" />
-                </Sparklines>
+                  {ms(getLatestAttribute(jvm, 'uptime'))}
+                </div>
               </div>
-              <div>
-                <h3 className="uk-text-small uk-text-muted uk-text-uppercase">Memory Used</h3>
-                <p>{filesize(getLatestAttribute(jvm, 'mem.current.used'))}</p>
-                <Sparklines
-                  data={getAttributeForSparkline(jvm, 'mem.current.used')}
-                  margin={5}
+              <div className="summary-header-grid-item uk-card">
+                <h3 className="uk-card-title uk-text-small uk-text-muted uk-text-uppercase">Threads</h3>
+                <div
+                  className="uk-card-body"
+                  style={{ paddingLeft: '5px', paddingRight: '5px' }}
                 >
-                  <SparklinesLine color="red" />
-                </Sparklines>
+                  <div>{getLatestAttribute(jvm, 'thread.count')}</div>
+                  <Sparklines
+                    data={getAttributeForSparkline(jvm, 'thread.count')}
+                    preserveAspectRatio='xMaxYMin'
+                    style={{ width: '100%' }}
+                  >
+                    <SparklinesLine color="green" />
+                  </Sparklines>
+                </div>
               </div>
-              <div>
-                <h3 className="uk-text-small uk-text-muted uk-text-uppercase">Garbage Collection</h3>
-                <p>{ms(getLatestAttribute(jvm, 'gc.msec'))}</p>
-                <Sparklines
-                  data={getAttributeChangesForSparkline(jvm, 'gc.msec')}
-                  margin={5}
+              <div className="summary-header-grid-item uk-card">
+                <h3 className="uk-card-title uk-text-small uk-text-muted uk-text-uppercase">Memory Used</h3>
+                <div
+                  className="uk-card-body"
+                  style={{ paddingLeft: '5px', paddingRight: '5px' }}
                 >
-                  <SparklinesLine color="black" />
-                </Sparklines>
+                  <div>{filesize(getLatestAttribute(jvm, 'mem.current.used'))}</div>
+                  <Sparklines
+                    data={getAttributeForSparkline(jvm, 'mem.current.used')}
+                    preserveAspectRatio='xMaxYMin'
+                    style={{ width: '100%' }}
+                  >
+                    <SparklinesLine color="red" />
+                  </Sparklines>
+                </div>
+              </div>
+              <div className="summary-header-grid-item uk-card">
+                <h3 className="uk-card-title uk-text-small uk-text-muted uk-text-uppercase">Garbage Collection</h3>
+                <div
+                  className="uk-card-body"
+                  style={{ paddingLeft: '5px', paddingRight: '5px' }}
+                >
+                  <div>{ms(getLatestAttribute(jvm, 'gc.msec'))}</div>
+                  <Sparklines
+                    data={getAttributeChangesForSparkline(jvm, 'gc.msec')}
+                    preserveAspectRatio="xMaxYMin"
+                    style={{ width: '100%' }}
+                  >
+                    <SparklinesLine color="black" />
+                  </Sparklines>
+                </div>
               </div>
             </div>
           </div>

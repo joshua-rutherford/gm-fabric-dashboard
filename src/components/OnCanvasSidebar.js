@@ -50,6 +50,12 @@ function OnCanvasSidebar({ pathname, route }) {
           to="/jvm"
         >JVM</Link>
       </li>
+      <li className={pathname === '/threads' ? 'uk-active' : ''}>
+        <Link
+          className="uk-link-muted"
+          to="/threads"
+        >Threads</Link>
+      </li>
       <li className={pathname === '/finagle' ? 'uk-active' : ''}>
         <Link
           className="uk-link-muted"

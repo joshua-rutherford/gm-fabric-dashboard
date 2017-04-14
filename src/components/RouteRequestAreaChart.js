@@ -13,6 +13,7 @@ export default function JVMHeapLineChart({ routeName, verbName, requestsPerSecon
     <div className="uk-card uk-card-default uk-card-body">
       <h3 className="uk-card-title">{`${verbName} /${routeName}`}</h3>
       <ResponsiveContainer
+        aspect={2}
         height="80%"
         width="90%"
       >

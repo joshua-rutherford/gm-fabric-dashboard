@@ -1,25 +1,59 @@
 import _ from 'lodash';
 import dateFormat from 'dateformat';
 
+// Dashboard Utility Functions
+
+// The client-side Redux store expresses metrics over time as a hierarchy of JavaScript objects. 
+// At the lowest level, a metric is represented by a key of the metric name and a complex object
+// representing the value of that metric over time. The complex object has keys 
+// equal to a UNIX timestamp and values equal to the value of the metric at the associated timestamp.
+// When the client fetches metrics data from the server, the data is deconstructed and the value
+// of each attribute is appended to the appropriate complex object with a key equal to the timestamp
+// of when the fetched data was received from the server.
+
+// These utility functions are provided to simplify the common use cases of preparing data for
+// display in tables or charts.
+
+/**
+ * Returns the most recent value of a particular attribute as a number or string
+ * @param {Object} props - An arbitrary nested object passed from Redux via component props
+ * @param {String} path - A string representation of the path to the desired key
+ * @returns {Number|String}
+ */
 export function getLatestAttribute(props, path) {
+  // console.log('Calling getLatestAttribute with ', props, path);
+  if (!props || !path) return 0;
   if (_.has(props, path)) {
     const fullPath = _.get(props, path);
-    return fullPath[_.last(_.keys(fullPath).sort((a,b) => a - b))];
+    return fullPath[_.last(_.keys(fullPath).sort((a, b) => a - b))];
   }
   return 0;
 }
 
+/**
+ * Returns the value of an attribute over time as an array of objects with keys of 
+ * time(UNIX time in ms), prettyTime(string of time in h:MMtt), and a dynamically generated
+ * key (least significant key passed into the path parameter) with the value of the attribute
+ * 
+ * @param {Object} props - An arbitrary nested object passed from Redux via component props
+ * @param {String} path - A string representation of the path to the desired key
+ * @returns {Array}
+ */
 export function getAttributeOverTime(props, path) {
-  // console.log(`Calling getAttributeOverTime with ${path}`);
+  // console.log('Calling getAttributeOverTime with ', props, path);
+  if (!props || !path) return [];
   if (_.has(props, path)) {
     let attribute = _.last(path.split('.'));
+    // console.log('props', props);
     let fullPath = _.get(props, path);
-    let timestamps = _.keys(fullPath).sort((a,b) => a - b);
+    // console.log('fullpath ', fullPath);
+    let timestamps = _.keys(fullPath).sort((a, b) => a - b);
     let results = timestamps.map(timestamp => {
       let obj = {};
       obj['time'] = Number(timestamp);
       obj['prettyTime'] = dateFormat(obj.time, "h:MMtt");
       obj[attribute] = fullPath[timestamp];
+      // console.log(timestamp, fullPath[timestamp], fullPath);
       return obj;
     });
     // console.log('Returning from getAttributeOverTime with', results);
@@ -29,28 +63,55 @@ export function getAttributeOverTime(props, path) {
   return [];
 }
 
+/**
+ * Returns the value of an attribute over time as an array of number of strings. All timestamps
+ * information is stripped out for use in simple sparkline style charts.
+ * 
+ * @param {Object} props - An arbitrary nested object passed from Redux via component props
+ * @param {String} path - A string representation of the path to the desired key
+ * @returns {Array}
+ */
 export function getAttributeForSparkline(props, path) {
+  // console.log('Calling getAttributesForSparkline with ', props, path);
+  if (!props || !path) return [0, 0];
   const attributesOverTime = getAttributeOverTime(props, path);
-  if (!attributesOverTime.length) return [];
+  // console.log('attributesOverTime ', attributesOverTime);
+  if (attributesOverTime.length < 2) return [0, 0];
   let dataKey = _.without(_.keys(_.last(attributesOverTime)), 'time', 'prettyTime')[0];
-  return attributesOverTime.map(obj => obj[dataKey]);
+  const results = attributesOverTime.map(obj => obj[dataKey]);
+  //console.log('results', results);
+  return results;
 }
 
-export function getAttributeChangesOverTime (props, path) {
-  // console.log(`Calling getAttributeChangesOverTime with ${path});
+/**
+ * Returns the net change of an attribute between timestamps as an array of objects with keys of 
+ * time(UNIX time in ms), prettyTime(string of time in h:MMtt), and a dynamically generated
+ * key (least significant key passed into the path parameter + 'PerSecond') with the net change of 
+ * the attribute.
+ * 
+ * @param {Object} props - An arbitrary nested object passed from Redux via component props
+ * @param {String} path - A string representation of the path to the desired key
+ * @returns {Array}
+ */
+export function getAttributeChangesOverTime(props, path) {
+  // console.log('Calling getAttributeChangesOverTime with ', props, path);
+  if (!props || !path) return [];
   let attributesOverTime = getAttributeOverTime(props, path);
   if (!attributesOverTime.length) return [];
+  // Strip out the time related keys
   let dataKeys = _.without(_.keys(_.last(attributesOverTime)), 'time', 'prettyTime');
   let attributeChangesOverTime = attributesOverTime.map(function (attribute, index) {
+    // Express the first timestamp as a net change of 0 since there is no basis of comparison
     if (index === 0) {
       let obj = { time: attribute.time, prettyTime: attribute.prettyTime };
       _.forEach(dataKeys, (dataKey) => obj[`${dataKey}PerSecond`] = 0);
       return obj;
-    } else {
+    }
+    // Otherwise, calculate the net change and append to a key equal to the attribute appended by 'PerSecond'
+    else {
       let obj = { time: attribute.time, prettyTime: attribute.prettyTime };
-      // For each attribute, normalize the change in units per second and add the result to a key appended by 'PerSecond'
       _.forEach(dataKeys, (dataKey) => {
-        let elapsedTimeInSeconds = (attribute.time - attributesOverTime[index-1].time) / 1000;
+        let elapsedTimeInSeconds = (attribute.time - attributesOverTime[index - 1].time) / 1000;
         obj[`${dataKey}PerSecond`] = Math.round((attribute[dataKey] - attributesOverTime[index - 1][dataKey]) / elapsedTimeInSeconds);
       });
       return obj;
@@ -60,16 +121,34 @@ export function getAttributeChangesOverTime (props, path) {
   return attributeChangesOverTime;
 }
 
+/**
+ * Returns the net change of an attribute over time as an array of numbers. All timestamps
+ * information is stripped out for use in simple sparkline style charts.
+ * 
+ * @param {Object} props - An arbitrary nested object passed from Redux via component props
+ * @param {String} path - A string representation of the path to the desired key
+ * @returns {Array}
+ */
 export function getAttributeChangesForSparkline(props, path) {
+  if (!props || !path) return [0, 0];
   const attributesChangesOverTime = getAttributeChangesOverTime(props, path);
-  if (!attributesChangesOverTime.length) return [];
+  if (attributesChangesOverTime.length < 2) return [0, 0];
   let dataKey = _.without(_.keys(_.last(attributesChangesOverTime)), 'time', 'prettyTime')[0];
   return attributesChangesOverTime.map(obj => obj[dataKey]);
 }
 
-export function mergeResults (one, two) {
-  // console.log('Calling mergeResults with with', one, two);
-  let arraysOfResultArrays = [one, two];
+/**
+ * Combine two sets of output of getAttributeChangesOverTime or getAttributeOverTime together
+ * to allow them to be rendered on a single chart.
+ * 
+ * @param {*} firstArrayOfResults - Array of output of getAttributeChangesOverTime or getAttributeOverTime
+ * @param {*} secondArrayOfResults - Array of output of getAttributeChangesOverTime or getAttributeOverTime
+ * @returns {Array}
+ */
+export function mergeResults(firstArrayOfResults, secondArrayOfResults) {
+  // Note: firstArrayOfResults seems to already have both key/value result pairs. Why? 
+  // console.log('Calling mergeResults with with', firstArrayOfResults, secondArrayOfResults);
+  let arraysOfResultArrays = [firstArrayOfResults, secondArrayOfResults];
   let mergedResults = [];
   _.forEach(arraysOfResultArrays, (resultArray) => {
     mergedResults.push(...resultArray);
@@ -78,6 +157,6 @@ export function mergeResults (one, two) {
   let groupedResults = _.values(_.groupBy(mergedResults, result => result.time));
   // console.log('Grouped: ', groupedResults);
   let results = _.map(_.values(groupedResults), group => _.merge(...group));
-  // console.log(results);
+  // console.log('mergeResults returns ', results);
   return results;
 }

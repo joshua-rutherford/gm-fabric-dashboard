@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Navbar from './Navbar';
 import OffCanvasSidebar from './OffCanvasSidebar';
 import OnCanvasSidebar from './OnCanvasSidebar';
@@ -6,13 +7,14 @@ import { Actions } from 'jumpstate';
 
 class Container extends Component {
   static propTypes = {
-    children: PropTypes.any
+    children: PropTypes.any,
+    metricsEndpoints: PropTypes.array
   }
 
   // Perform an initial fetch of metrics on mount.
   // This triggers hooks which initialize polling using the default parameters
   componentDidMount() {
-    Actions.fetchMetrics();
+    Actions.fetchMetrics(this.props.metricsEndpoints);
   }
 
   render() {
@@ -42,4 +44,8 @@ class Container extends Component {
   };
 }
 
-export default Container;
+function mapStateToProps({ settings: { metricsEndpoints } }) {
+  return { metricsEndpoints };
+};
+
+export default connect(mapStateToProps)(Container);
