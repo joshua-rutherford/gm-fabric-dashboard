@@ -3,7 +3,7 @@
 @import '../mixins.less';
 
 // Local Variables
-@navbar-nav-item-height: 60px; // Warning: Increasing the border width above 1px impacts uk-grid flows
+@navbar-nav-item-height: 40px; // Warning: Increasing the border width above 1px impacts uk-grid flows
 @navbar-bottom-border-color: #DDD;
 @logo-text-color: #30B44A;
 
@@ -12,6 +12,7 @@
 // Styles
 .uk-navbar {
   border-bottom: 1px solid @navbar-bottom-border-color;
+  height: @navbar-nav-item-height;
 }
 
 #product-logo {
@@ -20,6 +21,6 @@
 
 #logo-text {
   margin-left: 5px;
-  font-size: xx-large;
+  font-size: x-large;
   color: @logo-text-color;
 }

@@ -1,0 +1,52 @@
+// components/summaryBar.less
+@import '../variables.less';
+@import '../mixins.less';
+
+// Local Variables
+@summary-bar-background-color: #EEE;
+@summary-bar-card-border-color: #CCC;
+@active-summary-bar-card-background-color: #FFF;
+
+// Helpers
+
+// Styles
+
+.summary-bar-container {
+  background-color: @summary-bar-background-color;
+}
+
+.service-bar-title {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  font-weight: 300;
+
+  > span > svg {
+    margin-bottom: 8px;
+  }
+}
+
+.summary-bar-card-active {
+  background-color: @active-summary-bar-card-background-color;
+}
+
+.summary-bar-card-title {
+  .uk-card-title();
+  .uk-text-small();
+  .uk-text-muted();
+  .uk-text-uppercase();
+
+  font-size: 0.8em;
+}
+
+.summary-bar-card {
+  padding: 5px;
+}
+
+// Conflicts with UK-Card styles.
+.summary-bar-card-body {
+  .uk-card-body();
+
+  padding: 5px !important;
+  color: black;
+}

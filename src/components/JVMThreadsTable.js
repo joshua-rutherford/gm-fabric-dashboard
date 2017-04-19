@@ -1,43 +1,35 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import { PropTypes } from 'prop-types';
+import JVMThreadsTableLineItem from './JVMThreadsTableLineItem';
 
 JVMThreadsTable.propTypes = {
-  threadsTable: PropTypes.array,
+  filteredThreadData: PropTypes.array,
 };
 
-export default function JVMThreadsTable({ threadsTable = [] }) {
+export default function JVMThreadsTable({ filteredThreadData = [] }) {
   return (
-    <div className="uk-card uk-card-default uk-card-body">
-      <h3 className="uk-card-title">Threads</h3>
-      <div className="uk-overflow-auto">
-        <table className="uk-table">
-          <thead>
-            <tr>
-              <th className="uk-text-truncate">Name</th>
-              <th className="uk-text-truncate">ID</th>
-              <th className="uk-text-truncate">State</th>
-              <th className="uk-text-truncate">Daemon</th>
-              <th className="uk-text-truncate">Priority</th>
-            </tr>
-          </thead>
-          <tbody>
-            {threadsTable.map(({ id, name, priority, state, daemon, stack }) => {
-              return (
-                <tr
-                  data-uk-tooltip="pos: bottom-left"
-                  key={id}
-                  title={stack.length > 0 ? 'Stack Trace\r'+stack.join('\r') : 'No Trace Available'}
-                >
-                  <td className="uk-text-truncate">{name}</td>
-                  <td>{Number(id)}</td>
-                  <td className="uk-text-truncate">{state}</td>
-                  <td className="uk-text-truncate">{daemon.toString()}</td>
-                  <td>{Number(priority)}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+    <div>
+      <h4 className="uk-clearfix uk-text-nowrap">
+        <div className="thread-table-icon" />
+        <div className="uk-text-truncate thread-table-state">State</div>
+        <div className="thread-table-id uk-text-truncate">ID</div>
+        <div className="uk-text-truncate thread-table-name">Name</div>
+        <div className="uk-text-truncate thread-table-daemon">Daemon</div>
+        <div className="uk-text-truncate thread-table-priority">Priority</div>
+      </h4>
+      <hr />
+      <ol className="threads-list uk-list">
+        {filteredThreadData.map(({ daemon, id, name, priority, stack, state }, arrIndex) => {
+          return (
+            <JVMThreadsTableLineItem
+              {...{ daemon, name, priority, stack, state }}
+              arrIndex={arrIndex}
+              id={Number(id)}
+              key={id}
+            />
+          );
+        })}
+      </ol>
     </div>
   );
 }

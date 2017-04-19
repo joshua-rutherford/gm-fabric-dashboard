@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import PollingSettings from './PollingSettings';
 import UIkit from 'uikit';
@@ -17,7 +18,7 @@ function SettingsGrid ({settings}) {
         data-uk-grid
       >
         <div className="uk-width-1-2@m">
-          <PollingSettings 
+          <PollingSettings
             interval={settings.interval}
             isPolling={settings.isPolling} 
           />
@@ -31,6 +32,7 @@ function SettingsGrid ({settings}) {
                 UIkit.modal.confirm('Are you sure that you want to clear the cached metrics data? This action in irreversible.')
                   .then(() => Actions.clearMetrics());
               }}
+              tabIndex={30}
             >Clear Metrics Cache</button>
           </div>
         </div>

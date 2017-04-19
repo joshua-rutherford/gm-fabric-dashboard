@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import dateFormat from 'dateformat';
+import { createSelector } from 'reselect';
 
 // Dashboard Utility Functions
 
@@ -160,3 +161,45 @@ export function mergeResults(firstArrayOfResults, secondArrayOfResults) {
   // console.log('mergeResults returns ', results);
   return results;
 }
+
+
+// Reselect Selectors
+
+// Reselect Input Selectors
+const getCurrentThreads = (state) => state.metrics.threadsTable;
+const getThreadsFilter = (state) => state.settings.threadsFilter;
+
+// Reselect Memoized Selectors
+
+/**
+ * Filter the current threads according to store.settings.threadsFilter in the
+ * Redux store.
+ */
+export const getVisibleThreads = createSelector([getCurrentThreads, getThreadsFilter],
+  (threadsTable, threadsFilter) => {
+    switch(threadsFilter) {
+      case 'active':
+        return threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE');
+      case 'idle':
+        return threadsTable.filter(threadItem => threadItem.state === 'WAITING' || threadItem.state === 'TIMED_WAITING');
+      case 'stopped':
+        return threadsTable.filter(threadItem => threadItem.state === 'TERMINATED' || threadItem.state === 'BLOCKED' || threadItem.state === 'NEW');
+      case 'all':
+      default:
+        return threadsTable;
+    }
+  }
+);
+
+/**
+ * Count the current threads according to the state and provide an object containing
+ * these totals.
+ */
+export const getThreadCounts = createSelector(getCurrentThreads, (threadsTable = []) => {
+  return {
+    active: threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE').length,
+    idle: threadsTable.filter(threadItem => threadItem.state === 'WAITING' || threadItem.state === 'TIMED_WAITING').length,
+    stopped: threadsTable.filter(threadItem => threadItem.state === 'TERMINATED' || threadItem.state === 'BLOCKED' || threadItem.state === 'NEW').length,
+    all: threadsTable.length
+  };
+});

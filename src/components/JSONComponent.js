@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import { PropTypes } from 'prop-types';
 import Inspector from 'react-json-inspector';
 import { connect } from 'react-redux';
 
@@ -21,6 +22,7 @@ class JSONComponent extends Component {
             <Inspector
               data={metrics}
               id="json-inspector"
+              tabIndex={20}
             />
           </div>
         </div>

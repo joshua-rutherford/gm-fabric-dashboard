@@ -55,7 +55,8 @@ const settings = State({
     pollingHasInitialized: false,
     interval: 15000,
     metricsEndpoints: ['/admin/metrics.json', '/admin/threads'],
-    pollingFailures: 0
+    pollingFailures: 0,
+    threadsFilter: 'all' 
   },
   setPollingAsInitialized(state, payload) {
     return { ...state, pollingHasInitialized: true };
@@ -68,6 +69,9 @@ const settings = State({
   },
   setMetricsEndpoints(state, payload) {
     return { ...state, metricsEndpoints: payload };
+  },
+  setThreadsFilter(state, payload) {
+    return { ...state, threadsFilter: payload };
   },
   incrementPollingFailures(state, payload) {
     const pollingFailures = state.pollingFailures + 1;

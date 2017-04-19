@@ -6,23 +6,21 @@ const Navbar = () => {
   return (
     <nav className="uk-navbar">
       <div className="uk-navbar-left">
-        <a
+        <div
           className="uk-navbar-item uk-logo"
-          href="#"
-          role="button"
         >
           <img
             alt='Decipher Logo'
             className="logo"
             src={decipherLogo}
-            style={{ width: '30px' }}
+            style={{ width: '20px' }}
           />
           <img
             alt='Gray Matter Logo'
             className="logo"
             id="product-logo"
             src={gmLogo}
-            style={{ width: '40px' }}
+            style={{ width: '20px' }}
           />
           <span
             className="logo"
@@ -30,15 +28,19 @@ const Navbar = () => {
           >
             Fabric
           </span>
-        </a>
+        </div>
       </div>
-      <div className="uk-navbar-right uk-hidden@m">
-        <a
-          aria-label="Open Menu"
-          className="uk-navbar-item hamburger"
-          data-uk-icon="icon: table; ratio: 2"
-          data-uk-toggle="target: #sidebar"
-        />
+      <div className="uk-navbar-center">
+        <form
+          className="uk-search uk-search-default"
+          onSubmit={(evt)=>{
+            evt.preventDefault();
+            alert('Doh! This search bar is not yet functional!');
+          }}
+        >
+          <span data-uk-search-icon>&#128270;</span>
+          <input className="uk-search-input" type="search" placeholder="Search..." />
+        </form>
       </div>
     </nav>
   );

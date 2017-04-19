@@ -1,0 +1,89 @@
+// components/threadsTable.less
+@import '../variables.less';
+@import '../mixins.less';
+
+// Local Variables
+
+// Helpers
+
+// Styles
+
+.thread-table-container {
+  padding-left: 150px;
+  padding-right: 150px;
+}
+
+.thread-table-filter-buttons {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.thread-table-icon,
+.thread-table-state,
+.thread-table-id,
+.thread-table-name,
+.thread-table-daemon,
+.thread-table-priority {
+  .uk-text-truncate();
+
+  width: 10%;
+  float: left;
+  overflow: hidden;
+}
+
+.thread-table-state {
+  min-width: 30px;
+  width: 10%;
+}
+
+.thread-table-id {
+  .uk-text-muted();
+
+  min-width: 25px;
+}
+
+.thread-table-priority {
+  min-width: 25px;
+  float: left;
+}
+
+.thread-table-icon {
+  height: 28px;
+  width: 10%;
+  min-width: 25px;
+  position: -50px;
+
+  svg {
+    padding-top: 4px;
+  }
+}
+
+.thread-table-name {
+  .uk-text-truncate();
+
+  min-width: 100px;
+  width: 40%;
+}
+
+.threads-list > li > hr {
+  margin-top: 10px;
+}
+
+.thread-table-line-item-content {
+  .uk-background-muted();
+  .uk-text-left();
+  .uk-text-break();
+
+  div:first-child {
+    padding-top: 25px;
+  }
+
+  div {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  div:last-child {
+    padding-bottom: 25px;
+  }
+}

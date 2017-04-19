@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import { PropTypes } from 'prop-types';
 import InputRange from 'react-input-range';
 import _ from 'lodash';
 import { Actions } from 'jumpstate';
@@ -29,6 +30,7 @@ class PollingSettings extends Component {
         <button
           className={buttonClass}
           onClick={() => Actions.togglePolling()}
+          tabIndex={20}
         >{isPolling ? 'Stop Polling' : 'Start Polling'}
         </button>
         <h4 id="interval-name">Interval (seconds)</h4>
@@ -40,6 +42,7 @@ class PollingSettings extends Component {
             this.setState({ localInterval: value });
             this.state.debouncedSetInterval(value * 1000);
           }}
+          tabIndex={21}
           value={this.state.localInterval}
         />
       </div>
