@@ -3,6 +3,7 @@ import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import JVMHeapLineChart from './JVMHeapLineChart';
 import JVMClassesAreaChart from './JVMClassesAreaChart';
+import JVMFileDescriptorAreaChart from './JVMFileDescriptorAreaChart';
 import { getLatestAttribute, getAttributeOverTime, mergeResults } from '../utils';
 
 class JVMGrid extends Component {
@@ -29,6 +30,12 @@ class JVMGrid extends Component {
               currentLoadedArr={getAttributeOverTime(jvm, 'classes.currentLoaded')}
               totalLoaded={getLatestAttribute(jvm, 'classes.totalLoaded')}
               totalUnloaded={getLatestAttribute(jvm, 'classes.totalUnloaded')}
+            />
+          </div>
+          <div className="uk-width-1-2@l">
+            <JVMFileDescriptorAreaChart
+              fdCountArr={getAttributeOverTime(jvm, 'fdCount')}
+              fdLimit={getLatestAttribute(jvm, 'fdLimit')}
             />
           </div>
         </div>

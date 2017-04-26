@@ -35,6 +35,7 @@ const metrics = State({
         });
       }
       else {
+        console.log('else');
         let path = camelize(key.replace(/\//gi, '.'));
         // Change from slash delimited to dot delimited and from snake case to camel case to be able to
         // use the lodash set method to build a idiomatic JSON hierarchy of data
@@ -42,6 +43,7 @@ const metrics = State({
       }
     });
     // Deep merge the new snapshot into the existing state object.
+    console.log('merging, ', state, snapshot);
     return _.merge({}, state, snapshot);
   },
   clearMetrics(state, payload) {

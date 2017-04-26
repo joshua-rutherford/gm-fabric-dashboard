@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import dateFormat from 'dateformat';
 import { createSelector } from 'reselect';
+import { TimeSeries, TimeRange } from 'pondjs';
 
 // Dashboard Utility Functions
 
@@ -58,6 +59,39 @@ export function getAttributeOverTime(props, path) {
 }
 
 /**
+ * Returns the value of an attribute over time as an array of objects with keys of 
+ * time(UNIX time in ms), prettyTime(string of time in h:MMtt), and a dynamically generated
+ * key (least significant key passed into the path parameter) with the value of the attribute
+ * 
+ * @param {Object} props - An arbitrary nested object passed from Redux via component props
+ * @param {String} path - A string representation of the path to the desired key
+ * @returns {Array}
+ */
+export function getAttributeOverTimeAsPondTimeSeries(props, path) {
+  if (!props || !path) {
+    return false;
+  }
+  if (_.has(props, path)) {
+    const attribute = _.last(path.split('.'));
+    let fullPath = _.get(props, path);
+    let timestamps = _.keys(fullPath).sort((a, b) => a - b);
+    let results = timestamps.map(timestamp => {
+      let obj = [Number(timestamp), fullPath[timestamp]];
+      return obj;
+    });
+    const data = {
+      name: attribute,
+      columns: ["time", "value"],
+      points: results
+    };
+    const tsData = new TimeSeries(data);
+    return tsData;
+  } else {
+    return false;
+  }
+}
+
+/**
  * Returns the value of an attribute over time as an array of number of strings. All timestamps
  * information is stripped out for use in simple sparkline style charts.
  * 
@@ -107,8 +141,56 @@ export function getAttributeChangesOverTime(props, path) {
       return obj;
     }
   });
+
   // console.log('Returning from getAttributeChangesOverTime with', attributeChangesOverTime);
   return attributeChangesOverTime;
+}
+
+export function getAttributeChangesOverTimeAsPondTimeSeries(props, path) {
+  try {
+    if (!props || !path) {
+      return false;
+    }
+    if (_.has(props, path)) {
+      let fullPath = _.get(props, path);
+      let timestamps = _.keys(fullPath).sort((a, b) => a - b);
+      if (timestamps.length < 2) return false;
+      let results = timestamps.map((timestamp, index) => {
+        if (index === 0) {
+          return [
+            Number(timestamp),
+            0
+          ];
+        } else {
+          // TODO: Figure out why the time range code does not render as expected
+          // console.log(`${timestamps[index - 1]}, ${timestamp}`);
+          // let tr = new TimeRange(Number(timestamps[index - 1]), Number(timestamp));
+          // console.log(tr);
+          // console.log(tr.begin());
+          // console.log(tr.begin());
+          // console.log(tr.end());
+          let elapsedTimeInSeconds = (timestamp - timestamps[index - 1]) / 1000;
+          console.log(elapsedTimeInSeconds);
+          return [
+            // tr, // Old time range approach
+            Number(timestamp),
+            Math.round((fullPath[timestamp] - fullPath[timestamps[index - 1]]) / elapsedTimeInSeconds)
+          ];
+        }
+      });
+      results.shift();
+      console.log("RESULTS, ", results);
+      const data = {
+        columns: ["time", "value"],
+        points: results
+      };
+      return new TimeSeries(data);
+    } else {
+      return false;
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 /**
@@ -163,7 +245,7 @@ const getThreadsFilter = (state) => state.settings.threadsFilter;
  */
 export const getVisibleThreads = createSelector([getCurrentThreads, getThreadsFilter],
   (threadsTable, threadsFilter) => {
-    switch(threadsFilter) {
+    switch (threadsFilter) {
       case 'active':
         return threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE');
       case 'idle':

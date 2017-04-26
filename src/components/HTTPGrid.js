@@ -6,7 +6,7 @@ import HTTPConnectionsAreaChart from './HTTPConnectionsAreaChart';
 import DataTxLineChart from './DataTxLineChart';
 import HTTPStats from './HTTPStats';
 import DataTotals from './DataTotals';
-import { getLatestAttribute, getAttributeOverTime, getAttributeChangesOverTime, mergeResults } from '../utils';
+import { getLatestAttribute, getAttributeOverTime, getAttributeOverTimeAsPondTimeSeries, getAttributeChangesOverTime, getAttributeChangesOverTimeAsPondTimeSeries, mergeResults } from '../utils';
 
 class HTTPGrid extends Component {
   static propTypes = {
@@ -25,6 +25,8 @@ class HTTPGrid extends Component {
           <div className="uk-width-1-2@l">
             <HTTPConnectionsAreaChart
               connectionsArr={getAttributeOverTime(http, 'connections')}
+              connectionsTimeSeries={getAttributeOverTimeAsPondTimeSeries(http, 'connections')}
+              requestsTimeSeries={getAttributeChangesOverTimeAsPondTimeSeries(http, 'requests')}
             />
           </div>
           <div className="uk-width-1-2@l">
