@@ -12,6 +12,9 @@
 # Ignore the CSS file generate by less
 /src/style/index.css
 
+# Ignore build assets
+/build
+
 # misc
 .vscode/chrome
 .DS_Store

@@ -5,6 +5,7 @@
   "dependencies": {
     "dateformat": "~2.0.0",
     "filesize": "~3.5.6",
+    "history": "~3.3.0",
     "humps": "~2.0.0",
     "jquery": "~3.2.1",
     "jumpstate": "~2.2.2",
@@ -52,7 +53,7 @@
     }
   },
   "scripts": {
-    "build-css": "lessc -ru src/style/index.less src/style/index.css",
+    "build-css": "./node_modules/less/bin/lessc -ru src/style/index.less src/style/index.css",
     "watch": "npm-watch",
     "start-js": "react-scripts start",
     "start": "npm-run-all -p watch start-js",

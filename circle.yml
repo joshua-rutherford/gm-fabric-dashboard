@@ -16,3 +16,10 @@ test:
   post:
     - cp test-report.xml $CIRCLE_TEST_REPORTS/junit.xml
 
+## Build and Deploy
+deployment:
+  staging:
+    branch: master
+    commands:
+      - npm run build
+      - tar -zcf $CIRCLE_ARTIFACTS/build.tar.gz build/

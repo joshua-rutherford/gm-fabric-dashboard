@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 import HTTPConnectionsAreaChart from './HTTPConnectionsAreaChart';
 import DataTxLineChart from './DataTxLineChart';
 import HTTPStats from './HTTPStats';
@@ -15,7 +14,7 @@ class HTTPGrid extends Component {
   };
 
   render() {
-    const { jvm, http, route } = this.props;
+    const { jvm, http } = this.props;
     return (
       <div>
         <div
@@ -51,8 +50,8 @@ class HTTPGrid extends Component {
   };
 };
 
-function mapStateToProps({ metrics: { http, jvm, route } }) {
-  return { http, jvm, route };
+function mapStateToProps({ metrics: { http, jvm } }) {
+  return { http, jvm };
 };
 
 export default connect(mapStateToProps)(HTTPGrid);

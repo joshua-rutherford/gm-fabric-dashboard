@@ -22,7 +22,10 @@
         "Stateful",
         "clearfix",
         "nowrap",
-        "jsons"
+        "jsons",
+        "\"jest-junit-reporter\"",
+        "junit",
+        "lessc"
     ],
     // flagWords - list of words to be always considered incorrect
     // This is useful for offensive words and common spelling errors.
