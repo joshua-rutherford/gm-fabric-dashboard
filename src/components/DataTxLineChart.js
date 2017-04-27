@@ -29,6 +29,7 @@ export default function DataTxLineChart({ receivedAndSentBytesPerSecondArr }) {
           <LineChart data={deltas}>
             <Line
               dataKey="receivedKilobytesPerSecond"
+              dot={false}
               isAnimationActive={false}
               name="KBps Down"
               stroke="#ffc700"
@@ -36,6 +37,7 @@ export default function DataTxLineChart({ receivedAndSentBytesPerSecondArr }) {
             />
             <Line
               dataKey="sentKilobytesPerSecond"
+              dot={false}
               isAnimationActive={false}
               name="KBps Up"
               stroke="#00a1ff"

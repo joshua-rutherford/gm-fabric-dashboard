@@ -33,27 +33,13 @@ class HTTPGrid extends Component {
             />
           </div>
           <div className="uk-width-1-2@l">
-            <div className="uk-card uk-card-default uk-card-body">
-              <h3 className="uk-card-title">HTTP Routes</h3>
-              {route && Object.keys(route).map(route => {
-                return (
-                  <Link
-                    className="uk-link-muted"
-                    key={route}
-                    to={`/route/${route}`}
-                  >/{route}</Link>
-                );
-              })}
-            </div>
-          </div>
-          <div className="uk-width-1-4@l">
             <HTTPStats
               appUptime={getLatestAttribute(jvm, 'uptime')}
               totalHTTPRequests={getLatestAttribute(http, 'requests')}
               totalSuccessfulHTTPRequests={getLatestAttribute(http, 'success')}
             />
           </div>
-          <div className="uk-width-1-4@l">
+          <div className="uk-width-1-2@l">
             <DataTotals
               receivedBytes={getLatestAttribute(http, 'receivedBytes')}
               sentBytes={getLatestAttribute(http, 'sentBytes')}

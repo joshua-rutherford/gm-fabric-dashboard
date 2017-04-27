@@ -4,7 +4,9 @@ import gmLogo from '../images/gmFabricLogo.svg';
 
 const Navbar = () => {
   return (
-    <nav className="uk-navbar">
+    <nav
+      className="uk-navbar"
+    >
       <div className="uk-navbar-left">
         <div
           className="uk-navbar-item uk-logo"
@@ -29,18 +31,6 @@ const Navbar = () => {
             Fabric
           </span>
         </div>
-      </div>
-      <div className="uk-navbar-center">
-        <form
-          className="uk-search uk-search-default"
-          onSubmit={(evt)=>{
-            evt.preventDefault();
-            alert('Doh! This search bar is not yet functional!');
-          }}
-        >
-          <span data-uk-search-icon>&#128270;</span>
-          <input className="uk-search-input" type="search" placeholder="Search..." />
-        </form>
       </div>
     </nav>
   );

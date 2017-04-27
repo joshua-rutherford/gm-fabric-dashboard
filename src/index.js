@@ -13,6 +13,7 @@ import HTTPGrid from './components/HTTPGrid';
 import JVMGrid from './components/JVMGrid';
 import FinagleGrid from './components/FinagleGrid';
 import SettingsGrid from './components/SettingsGrid';
+import RouteBar from './components/RouteBar';
 import RouteGrid from './components/RouteGrid';
 import ThreadsGrid from './components/ThreadsGrid';
 import { syncHistoryWithStore } from 'react-router-redux';
@@ -83,10 +84,15 @@ ReactDOM.render(
           component={SettingsGrid}
           path="settings"
         />
-        <Route
-          component={RouteGrid}
-          path="route/:routeName"
-        />
+        <Route 
+          component={RouteBar}
+          path="route" 
+        >
+          <Route
+            component={RouteGrid}
+            path=":routeName"
+          />
+        </Route>
       </Route>
     </Router>
   </Provider>,

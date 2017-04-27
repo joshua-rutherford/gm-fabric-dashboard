@@ -1,0 +1,31 @@
+// components/decipherButton.less
+@import '../variables.less';
+@import '../mixins.less';
+
+// Local Variables
+
+// Helpers
+
+// Styles
+
+.uk-button-decipher {
+  background-color: @decipher-green;
+  color: #FFF;
+  .hook-button-default;
+}
+
+/* Hover + Focus */
+.uk-button-decipher:hover,
+.uk-button-decipher:focus {
+  background-color: @decipher-green-hover;
+  color: #FFF;
+  .hook-button-default-hover;
+}
+
+/* OnClick + Active */
+.uk-button-decipher:active,
+.uk-button-decipher.uk-active {
+  background-color: @decipher-green-active;
+  color: #FFF;
+  .hook-button-default-active;
+}

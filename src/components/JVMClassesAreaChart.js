@@ -20,6 +20,7 @@ export default function JVMHeapLineChart({ currentLoadedArr, totalLoaded, totalU
         <AreaChart data={currentLoadedArr}>
           <Area
             dataKey="currentLoaded"
+            dot={false}
             fill="#F3F3F3"
             isAnimationActive={false}
             name="Current Loaded Classes"

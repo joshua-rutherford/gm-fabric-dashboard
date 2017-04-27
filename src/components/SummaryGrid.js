@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
+import { getLatestAttribute } from '../utils';
+import dateFormat from 'dateformat';
+import ms from 'ms';
 
 class SummaryGrid extends Component {
   static propTypes = {
     jvm: PropTypes.object
   }
   render() {
+    const { jvm } = this.props;
     return (
       <div className="uk-section uk-section-default">
         <div
@@ -17,40 +21,18 @@ class SummaryGrid extends Component {
           <div className="uk-panel">
             <h3>Essentials</h3>
             <hr />
-            <div className="summary-grid-title">Name</div>
-            <div>0000000001</div>
-            <div className="summary-grid-title">Health State</div>
-            <div>Healthy</div>
-            <div className="summary-grid-title">Status</div>
-            <div>Up</div>
-            <div className="summary-grid-title">Type</div>
-            <div>Instance</div>
-            <div className="summary-grid-title">Upgrade Domain</div>
-            <div>0</div>
-            <div className="summary-grid-title">Fault Domain</div>
-            <div>fd:/0</div>
-            <div className="summary-grid-title">IP Address or Domain Name</div>
-            {`${window.location.hostname}:${window.location.port}`}
-            <div className="summary-grid-title">IS Seed Instance</div>
-            <div>True</div>
+            <div className="summary-grid-title">Start Time</div>
+            <div>{dateFormat(getLatestAttribute(jvm, 'startTime'))}</div>
+            <div className="summary-grid-title">Uptime</div>
+            <div>{ms(getLatestAttribute(jvm, 'uptime'))}</div>
           </div>
           <div className="uk-panel">
             <h3>Details</h3>
             <hr />
-            <div className="summary-grid-title">ID</div>
-            <div>System/ActivityStreamService</div>
-            <div className="summary-grid-title">Service Kind</div>
-            <div>Stateful</div>
-            <div className="summary-grid-title">Name</div>
-            <div>fabric:/System/ActivityStreamService</div>
-            <div className="summary-grid-title">Manifest Version</div>
-            <div>5.1.150.9590</div>
-            <div className="summary-grid-title">Has Persisted State</div>
-            <div>True</div>
-            <div className="summary-grid-title">Service Status</div>
-            <div>Active</div>
-            <div className="summary-grid-title">IS Service Group</div>
-            <div>False</div>
+            <div className="summary-grid-title">Processor Cores</div>
+            <div>{getLatestAttribute(jvm, 'numCpus')}</div>
+            <div className="summary-grid-title">IP Address or Domain Name</div>
+            <div>{`${window.location.hostname}:${window.location.port}`}</div>
           </div>
         </div>
       </div>

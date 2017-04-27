@@ -4,32 +4,24 @@ import { PropTypes } from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { getLatestAttribute, getAttributeForSparkline, getAttributeChangesForSparkline } from '../utils';
-import IndicatorIcon from './IndicatorIcon';
 import SummaryBarCard from './SummaryBarCard';
 
 SummaryBar.propTypes = {
+  finagle: PropTypes.object,
   http: PropTypes.object,
   interval: PropTypes.number,
   jvm: PropTypes.object,
   pathname: PropTypes.string
 };
 
-function SummaryBar({ http, interval, jvm, pathname }) {
+function SummaryBar({ finagle, http, interval, jvm, pathname, route }) {
   const httpRequests = getLatestAttribute(http, 'requests');
   const successResponses = getLatestAttribute(http, 'success');
   const successRate = successResponses ? Math.round(successResponses / httpRequests * 100) : 100;
   return (
     <div className="summary-bar-container">
-      <div className="service-bar-title">
-        <IndicatorIcon
-          alt={'Healthy'}
-          color={'green'}
-          diameter={14}
-        />
-        <span className="uk-margin-left uk-text-large">{`Super Awesome Service`}</span>
-      </div>
       <div
-        className="uk-grid-collapse uk-child-width-small"
+        className="uk-grid-collapse uk-grid-match uk-flex-center uk-child-width-small"
         data-uk-grid
         id="summary-bar"
       >
@@ -39,7 +31,6 @@ function SummaryBar({ http, interval, jvm, pathname }) {
           lineOne={ms(getLatestAttribute(jvm, 'uptime'))}
           tabIndex={1}
           title="Uptime"
-
         />
         <SummaryBarCard
           href="/http"
@@ -49,11 +40,18 @@ function SummaryBar({ http, interval, jvm, pathname }) {
           title="HTTP"
         />
         <SummaryBarCard
+          href="/route"
+          isActive={pathname.indexOf('/route',0) !== -1}
+          lineOne={route? Object.keys(route).length : 0}
+          tabIndex={3}
+          title="Routes"
+        />
+        <SummaryBarCard
           chartData={getAttributeForSparkline(jvm, 'thread.count')}
           href="/threads"
           isActive={pathname === '/threads'}
           lineOne={getLatestAttribute(jvm, 'thread.count')}
-          tabIndex={3}
+          tabIndex={4}
           title="Threads"
         />
         <SummaryBarCard
@@ -61,7 +59,7 @@ function SummaryBar({ http, interval, jvm, pathname }) {
           href="/jvm"
           isActive={pathname === '/jvm'}
           lineOne={filesize(getLatestAttribute(jvm, 'mem.current.used'))}
-          tabIndex={4}
+          tabIndex={5}
           title="Memory Used"
         />
         <SummaryBarCard
@@ -69,29 +67,29 @@ function SummaryBar({ http, interval, jvm, pathname }) {
           href="/jvm"
           isActive={pathname === '/jvm'}
           lineOne={ms(getLatestAttribute(jvm, 'gc.msec'))}
-          tabIndex={5}
+          tabIndex={6}
           title="Garbage Col."
         />
         <SummaryBarCard
           href="/finagle"
           isActive={pathname === '/finagle'}
-          lineOne="0 Active"
-          lineTwo="0 Pending"
-          tabIndex={6}
+          lineOne={`${getLatestAttribute(finagle, 'futurePool.activeTasks')} Active`}
+          lineTwo={`${getLatestAttribute(finagle, 'timer.pendingTasks.count')} Pending`}
+          tabIndex={7}
           title="Finagle"
         />
         <SummaryBarCard
           href="/json"
           isActive={pathname === '/json'}
           lineOne={`{ ... }`}
-          tabIndex={7}
+          tabIndex={8}
           title="JSON"
         />
         <SummaryBarCard
           href="/settings"
           isActive={pathname === '/settings'}
           lineOne={ms(interval)}
-          tabIndex={8}
+          tabIndex={9}
           title="Settings"
         />
       </div >
@@ -99,8 +97,8 @@ function SummaryBar({ http, interval, jvm, pathname }) {
   );
 }
 
-function mapStateToProps({ metrics: { http, jvm }, routing: { locationBeforeTransitions: { pathname } }, settings: { interval } }) {
-  return { http, jvm, pathname, interval };
+function mapStateToProps({ metrics: { finagle, http, jvm, route}, routing: { locationBeforeTransitions: { pathname } }, settings: { interval } }) {
+  return { finagle, http, interval, jvm, pathname, route };
 };
 
 export default connect(mapStateToProps)(SummaryBar);

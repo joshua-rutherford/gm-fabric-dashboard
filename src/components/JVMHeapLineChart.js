@@ -30,6 +30,7 @@ export default function JVMHeapLineChart({ maxHeap, usedAndCommittedHeapArr }) {
         <LineChart data={httpConnections}>
           <Line
             dataKey="committedHeap"
+            dot={false}
             isAnimationActive={false}
             name="Committed Heap Size"
             stroke="#ffc700"
@@ -37,6 +38,7 @@ export default function JVMHeapLineChart({ maxHeap, usedAndCommittedHeapArr }) {
           />
           <Line
             dataKey="usedHeap"
+            dot={false}
             isAnimationActive={false}
             name="Used Heap Size"
             stroke="#00a1ff"

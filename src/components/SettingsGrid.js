@@ -27,7 +27,7 @@ function SettingsGrid ({settings}) {
           <div className="uk-card uk-card-default uk-card-body">
             <h3 className="uk-card-title">Metrics Cache</h3>
             <button
-              className="uk-button uk-button-danger"
+              className="uk-button uk-button-decipher"
               onClick={() => {
                 UIkit.modal.confirm('Are you sure that you want to clear the cached metrics data? This action in irreversible.')
                   .then(() => Actions.clearMetrics());
