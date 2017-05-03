@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import SummaryBarCard from './SummaryBarCard';
-
+import { getBasename } from '../utils';
 
 class RouteBar extends Component {
   static propTypes = {
@@ -23,8 +23,8 @@ class RouteBar extends Component {
             {route && Object.keys(route).map(route => {
               return (
                 <SummaryBarCard
-                  href={`/route/${route}`}
-                  isActive={pathname === `/route/${route}`}
+                  href={`${getBasename()}/route/${route}`}
+                  isActive={pathname === `${getBasename()}/route/${route}`}
                   key={route}
                   title={`/${route}`}
                   width="uk-width-auto"
@@ -33,6 +33,13 @@ class RouteBar extends Component {
             })}
           </div>
         </div>
+        {!route && (
+          <div className="uk-width-1-1@m">
+            <div className="uk-card uk-card-default uk-card-body">
+              <h3 className="uk-card-title">No Routes Detected</h3>
+            </div>
+          </div>
+        )}
         {this.props.children}
       </div>
     );

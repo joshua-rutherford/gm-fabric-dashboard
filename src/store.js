@@ -5,6 +5,8 @@ import { notification } from 'uikit';
 import _ from 'lodash';
 import { camelize } from 'humps';
 import { routerReducer } from 'react-router-redux';
+import { getAPIPath } from './utils';
+import axios from 'axios';
 
 // State Objects
 const metrics = State({
@@ -51,12 +53,16 @@ const metrics = State({
 
 const settings = State({
   initial: {
+    baseUrl: '/',
     isPolling: true,
     pollingHasInitialized: false,
     interval: 15000,
-    metricsEndpoints: ['/admin/metrics.json', '/admin/threads'],
+    metricsEndpoints: [`admin/metrics.json`, 'admin/threads'],
     pollingFailures: 0,
     threadsFilter: 'all' 
+  },
+  setBaseUrl(state, payload) {
+    return { ...state, baseUrl: payload };
   },
   setPollingAsInitialized(state, payload) {
     return { ...state, pollingHasInitialized: true };
@@ -85,11 +91,18 @@ const settings = State({
 // Effects
 Effect('fetchMetrics', (endpoints) => {
   if (!endpoints) return;
-  Promise.all(endpoints.map(endpoint => fetch(endpoint)))
-    .then(responses => Promise.all(responses.map(response => response.json())))
+  const apiPath = getAPIPath();
+  Promise.all(endpoints.map(endpoint => axios.get(`${apiPath}/${endpoint}`, { responseType: 'json' })))
+    .then(jsons => jsons.map(json => {
+      console.log(json);
+      return json.data;
+    }))
     .then(jsons => {
       let results = {};
-      jsons.forEach(json => { results = { ...results, ...json }; });
+      jsons.forEach(json => {
+        results = { ...results, ...json };
+      });
+      console.log(results);
       return results;
     })
     .then(json => Actions.fetchMetricsSuccess(json))

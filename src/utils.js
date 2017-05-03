@@ -189,3 +189,19 @@ export const getThreadCounts = createSelector(getCurrentThreads, (threadsTable =
     all: threadsTable.length
   };
 });
+
+
+export function getBasename () {
+  const metaBaseUrl = document.head.querySelector("[property=baseUrl]").content;
+  // console.log('metaBaseUrl: ', metaBaseUrl);
+  const baseUrl = metaBaseUrl.indexOf('__BASE_') !== -1 ? "" : `${metaBaseUrl}`;
+  // console.log("Serving GMAdmin at: ", baseUrl);
+  return baseUrl;
+};
+
+export function getAPIPath() {
+  const basename = getBasename();
+  const apiPath = basename ? basename.split('/').slice(0,-1).join('/') : "";
+  // console.log("Looking for APIs at: ", apiPath);
+  return apiPath;
+};

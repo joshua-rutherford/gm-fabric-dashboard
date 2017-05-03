@@ -21,16 +21,20 @@ class HTTPGrid extends Component {
           className="uk-grid-match uk-grid-small uk-text-center"
           data-uk-grid
         >
-          <div className="uk-width-1-2@l">
-            <HTTPConnectionsAreaChart
-              connectionsArr={getAttributeOverTime(http, 'connections')}
-            />
-          </div>
-          <div className="uk-width-1-2@l">
-            <DataTxLineChart
-              receivedAndSentBytesPerSecondArr={mergeResults(getAttributeChangesOverTime(http, 'sentBytes'), getAttributeChangesOverTime(http, 'receivedBytes'))}
-            />
-          </div>
+          {http && http.connections &&
+            <div className="uk-width-1-2@l">
+              <HTTPConnectionsAreaChart
+                connectionsArr={getAttributeOverTime(http, 'connections')}
+              />
+            </div>
+          }
+          {http && (http.sentBytes || http.receivedBytes) &&
+            <div className="uk-width-1-2@l">
+              <DataTxLineChart
+                receivedAndSentBytesPerSecondArr={mergeResults(getAttributeChangesOverTime(http, 'sentBytes'), getAttributeChangesOverTime(http, 'receivedBytes'))}
+              />
+            </div>
+          }
           <div className="uk-width-1-2@l">
             <HTTPStats
               appUptime={getLatestAttribute(jvm, 'uptime')}
