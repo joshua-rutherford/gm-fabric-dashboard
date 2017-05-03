@@ -68,6 +68,10 @@ See the Create React App section about [running tests](https://github.com/facebo
 This builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
+Once built, the production bundle is minified, but not yet ready to deploy, as the index.html and JavaScript bundle contain the string template `__BASE_URL__`. This string template must be replaced with the URL path for your application. This allows you to use the dashboard with microservices that are not hosted at the root path. For your convenience, a BASH script is provided to simplify this deployment process.
+
+For example, if you are going to deploy the dashboard to a microservice located  at `http://www.deciphernow.com/my/awesome/microservice/`, your dashboard will be located at the path `/my/awesome/microservice/gmadmin`, so you should inside the ./build directory and execute `sudo ./setPath.sh /my/awesome/microservice/gmadmin`. Please not that the path should not contain a trailing slash and will exit in an error condition if one is found. After running this script successfully, your application is ready to be deployed. In case of error or misconfiguration, your original `index.html` and `./static/js/main.########.js` files have been backed up to `index.html.old` and `./static/js/main.########.js.old`. To rerun the deployment script, overwrite the modified files with the backups and rerun `setPath.sh`
+
 #### `npm run lint-css` to validate that css follows the project style
 
 This will lint the LESS source files via the CLI. This option should only be required if you are
