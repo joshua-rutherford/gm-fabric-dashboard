@@ -9,7 +9,8 @@ SummaryBarCard.propTypes = {
   isActive: PropTypes.bool,
   lineOne: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.number
+    PropTypes.number,
+    PropTypes.object
   ]),
   lineTwo: PropTypes.oneOfType([
     PropTypes.string,
@@ -23,10 +24,9 @@ SummaryBarCard.propTypes = {
 export default function SummaryBarCard({ chartData, href, isActive, lineOne, lineTwo, tabIndex, title, width }) {
   width = width || 'uk-width-small';
   return (
-    <div
-      className={`summary-bar-card uk-card uk-card-small ${width} ${isActive ? 'summary-bar-card-active' : ''}`}
-    >
       <Link
+        activeClassName="summary-bar-card-active"
+        className={`uk-card uk-card-small summary-bar-card ${width}`}
         tabIndex={tabIndex}
         to={href}
       >
@@ -58,6 +58,5 @@ export default function SummaryBarCard({ chartData, href, isActive, lineOne, lin
           }
         </div>
       </Link>
-    </div>
   );
 };

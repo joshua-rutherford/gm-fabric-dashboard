@@ -67,5 +67,5 @@
     "extends": "react-app"
   },
   "proxy": "http://localhost:9990",
-  "homepage": "__BASE_URL__"
+  "homepage": "."
 }

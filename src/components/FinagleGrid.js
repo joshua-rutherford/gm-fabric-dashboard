@@ -15,42 +15,35 @@ class FinagleGrid extends Component {
   render() {
     const { finagle } = this.props;
     return (
-      <div>
+      <div
+        className="view-finagle-stats"
+      >
         <div
-          className="uk-grid-match uk-grid-small uk-text-center"
-          data-uk-grid
+          className="data-table-group"
         >
-          <div className="uk-width-1-2@l">
-            <FinagleTimerStats
-              timerDeviationAverage={getLatestAttribute(finagle, 'timer.deviationMs.avg')}
-              timerDeviationCount={getLatestAttribute(finagle, 'timer.deviationMs.count')}
-              timerDeviationMax={getLatestAttribute(finagle, 'timer.deviationMs.max')}
-              timerDeviationMin={getLatestAttribute(finagle, 'timer.deviationMs.min')}
-              timerDeviationSum={getLatestAttribute(finagle, 'timer.deviationMs.sum')}
-            />
-          </div>
-          <div className="uk-width-1-2@l">
-            <FinaglePendingTasksStats
-              pendingTasksAverage={getLatestAttribute(finagle, 'timer.pendingTasks.avg')}
-              pendingTasksCount={getLatestAttribute(finagle, 'timer.pendingTasks.count')}
-              pendingTasksMax={getLatestAttribute(finagle, 'timer.pendingTasks.max')}
-              pendingTasksMin={getLatestAttribute(finagle, 'timer.pendingTasks.min')}
-              pendingTasksSum={getLatestAttribute(finagle, 'timer.pendingTasks.sum')}
-            />
-          </div>
-          <div className="uk-width-1-2@l">
-            <FinagleFuturePoolStats
-              activeTasks={getLatestAttribute(finagle, 'futurePool.activeTasks')}
-              completedTasks={getLatestAttribute(finagle, 'futurePool.completedTasks')}
-              poolSize={getLatestAttribute(finagle, 'timer.poolSize')}
-            />
-          </div>
-          <div className="uk-width-1-2@l">
-            <FinagleClientRegistryStats
-              initialResolution={getLatestAttribute(finagle, 'clientregistry.initialresolutionMs')}
-              size={getLatestAttribute(finagle, 'clientregistry.size')}
-            />
-          </div>
+          <FinagleTimerStats
+            timerDeviationAverage={getLatestAttribute(finagle, 'timer.deviationMs.avg')}
+            timerDeviationCount={getLatestAttribute(finagle, 'timer.deviationMs.count')}
+            timerDeviationMax={getLatestAttribute(finagle, 'timer.deviationMs.max')}
+            timerDeviationMin={getLatestAttribute(finagle, 'timer.deviationMs.min')}
+            timerDeviationSum={getLatestAttribute(finagle, 'timer.deviationMs.sum')}
+          />
+          <FinaglePendingTasksStats
+            pendingTasksAverage={getLatestAttribute(finagle, 'timer.pendingTasks.avg')}
+            pendingTasksCount={getLatestAttribute(finagle, 'timer.pendingTasks.count')}
+            pendingTasksMax={getLatestAttribute(finagle, 'timer.pendingTasks.max')}
+            pendingTasksMin={getLatestAttribute(finagle, 'timer.pendingTasks.min')}
+            pendingTasksSum={getLatestAttribute(finagle, 'timer.pendingTasks.sum')}
+          />
+          <FinagleFuturePoolStats
+            activeTasks={getLatestAttribute(finagle, 'futurePool.activeTasks')}
+            completedTasks={getLatestAttribute(finagle, 'futurePool.completedTasks')}
+            poolSize={getLatestAttribute(finagle, 'timer.poolSize')}
+          />
+          <FinagleClientRegistryStats
+            initialResolution={getLatestAttribute(finagle, 'clientregistry.initialresolutionMs')}
+            size={getLatestAttribute(finagle, 'clientregistry.size')}
+          />
         </div>
       </div>
     );

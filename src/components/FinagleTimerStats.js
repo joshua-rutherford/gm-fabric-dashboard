@@ -12,8 +12,8 @@ FinagleTimerStats.propTypes = {
 
 export default function FinagleTimerStats({ timerDeviationAverage, timerDeviationCount, timerDeviationMax, timerDeviationMin, timerDeviationSum }) {
   return (
-    <div className="uk-card uk-card-default uk-card-body">
-      <h3 className="uk-card-title">Timer Deviation</h3>
+    <div className="data-table">
+      <h3 className="">Timer Deviation</h3>
       <table className='uk-table'>
         <tbody>
           <tr>

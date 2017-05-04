@@ -8,13 +8,15 @@ HTTPConnectionsLineChart.propTypes = {
 
 export default function HTTPConnectionsLineChart({ connectionsArr }) {
   return (
-    <div className="uk-card uk-card-default uk-card-body">
+    <div
+      className="uk-card uk-card-small uk-card-body left-border"
+    >
       <h3 className="uk-card-title">HTTP Connections</h3>
       {connectionsArr.length ? (
         <ResponsiveContainer
           aspect={2}
           height="80%"
-          width="90%"
+          width="100%"
         >
           <AreaChart data={connectionsArr}>
             <Area

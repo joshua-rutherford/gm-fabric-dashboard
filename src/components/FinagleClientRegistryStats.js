@@ -8,8 +8,8 @@ FinagleClientRegistryStats.propTypes = {
 
 export default function FinagleClientRegistryStats({ initialResolution, size }) {
   return (
-    <div className="uk-card uk-card-default uk-card-body">
-      <h3 className="uk-card-title">Client Registry</h3>
+    <div className="data-table">
+      <h3 className="">Client Registry</h3>
       <table className='uk-table'>
         <tbody>
           <tr>

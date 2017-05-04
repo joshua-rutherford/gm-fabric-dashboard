@@ -18,13 +18,13 @@ export default function DataTxLineChart({ receivedAndSentBytesPerSecondArr }) {
   }
 
   return (
-    <div className="uk-card uk-card-default uk-card-body">
+    <div className="uk-card uk-card-small uk-card-body left-border">
       <h3 className="uk-card-title">Data Transfer Rates (KBps)</h3>
       {receivedAndSentBytesPerSecondArr.length ? (
         <ResponsiveContainer
           aspect={2}
           height="80%"
-          width="90%"
+          width="100%"
         >
           <LineChart data={deltas}>
             <Line

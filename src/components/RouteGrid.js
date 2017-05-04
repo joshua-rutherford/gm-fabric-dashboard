@@ -16,7 +16,7 @@ class SummaryGrid extends Component {
     return (
       <div>
         <div
-          className="uk-grid-match uk-grid-small uk-text-center"
+          className="uk-grid-match uk-grid-collapse uk-text-center"
           data-uk-grid
         >
           {routeVerbs.map(verbName => (
@@ -24,7 +24,7 @@ class SummaryGrid extends Component {
               className="uk-width-1-2@m"
               key={verbName}
             >
-              <div className="uk-card uk-card-default uk-card-body">
+              <div className="uk-card uk-card-small uk-card-body">
                 <h3 className="uk-card-title">{`${verbName} /${params.routeName}`}</h3>
                 <p>Requests: {getLatestAttribute(route, `${params.routeName}.${verbName}.requests`)}</p>
                 <p>Status Code 2XX : {getLatestAttribute(route, `${params.routeName}.${verbName}.status.2XX`)}</p>

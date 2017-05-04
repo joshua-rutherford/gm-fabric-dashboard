@@ -20,12 +20,12 @@ export default function JVMHeapLineChart({ maxHeap, usedAndCommittedHeapArr }) {
   }));
 
   return (
-    <div className="uk-card uk-card-default uk-card-body">
+    <div className="uk-card uk-card-small uk-card-body">
       <h3 className="uk-card-title">Heap</h3>
       <ResponsiveContainer
         aspect={2}
         height="80%"
-        width="90%"
+        width="100%"
       >
         <LineChart data={httpConnections}>
           <Line

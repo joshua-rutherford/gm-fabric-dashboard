@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Redirect, Router, Route, IndexRoute, useRouterHistory } from 'react-router';
+import { Redirect, Router, Route, IndexRedirect, useRouterHistory } from 'react-router';
 import { createHistory, createHashHistory } from 'history';
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
@@ -16,6 +16,7 @@ import SettingsGrid from './components/SettingsGrid';
 import RouteBar from './components/RouteBar';
 import RouteGrid from './components/RouteGrid';
 import ThreadsGrid from './components/ThreadsGrid';
+import NotFound from './components/NotFound';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { getBasename } from './utils';
 
@@ -32,9 +33,7 @@ UIkit.use(Icons);
 const customHistory = useRouterHistory(
   // createHashHistory
   !!(window.history && window.history.pushState) ? createHistory : createHashHistory
-)({});
-// )({ basename: `${getBasename()}/gmadmin/` });
-// )({ basename: `${getBasename()}/gmadmin/` });
+)({ basename: `${getBasename()}gmadmin/` });
 
 // Wire up React Router with Redux
 const history = syncHistoryWithStore(customHistory, store);
@@ -60,10 +59,14 @@ ReactDOM.render(
     <Router history={history} >
       <Route
         component={Container}
-        path={getBasename() || '/'}
+        path="/"
       >
-        <IndexRoute
+        <IndexRedirect
+          to="/summary"
+        />
+        <Route
           component={SummaryGrid}
+          path="summary"
         />
         <Route
           component={HTTPGrid}
@@ -100,9 +103,13 @@ ReactDOM.render(
         </Route>
         <Redirect
           from="*"
-          to={getBasename() || '/'}
+          to="/"
         />
       </Route>
+      <Route
+        component={NotFound}
+        path="*"
+      />
     </Router>
   </Provider>,
   document.getElementById('root')

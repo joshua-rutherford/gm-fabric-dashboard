@@ -22,7 +22,7 @@ class PollingSettings extends Component {
     const { isPolling } = this.props;
     const buttonClass = isPolling ? 'uk-button uk-button-danger' : 'uk-button uk-button-decipher';
     return (
-      <div className="uk-card uk-card-default uk-card-body">
+      <div className="uk-card uk-card-small uk-card-body">
         <h3
           className="uk-card-title"
           id="polling"

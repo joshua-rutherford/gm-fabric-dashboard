@@ -10,12 +10,12 @@ JVMHeapLineChart.propTypes = {
 
 export default function JVMHeapLineChart({ currentLoadedArr, totalLoaded, totalUnloaded }) {
   return (
-    <div className="uk-card uk-card-default uk-card-body">
+    <div className="uk-card uk-card-small uk-card-body">
       <h3 className="uk-card-title">Classes</h3>
       <ResponsiveContainer
         aspect={2}
         height="80%"
-        width="90%"
+        width="100%"
       >
         <AreaChart data={currentLoadedArr}>
           <Area

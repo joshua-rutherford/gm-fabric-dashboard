@@ -15,7 +15,7 @@ class JVMGrid extends Component {
     return (
       <div>
         <div
-          className="uk-grid-match uk-grid-small uk-text-center"
+          className="uk-grid-match uk-grid-collapse uk-text-center"
           data-uk-grid
         >
           <div className="uk-width-1-2@l">

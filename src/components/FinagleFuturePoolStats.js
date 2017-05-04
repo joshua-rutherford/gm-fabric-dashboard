@@ -9,8 +9,8 @@ FinagleFuturePoolStats.propTypes = {
 
 export default function FinagleFuturePoolStats({ activeTasks, completedTasks, poolSize }) {
   return (
-    <div className="uk-card uk-card-default uk-card-body">
-      <h3 className="uk-card-title">Future Pool</h3>
+    <div className="data-table">
+      <h3 className="">Future Pool</h3>
       <table className='uk-table'>
         <tbody>
           <tr>

@@ -1,11 +1,11 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { State, Effect, Actions, Hook, CreateJumpstateMiddleware } from 'jumpstate';
-import { createLogger } from 'redux-logger';
+import logger from 'redux-logger';
 import { notification } from 'uikit';
 import _ from 'lodash';
 import { camelize } from 'humps';
 import { routerReducer } from 'react-router-redux';
-import { getAPIPath } from './utils';
+import { getBasename } from './utils';
 import axios from 'axios';
 
 // State Objects
@@ -59,7 +59,7 @@ const settings = State({
     interval: 15000,
     metricsEndpoints: [`admin/metrics.json`, 'admin/threads'],
     pollingFailures: 0,
-    threadsFilter: 'all' 
+    threadsFilter: 'all'
   },
   setBaseUrl(state, payload) {
     return { ...state, baseUrl: payload };
@@ -91,18 +91,14 @@ const settings = State({
 // Effects
 Effect('fetchMetrics', (endpoints) => {
   if (!endpoints) return;
-  const apiPath = getAPIPath();
-  Promise.all(endpoints.map(endpoint => axios.get(`${apiPath}/${endpoint}`, { responseType: 'json' })))
-    .then(jsons => jsons.map(json => {
-      console.log(json);
-      return json.data;
-    }))
+  const basename = getBasename();
+  Promise.all(endpoints.map(endpoint => axios.get(`${basename}${endpoint}`, { responseType: 'json' })))
+    .then(jsons => jsons.map(json => json.data))
     .then(jsons => {
       let results = {};
       jsons.forEach(json => {
         results = { ...results, ...json };
       });
-      console.log(results);
       return results;
     })
     .then(json => Actions.fetchMetricsSuccess(json))
@@ -182,11 +178,14 @@ Hook((action, getState) => {
   }
 });
 
+const middlewares = [];
+middlewares.push(CreateJumpstateMiddleware());
+if (process.env.NODE_ENV === `development`) {
+  middlewares.push(logger);
+}  
+
 // Putting it all together
 export default createStore(
   combineReducers({ metrics, settings, routing: routerReducer }),
-  applyMiddleware(
-    CreateJumpstateMiddleware(),
-    createLogger({ collapsed: true })
-  )
+  applyMiddleware(...middlewares)
 );

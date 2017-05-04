@@ -9,7 +9,7 @@ DataTotals.propTypes = {
 
 export default function DataTotals({ receivedBytes, sentBytes }) {
   return (
-    <div className="uk-card uk-card-default uk-card-body">
+    <div className="uk-card uk-card-small uk-card-body left-border">
       <h3 className="uk-card-title">Data Totals</h3>
       <div>
         <i data-uk-icon="icon: upload; ratio: 2" />

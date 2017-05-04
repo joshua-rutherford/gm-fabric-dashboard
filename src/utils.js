@@ -107,7 +107,6 @@ export function getAttributeChangesOverTime(props, path) {
       return obj;
     }
   });
-  // console.log('Returning from getAttributeChangesOverTime with', attributeChangesOverTime);
   return attributeChangesOverTime;
 }
 
@@ -137,7 +136,6 @@ export function getAttributeChangesForSparkline(props, path) {
  */
 export function mergeResults(firstArrayOfResults, secondArrayOfResults) {
   // Note: firstArrayOfResults seems to already have both key/value result pairs. Why? 
-  // console.log('Calling mergeResults with with', firstArrayOfResults, secondArrayOfResults);
   let arraysOfResultArrays = [firstArrayOfResults, secondArrayOfResults];
   let mergedResults = [];
   _.forEach(arraysOfResultArrays, (resultArray) => {
@@ -163,7 +161,7 @@ const getThreadsFilter = (state) => state.settings.threadsFilter;
  */
 export const getVisibleThreads = createSelector([getCurrentThreads, getThreadsFilter],
   (threadsTable, threadsFilter) => {
-    switch(threadsFilter) {
+    switch (threadsFilter) {
       case 'active':
         return threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE');
       case 'idle':
@@ -191,17 +189,8 @@ export const getThreadCounts = createSelector(getCurrentThreads, (threadsTable =
 });
 
 
-export function getBasename () {
+export function getBasename() {
   const metaBaseUrl = document.head.querySelector("[property=baseUrl]").content;
-  // console.log('metaBaseUrl: ', metaBaseUrl);
-  const baseUrl = metaBaseUrl.indexOf('__BASE_') !== -1 ? "" : `${metaBaseUrl}`;
-  // console.log("Serving GMAdmin at: ", baseUrl);
+  const baseUrl = metaBaseUrl.indexOf('__BASE_') !== -1 ? "/" : `${metaBaseUrl}`;
   return baseUrl;
-};
-
-export function getAPIPath() {
-  const basename = getBasename();
-  const apiPath = basename ? basename.split('/').slice(0,-1).join('/') : "";
-  // console.log("Looking for APIs at: ", apiPath);
-  return apiPath;
 };

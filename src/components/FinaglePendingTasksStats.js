@@ -11,8 +11,8 @@ FinaglePendingTasksStats.propTypes = {
 
 export default function FinaglePendingTasksStats({ pendingTasksAverage, pendingTasksCount, pendingTasksMax, pendingTasksMin, pendingTasksSum }) {
   return (
-    <div className="uk-card uk-card-default uk-card-body">
-      <h3 className="uk-card-title">Pending Timer Tasks</h3>
+    <div className="data-table">
+      <h3 className="">Pending Timer Tasks</h3>
       <table className='uk-table'>
         <tbody>
           <tr>

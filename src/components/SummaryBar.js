@@ -5,7 +5,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getLatestAttribute, getAttributeForSparkline, getAttributeChangesForSparkline } from '../utils';
 import SummaryBarCard from './SummaryBarCard';
-import { getBasename } from '../utils';
 
 SummaryBar.propTypes = {
   finagle: PropTypes.object,
@@ -20,6 +19,7 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
   const httpRequests = getLatestAttribute(http, 'requests');
   const successResponses = getLatestAttribute(http, 'success');
   const successRate = successResponses ? Math.round(successResponses / httpRequests * 100) : 100;
+
   return (
     <div className="summary-bar-container">
       <div
@@ -28,17 +28,15 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
         id="summary-bar"
       >
         <SummaryBarCard
-          href={`${getBasename() || '/'}`}
-          isActive={pathname === `${getBasename() || '/'}`}
-          lineOne={ms(getLatestAttribute(jvm, 'uptime'))}
+          href="/summary"
+          lineOne={`${ms(getLatestAttribute(jvm, 'uptime'))} UPTIME`}
           tabIndex={1}
-          title="Uptime"
+          title="Summary"
         />
         {http &&
           // The HTTP card displays if the HTTP object exists in Redux
           <SummaryBarCard
-            href={`${getBasename()}/http`}
-            isActive={pathname === `${getBasename()}/http`}
+            href="/http"
             lineOne={`${String(httpRequests).replace(/(.)(?=(\d{3})+$)/g, '$1,')} - ${successRate}%`}
             tabIndex={2}
             title="HTTP"
@@ -47,8 +45,7 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
         {route &&
           // The Route card displays if the route object exists in Redux
           <SummaryBarCard
-            href={`${getBasename()}/route`}
-            isActive={pathname.indexOf(`${getBasename()}/route`, 0) !== -1}
+            href="/route"
             lineOne={route ? Object.keys(route).length : 0}
             tabIndex={3}
             title="Routes"
@@ -59,8 +56,7 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
           // If it has the thread count, but not the detailed threads object, it is treated as part of /jvm
           <SummaryBarCard
             chartData={getAttributeForSparkline(jvm, 'thread.count')}
-            href={threads ? `${getBasename()}/threads` : `${getBasename()}/jvm`}
-            isActive={threads ? pathname === `${getBasename()}/threads` : pathname === `${getBasename()}/jvm`}
+            href={threads ? `/threads` : `/jvm`}
             lineOne={getLatestAttribute(jvm, 'thread.count')}
             tabIndex={4}
             title="Threads"
@@ -69,8 +65,7 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
         {jvm &&
           <SummaryBarCard
             chartData={getAttributeForSparkline(jvm, 'mem.current.used')}
-            href={`${getBasename()}/jvm`}
-            isActive={pathname === `${getBasename()}/jvm`}
+            href={`/jvm`}
             lineOne={filesize(getLatestAttribute(jvm, 'mem.current.used'))}
             tabIndex={5}
             title="Memory Used"
@@ -79,8 +74,7 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
         {jvm &&
           <SummaryBarCard
             chartData={getAttributeChangesForSparkline(jvm, 'gc.msec')}
-            href={`${getBasename()}/jvm`}
-            isActive={pathname === `${getBasename()}/jvm`}
+            href="/jvm"
             lineOne={ms(getLatestAttribute(jvm, 'gc.msec'))}
             tabIndex={6}
             title="Garbage Col."
@@ -88,8 +82,7 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
         }
         {finagle &&
           <SummaryBarCard
-            href={`${getBasename()}/finagle`}
-            isActive={pathname === `${getBasename()}/finagle`}
+            href="/finagle"
             lineOne={`${getLatestAttribute(finagle, 'futurePool.activeTasks')} Active`}
             lineTwo={`${getLatestAttribute(finagle, 'timer.pendingTasks.count')} Pending`}
             tabIndex={7}
@@ -97,16 +90,14 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
           />
         }
         <SummaryBarCard
-          href={`${getBasename()}/json`}
-          isActive={pathname === `${getBasename()}/json`}
+          href={`/json`}
           lineOne={`{ ... }`}
           tabIndex={8}
           title="JSON"
         />
         <SummaryBarCard
-          href={`${getBasename()}/settings`}
-          isActive={pathname === `${getBasename()}/settings`}
-          lineOne={ms(interval)}
+          href={`/settings`}
+          lineOne={<span data-uk-icon="icon: cog; ratio: 1.5"></span>}
           tabIndex={9}
           title="Settings"
         />
