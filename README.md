@@ -68,9 +68,15 @@ See the Create React App section about [running tests](https://github.com/facebo
 This builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-Once built, the production bundle is minified, but not yet ready to deploy, as the index.html and JavaScript bundle contain the string template `__BASE_URL__`. This string template must be replaced with the URL path for your application. This allows you to use the dashboard with microservices that are not hosted at the root path. For your convenience, a BASH script is provided to simplify this deployment process.
+Once built, the production bundle is minified and configured to be integrated into the core `gm-fabric-jvm` project. The dashboard assumes that it is monitoring a microservice at the root path with Twitter Server metrics accessible at `/admin/metrics.json` and `/admin/threads`. The dashboard itself is served from `/gmadmin/`. 
 
-For example, if you are going to deploy the dashboard to a microservice located  at `http://www.deciphernow.com/my/awesome/microservice/`, your dashboard will be located at the path `/my/awesome/microservice/gmadmin`, so you should inside the ./build directory and execute `sudo ./setPath.sh /my/awesome/microservice/gmadmin`. Please not that the path should not contain a trailing slash and will exit in an error condition if one is found. After running this script successfully, your application is ready to be deployed. In case of error or misconfiguration, your original `index.html` and `./static/js/main.########.js` files have been backed up to `index.html.old` and `./static/js/main.########.js.old`. To rerun the deployment script, overwrite the modified files with the backups and rerun `setPath.sh`
+In cases where the dashboard is being deployed on a microservice that doesn't own the root path, this projects has a string template `__BASE_URL__` in the minified index.html file that can be replaced to set the desired path. For your convenience, a BASH script is provided to simplify this deployment process and provide an undo option.
+
+For example, if you are going to deploy the dashboard to a microservice located  at `http://www.deciphernow.com/my/awesome/microservice/`, your dashboard will be located at the path `/my/awesome/microservice/gmadmin` and poll endpoints at `/my/awesome/microservice/admin/metrics.json` and `/my/awesome/microservice/admin/threads`. To configure the dashboard for this path,`cd` into the ./build directory and execute `sudo ./setPath.sh /my/awesome/microservice/`. Please note that the path should have both an opening and a trailing slash. After running this script successfully, your application is ready to be deployed. 
+
+If you intend to retrofit this dashboard on an existing Twitter Server based microservice, you likely will need to proxy `/my/awesome/microservice/admin/metrics.json` and `/my/awesome/microservice/admin/threads` to the expected path as outlined above.
+
+In case of error or misconfiguration, your original `index.html` has been backed up to `index.html.old`. To revert to the backup, run `sudo ./setPath.sh undo` and rerun with the correct argument.
 
 #### `npm run lint-css` to validate that css follows the project style
 
