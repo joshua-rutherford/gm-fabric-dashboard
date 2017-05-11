@@ -12,11 +12,24 @@
 
 .json-inspector {
   margin: 0 auto;
+  min-width: 1000px;
 }
 
-.json-inspector__search {
+input.json-inspector__search {
+  appearance: none;
   width: 100%;
+  display: block;
   font-size: 16px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: @border-radius-default;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05);
+  padding: @padding-base*.5 @padding-base;
+  margin: 0 auto 64px;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px @decipher-green;
+  }
 }
 
 .json-inspector,
@@ -24,14 +37,15 @@
   font: 16px/24px Consolas, monospace;
 }
 
-.json-inspector__leaf {
-  padding-left: 16px;
-}
-
 .json-inspector__line {
   display: block;
   position: relative;
   cursor: default;
+}
+
+.json-inspector__leaf {
+  padding-left: 16px;
+  color: rgba(0,0,0,.7);
 }
 
 .json-inspector__line::after {
@@ -43,6 +57,10 @@
   bottom: 0;
   z-index: -1;
   pointer-events: none;
+}
+
+.json-inspector__leaf_composite > .json-inspector__line:hover {
+  color: @decipher-green;
 }
 
 .json-inspector__line:hover::after {
@@ -62,14 +80,8 @@
   margin-left: 5px;
 }
 
-.json-inspector__search {
-  min-width: 300px;
-  margin: 0 10px 10px;
-  padding: 2px;
-}
-
 .json-inspector__key {
-  color: #505050;
+  // color: #505050;
 }
 
 .json-inspector__value_helper,
