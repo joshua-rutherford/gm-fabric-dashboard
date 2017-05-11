@@ -36,10 +36,31 @@ const metrics = State({
           _.setWith(snapshot, `threads.${resultObj.name}.jvm-id-${resultObj.id}.${time}`, resultObj);
         });
       }
+      else if (_.startsWith(key, 'route')) {
+        // For route data, use a special regex to be able to sort / used in a path
+        // from / used as a delimiter in metrics.json
+        const routeRegex = /(route)(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
+        const route = key.replace(routeRegex, '$1');              // Always 'route'
+        const routePath = key.replace(routeRegex, '$2') || '/';   // Path with trailing slash or root
+        const httpVerb = key.replace(routeRegex, '$3');           // Valid HTTP Verb
+        const metadata = key.replace(routeRegex, '$4').replace(/\//gi, '.'); // dot delimited 
+        const result = [route, routePath, httpVerb, ...metadata.split('.'), String(time)];
+
+        // Temporary example of using a whitelist to filter useful route metrics. This shall be implemented
+        // in a more general solution. https://github.com/DecipherNow/gm-fabric-dashboard/issues/81
+        if (_.includes(window.location.href, '/services/ess/1.0/')) {
+          const whitelist = ['/ping', '/support', '/allowed', '/'];
+          if (_.includes(whitelist, routePath)) {
+            _.setWith(snapshot, result, value);
+          }
+        } else {
+          _.setWith(snapshot, result, value);
+        }
+      }
       else {
-        let path = camelize(key.replace(/\//gi, '.'));
         // Change from slash delimited to dot delimited and from snake case to camel case to be able to
         // use the lodash set method to build a idiomatic JSON hierarchy of data
+        let path = camelize(key.replace(/\//gi, '.'));
         _.setWith(snapshot, `${path}.${time}`, value);
       }
     });

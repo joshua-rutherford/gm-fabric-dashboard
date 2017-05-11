@@ -23,8 +23,10 @@ import { createSelector } from 'reselect';
  */
 export function getLatestAttribute(props, path) {
   if (!props || !path) return 0;
-  if (_.has(props, path)) {
-    const fullPath = _.get(props, path);
+  // _.has is not suitable because some object become arrays and auto insert
+  // keys from 0...n with values of undefined.
+  const fullPath = _.get(props, path);
+  if (fullPath) {
     return fullPath[_.last(_.keys(fullPath).sort((a, b) => a - b))];
   }
   return 0;
@@ -41,9 +43,9 @@ export function getLatestAttribute(props, path) {
  */
 export function getAttributeOverTime(props, path) {
   if (!props || !path) return [];
-  if (_.has(props, path)) {
+  const fullPath = _.get(props, path);
+  if (fullPath) {
     let attribute = _.last(path.split('.'));
-    let fullPath = _.get(props, path);
     let timestamps = _.keys(fullPath).sort((a, b) => a - b);
     let results = timestamps.map(timestamp => {
       let obj = {};

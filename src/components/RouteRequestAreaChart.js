@@ -12,7 +12,7 @@ export default function JVMHeapLineChart({ routeName, verbName, requestsPerSecon
   return (
 
     <div className="uk-card uk-card-small uk-card-body">
-      <h3 className="uk-card-title">{`${verbName} /${routeName}`}</h3>
+      <h3 className="uk-card-title">{`${verbName} ${routeName}`}</h3>
       <ResponsiveContainer
         aspect={2}
         height="80%"
@@ -23,7 +23,7 @@ export default function JVMHeapLineChart({ routeName, verbName, requestsPerSecon
             dataKey="requestsPerSecond"
             fill="#F3F3F3"
             isAnimationActive={false}
-            name={`${verbName} requests to /${routeName} per second`}
+            name={`${verbName} requests to ${routeName} per second`}
             stroke="#aaaaaa"
             type="monotone"
           />

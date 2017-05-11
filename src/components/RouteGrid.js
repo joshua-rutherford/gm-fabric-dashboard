@@ -12,7 +12,7 @@ class SummaryGrid extends Component {
 
   render() {
     const { params, route } = this.props;
-    const routeVerbs = (route && Object.keys(route[params.routeName])) || [];
+    const routeVerbs = route ? Object.keys(route[params.routeName]) : [];
     return (
       <div>
         <div
@@ -25,7 +25,7 @@ class SummaryGrid extends Component {
               key={verbName}
             >
               <div className="uk-card uk-card-small uk-card-body">
-                <h3 className="uk-card-title">{`${verbName} /${params.routeName}`}</h3>
+                <h3 className="uk-card-title">{`${verbName} ${params.routeName}`}</h3>
                 <p>Requests: {getLatestAttribute(route, `${params.routeName}.${verbName}.requests`)}</p>
                 <p>Status Code 2XX : {getLatestAttribute(route, `${params.routeName}.${verbName}.status.2XX`)}</p>
                 <p>Status Code 200 : {getLatestAttribute(route, `${params.routeName}.${verbName}.status.200`)}</p>
