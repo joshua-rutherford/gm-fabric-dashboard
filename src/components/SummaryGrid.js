@@ -14,8 +14,6 @@ class SummaryGrid extends Component {
     return (
       <div className="uk-section uk-section-default">
         <div
-          className="uk-grid-small uk-child-width-1-2@s"
-          data-uk-grid
           id="summary-grid"
         >
           <div className="uk-panel">

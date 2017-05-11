@@ -10,7 +10,7 @@ HTTPStats.propTypes = {
 
 export default function HTTPStats({ appUptime, totalHTTPRequests, totalSuccessfulHTTPRequests }) {
   return (
-    <div className="uk-card uk-card-small uk-card-body left-border">
+    <div className="uk-card uk-card-small uk-card-body">
       <h3 className="uk-card-title">HTTP Stats</h3>
       <p>Uptime: {ms(appUptime)} </p>
       <p>Total HTTP Requests: {totalHTTPRequests} </p>

@@ -16,6 +16,7 @@
 
   h3 {
     margin: 0;
+    text-align: center;
   }
 
   .uk-table {
@@ -25,5 +26,21 @@
     td {
       padding-left: 0;
     }
+  }
+
+  td {
+    vertical-align: baseline;
+    width: 50%;
+  }
+
+  td:first-child {
+    text-align: right;
+  }
+
+  td:last-child {
+    text-align: left;
+    font-weight: 200;
+    font-size: 200%;
+    color: @decipher-green;
   }
 }

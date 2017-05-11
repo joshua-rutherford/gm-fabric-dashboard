@@ -9,7 +9,7 @@ HTTPConnectionsLineChart.propTypes = {
 export default function HTTPConnectionsLineChart({ connectionsArr }) {
   return (
     <div
-      className="uk-card uk-card-small uk-card-body left-border"
+      className="uk-card uk-card-small uk-card-body"
     >
       <h3 className="uk-card-title">HTTP Connections</h3>
       {connectionsArr.length ? (

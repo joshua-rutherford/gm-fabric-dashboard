@@ -18,7 +18,7 @@ export default function DataTxLineChart({ receivedAndSentBytesPerSecondArr }) {
   }
 
   return (
-    <div className="uk-card uk-card-small uk-card-body left-border">
+    <div className="uk-card uk-card-small uk-card-body">
       <h3 className="uk-card-title">Data Transfer Rates (KBps)</h3>
       {receivedAndSentBytesPerSecondArr.length ? (
         <ResponsiveContainer
