@@ -34,11 +34,11 @@ export default function SummaryBarCard({ chartData, href, isActive, lineOne, lin
         <div className="uk-card-body summary-bar-card-body">
           {
             lineOne &&
-            <div className="uk-text-small">{lineOne}</div>
+            <div className="">{lineOne}</div>
           }
           {
             lineTwo &&
-            <div className="uk-text-small">{lineTwo}</div>
+            <div className="">{lineTwo}</div>
           }
           {
             chartData &&

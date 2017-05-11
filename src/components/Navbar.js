@@ -15,21 +15,13 @@ const Navbar = () => {
             alt='Decipher Logo'
             className="logo"
             src={decipherLogo}
-            style={{ width: '20px' }}
           />
           <img
-            alt='Gray Matter Logo'
+            alt='Gray Matter Fabric'
             className="logo"
             id="product-logo"
             src={gmLogo}
-            style={{ width: '20px' }}
           />
-          <span
-            className="logo"
-            id="logo-text"
-          >
-            Fabric
-          </span>
         </div>
       </div>
     </nav>
