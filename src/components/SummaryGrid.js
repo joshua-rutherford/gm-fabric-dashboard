@@ -19,16 +19,12 @@ class SummaryGrid extends Component {
           id="summary-grid"
         >
           <div className="uk-panel">
-            <h3>Essentials</h3>
-            <hr />
             <div className="summary-grid-title">Start Time</div>
             <div>{dateFormat(getLatestAttribute(jvm, 'startTime'))}</div>
             <div className="summary-grid-title">Uptime</div>
             <div>{ms(getLatestAttribute(jvm, 'uptime'))}</div>
           </div>
           <div className="uk-panel">
-            <h3>Details</h3>
-            <hr />
             <div className="summary-grid-title">Processor Cores</div>
             <div>{getLatestAttribute(jvm, 'numCpus')}</div>
             <div className="summary-grid-title">IP Address or Domain Name</div>

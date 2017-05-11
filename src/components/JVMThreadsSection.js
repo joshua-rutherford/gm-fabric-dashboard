@@ -13,7 +13,7 @@ class JVMThreadsSection extends Component {
   render() {
     const { threadCounts, threads } = this.props;
     return (
-      <div className="uk-card uk-card-default">
+      <div className="">
         <div className="thread-table-filter-buttons uk-button-group">
           <button
             className="uk-button uk-button-default uk-button-small"

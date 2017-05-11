@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { Sparklines, SparklinesLine, SparklinesBars, SparklinesSpots, SparklinesReferenceLine, SparklinesCurve, SparklinesNormalBand } from 'react-sparklines';
+import { Sparklines, SparklinesLine, SparklinesReferenceLine } from 'react-sparklines';
 import { PropTypes } from 'prop-types';
 
 SummaryBarCard.propTypes = {
@@ -46,7 +46,7 @@ export default function SummaryBarCard({ chartData, href, isActive, lineOne, lin
               data={chartData}
               preserveAspectRatio='xMaxYMin'
             >
-              <SparklinesLine style={{ fill: "#fff", stroke: "#0aab2a", strokeWidth: "2px", fillOpacity: ".2" }} />
+              <SparklinesLine style={{ fill: "#fff", stroke: "#0aab2a", strokeWidth: "3px", fillOpacity: ".2" }} />
               <SparklinesReferenceLine type="mean" style={{ stroke: "#fff", strokeOpacity: '.3' }} />
             </Sparklines>
           }

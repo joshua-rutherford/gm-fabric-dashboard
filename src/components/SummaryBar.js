@@ -22,11 +22,7 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
 
   return (
     <div className="summary-bar-container">
-      <div
-        className="uk-grid-collapse uk-grid-match uk-flex-center uk-child-width-small"
-        data-uk-grid
-        id="summary-bar"
-      >
+      <div id="summary-bar">
         <SummaryBarCard
           href="/summary"
           lineOne={`${ms(getLatestAttribute(jvm, 'uptime'))} UPTIME`}

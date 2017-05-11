@@ -16,9 +16,9 @@ class HTTPGrid extends Component {
   render() {
     const { jvm, http } = this.props;
     return (
-      <div>
+      <div className="uk-section uk-section-default">
         <div
-          className="uk-grid-match uk-grid-collapse uk-text-center"
+          className="uk-grid-match uk-grid-collapse"
           data-uk-grid
         >
           {http && http.connections &&

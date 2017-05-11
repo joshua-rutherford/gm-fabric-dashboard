@@ -21,10 +21,10 @@ export default class JVMThreadsTableLineItem extends Component {
   indicatorColor(state) {
     switch (state) {
       case 'RUNNABLE':
-        return 'green';
+        return '#0aab2a';
       case 'WAITING':
       case 'TIMED_WAITING':
-        return '#E0D570';
+        return '#DCBA00';
       case 'TERMINATED':
       case 'BLOCKED':
       case 'NEW':
@@ -43,9 +43,9 @@ export default class JVMThreadsTableLineItem extends Component {
     const indicatorIcon = this.indicatorColor(state);
 
     return (
-      <li key={id}>
+      <li key={id} className={stack.length ? 'has-stack' : '' }>
         <div
-          className="thread-table-row uk-clearfix"
+          className="thread-table-row"
           onClick={stack.length && this.toggleStack}
           onKeyDown={(evt) => {
             if ((stack.length && evt.keyCode === 13)) {
@@ -69,7 +69,7 @@ export default class JVMThreadsTableLineItem extends Component {
           </div>
           <div className="thread-table-id" >{`${Number(id)}`}</div>
           <div className="thread-table-name">{name}</div>
-          <div className="thread-table-daemon">{daemon ? 'Yes' : 'No'}</div>
+          <div className="thread-table-daemon">{daemon ? '' : 'No'}</div>
           <div className="thread-table-priority">{priority}</div>
         </div>
         <Collapse isOpened={this.state.isOpen}>
@@ -78,7 +78,6 @@ export default class JVMThreadsTableLineItem extends Component {
             {stack.map((value, index) => <div key={index}>{`at ${value}`}</div>)}
           </div>
         </Collapse>
-        <hr />
       </li>
     );
   }
