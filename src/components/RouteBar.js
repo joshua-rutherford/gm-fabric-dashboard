@@ -18,18 +18,22 @@ class RouteBar extends Component {
             data-uk-grid
             id="summary-bar"
           >
-            {route && Object.keys(route).sort().map(route => (
-              <Link
-                activeClassName="route-bar-card-active"
-                className="uk-card uk-card-small route-bar-card"
-                key={route}
-                to={`/route/${route}`}
-              >
-                <div className="route-bar-card-body">
-                  {`/${route}`}
-                </div>
-              </Link>
-            ))}
+            {route && Object.keys(route).sort().map(route => {
+              // Escape the component name because they are automatically generated from paths
+              const escapedRoute = route.replace(/\//g, '%2F');
+              return (
+                <Link
+                  activeClassName="route-bar-card-active"
+                  className="uk-card uk-card-small route-bar-card"
+                  key={route}
+                  to={`/route/${escapedRoute}`}
+                >
+                  <div className="route-bar-card-body">
+                    {`${route}`}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
         <hr className="route-bar-hr" />
