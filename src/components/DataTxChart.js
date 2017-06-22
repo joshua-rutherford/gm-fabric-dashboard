@@ -2,11 +2,11 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-DataTxLineChart.propTypes = {
+DataTxChart.propTypes = {
   receivedAndSentBytesPerSecondArr: PropTypes.array
 };
 
-export default function DataTxLineChart({ receivedAndSentBytesPerSecondArr }) {
+export default function DataTxChart({ receivedAndSentBytesPerSecondArr }) {
   let deltas = [];
   if (receivedAndSentBytesPerSecondArr.length) {
     deltas = receivedAndSentBytesPerSecondArr.map(({ time, prettyTime, receivedBytesPerSecond, sentBytesPerSecond }) => ({

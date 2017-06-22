@@ -49,7 +49,7 @@ const metrics = State({
         // Temporary example of using a whitelist to filter useful route metrics. This shall be implemented
         // in a more general solution. https://github.com/DecipherNow/gm-fabric-dashboard/issues/81
         if (_.includes(window.location.href, '/services/ess/1.0/')) {
-          const whitelist = ['/ping', '/support', '/allowed', '/'];
+          const whitelist = ['/odrive/_search', '/odrive/_search/'];
           if (_.includes(whitelist, routePath)) {
             _.setWith(snapshot, result, value);
           }

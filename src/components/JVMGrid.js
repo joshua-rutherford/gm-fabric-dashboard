@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
-import JVMHeapLineChart from './JVMHeapLineChart';
-import JVMClassesAreaChart from './JVMClassesAreaChart';
+import JVMHeapChart from './JVMHeapChart';
+import JVMClassesChart from './JVMClassesChart';
 import { getLatestAttribute, getAttributeOverTime, mergeResults } from '../utils';
 
 class JVMGrid extends Component {
@@ -19,13 +19,16 @@ class JVMGrid extends Component {
           data-uk-grid
         >
           <div className="uk-width-1-2@l">
-            <JVMHeapLineChart
+            <JVMHeapChart
               maxHeap={getLatestAttribute(jvm, 'heap.max')}
-              usedAndCommittedHeapArr={mergeResults(getAttributeOverTime(jvm, 'heap.committed'), getAttributeOverTime(jvm, 'heap.used'))}
+              usedAndCommittedHeapArr={mergeResults(
+                getAttributeOverTime(jvm, 'heap.committed'),
+                getAttributeOverTime(jvm, 'heap.used')
+              )}
             />
           </div>
           <div className="uk-width-1-2@l">
-            <JVMClassesAreaChart
+            <JVMClassesChart
               currentLoadedArr={getAttributeOverTime(jvm, 'classes.currentLoaded')}
               totalLoaded={getLatestAttribute(jvm, 'classes.totalLoaded')}
               totalUnloaded={getLatestAttribute(jvm, 'classes.totalUnloaded')}

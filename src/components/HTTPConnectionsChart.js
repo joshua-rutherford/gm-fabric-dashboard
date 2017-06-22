@@ -1,16 +1,14 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
-import { AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-HTTPConnectionsLineChart.propTypes = {
+HTTPConnectionsChart.propTypes = {
   connectionsArr: PropTypes.array.isRequired
 };
 
-export default function HTTPConnectionsLineChart({ connectionsArr }) {
+export default function HTTPConnectionsChart({ connectionsArr }) {
   return (
-    <div
-      className="uk-card uk-card-small uk-card-body left-border"
-    >
+    <div className="uk-card uk-card-small uk-card-body left-border">
       <h3 className="uk-card-title">HTTP Connections</h3>
       {connectionsArr.length ? (
         <ResponsiveContainer
@@ -18,13 +16,21 @@ export default function HTTPConnectionsLineChart({ connectionsArr }) {
           height="80%"
           width="100%"
         >
-          <AreaChart data={connectionsArr}>
-            <Area
-              dataKey="connections"
-              fill="#F3F3F3"
+          <LineChart data={connectionsArr}>
+            <Line
+              dataKey="httpConnections"
+              dot={false}
               isAnimationActive={false}
               name="# Active HTTP Connections"
-              stroke="#aaaaaa"
+              stroke="#339933"
+              type="monotone"
+            />
+            <Line
+              dataKey="httpsConnections"
+              dot={false}
+              isAnimationActive={false}
+              name="# Active HTTPS Connections"
+              stroke="#00cc66"
               type="monotone"
             />
             <CartesianGrid stroke="#f2efef" />
@@ -36,10 +42,10 @@ export default function HTTPConnectionsLineChart({ connectionsArr }) {
             />
             <YAxis allowDecimals={false} />
             <Tooltip />
-          </AreaChart>
+          </LineChart>
         </ResponsiveContainer>
       ) : (
-        <h4>HTTP Connections Data Unavailable</h4>
+        <h4>HTTPS Connections Data Unavailable</h4>
         )}
     </div>
   );

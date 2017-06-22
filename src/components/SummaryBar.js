@@ -9,16 +9,18 @@ import SummaryBarCard from './SummaryBarCard';
 SummaryBar.propTypes = {
   finagle: PropTypes.object,
   http: PropTypes.object,
+  https: PropTypes.object,
   interval: PropTypes.number,
   jvm: PropTypes.object,
   pathname: PropTypes.string,
+  route: PropTypes.object,
   threads: PropTypes.object
 };
 
-function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) {
-  const httpRequests = getLatestAttribute(http, 'requests');
-  const successResponses = getLatestAttribute(http, 'success');
-  const successRate = successResponses ? Math.round(successResponses / httpRequests * 100) : 100;
+function SummaryBar({ finagle, http, https, interval, jvm, pathname, route, threads }) {
+  const httpsRequests = getLatestAttribute(https, 'requests');
+  const successResponses = getLatestAttribute(https, 'success');
+  const successRate = successResponses ? Math.round(successResponses / httpsRequests * 100) : 100;
 
   return (
     <div className="summary-bar-container">
@@ -33,13 +35,13 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
           tabIndex={1}
           title="Summary"
         />
-        {http &&
+        {(https || http) &&
           // The HTTP card displays if the HTTP object exists in Redux
           <SummaryBarCard
             href="/http"
-            lineOne={`${String(httpRequests).replace(/(.)(?=(\d{3})+$)/g, '$1,')} - ${successRate}%`}
+            lineOne={`${String(httpsRequests).replace(/(.)(?=(\d{3})+$)/g, '$1,')} - ${successRate}%`}
             tabIndex={2}
-            title="HTTP"
+            title="HTTPS"
           />
         }
         {route &&
@@ -106,8 +108,8 @@ function SummaryBar({ finagle, http, interval, jvm, pathname, route, threads }) 
   );
 }
 
-function mapStateToProps({ metrics: { finagle, http, jvm, route, threads }, routing: { locationBeforeTransitions: { pathname } }, settings: { interval } }) {
-  return { finagle, http, interval, jvm, pathname, route, threads };
+function mapStateToProps({ metrics: { finagle, http, https, jvm, route, threads }, routing: { locationBeforeTransitions: { pathname } }, settings: { interval } }) {
+  return { finagle, http, https, interval, jvm, pathname, route, threads };
 };
 
 export default connect(mapStateToProps)(SummaryBar);

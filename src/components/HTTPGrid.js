@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
-import HTTPConnectionsAreaChart from './HTTPConnectionsAreaChart';
-import DataTxLineChart from './DataTxLineChart';
+import HTTPConnectionsChart from './HTTPConnectionsChart';
+import DataTxChart from './DataTxChart';
 import HTTPStats from './HTTPStats';
 import DataTotals from './DataTotals';
 import { getLatestAttribute, getAttributeOverTime, getAttributeChangesOverTime, mergeResults } from '../utils';
@@ -10,42 +10,53 @@ import { getLatestAttribute, getAttributeOverTime, getAttributeChangesOverTime, 
 class HTTPGrid extends Component {
   static propTypes = {
     http: PropTypes.object,
-    jvm: PropTypes.object
+    https: PropTypes.object
   };
 
   render() {
-    const { jvm, http } = this.props;
+    const { http, https } = this.props;
     return (
       <div>
         <div
           className="uk-grid-match uk-grid-collapse uk-text-center"
           data-uk-grid
         >
-          {http && http.connections &&
-            <div className="uk-width-1-4@l uk-width-1-2@s">
-              <HTTPConnectionsAreaChart
-                connectionsArr={getAttributeOverTime(http, 'connections')}
+          {((https && https.connections) || (http && http.connections)) &&
+            <div className="uk-width-1-2@l uk-width-1-2@s">
+              <HTTPConnectionsChart
+                connectionsArr={mergeResults(
+                  getAttributeOverTime(http, 'connections', 'httpConnections'),
+                  getAttributeOverTime(https, 'connections', 'httpsConnections')
+                )}
               />
             </div>
           }
-          {http && (http.sentBytes || http.receivedBytes) &&
-            <div className="uk-width-1-4@l uk-width-1-2@s">
-              <DataTxLineChart
-                receivedAndSentBytesPerSecondArr={mergeResults(getAttributeChangesOverTime(http, 'sentBytes'), getAttributeChangesOverTime(http, 'receivedBytes'))}
+          {https && (https.sentBytes || https.receivedBytes) &&
+            <div className="uk-width-1-2@l uk-width-1-2@s">
+              <DataTxChart
+                httpReceivedAndSentBytesPerSecondArr={mergeResults(
+                  getAttributeChangesOverTime(http, 'sentBytes'),
+                  getAttributeChangesOverTime(http, 'receivedBytes')
+                )}
+                httpsReceivedAndSentBytesPerSecondArr={mergeResults(
+                  getAttributeChangesOverTime(https, 'sentBytes'),
+                  getAttributeChangesOverTime(https, 'receivedBytes')
+                )}
               />
             </div>
           }
-          <div className="uk-width-1-4@l uk-width-1-2@s">
+          <div className="uk-width-1-2@l uk-width-1-2@s">
             <HTTPStats
-              appUptime={getLatestAttribute(jvm, 'uptime')}
               totalHTTPRequests={getLatestAttribute(http, 'requests')}
+              totalHTTPSRequests={getLatestAttribute(https, 'requests')}
               totalSuccessfulHTTPRequests={getLatestAttribute(http, 'success')}
+              totalSuccessfulHTTPSRequests={getLatestAttribute(https, 'success')}
             />
           </div>
-          <div className="uk-width-1-4@l uk-width-1-2@s">
+          <div className="uk-width-1-2@l uk-width-1-2@s">
             <DataTotals
-              receivedBytes={getLatestAttribute(http, 'receivedBytes')}
-              sentBytes={getLatestAttribute(http, 'sentBytes')}
+              receivedBytes={getLatestAttribute(https, 'receivedBytes') + getLatestAttribute(http, 'receivedBytes')}
+              sentBytes={getLatestAttribute(https, 'sentBytes') + getLatestAttribute(http, 'sentBytes')}
             />
           </div>
         </div>
@@ -54,8 +65,8 @@ class HTTPGrid extends Component {
   };
 };
 
-function mapStateToProps({ metrics: { http, jvm } }) {
-  return { http, jvm };
+function mapStateToProps({ metrics: { http, https } }) {
+  return { http, https };
 };
 
 export default connect(mapStateToProps)(HTTPGrid);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import { getLatestAttribute, getAttributeChangesOverTime } from '../utils';
-import RouteRequestAreaChart from './RouteRequestAreaChart';
+import RouteRequestChart from './RouteRequestChart';
 
 class SummaryGrid extends Component {
   static propTypes = {
@@ -24,12 +24,11 @@ class SummaryGrid extends Component {
               className="uk-width-1-2@m"
               key={verbName}
             >
-              <div className="uk-card uk-card-small uk-card-body">
-                <h3 className="uk-card-title">{`${verbName} ${params.routeName}`}</h3>
-                <p>Requests: {getLatestAttribute(route, `${params.routeName}.${verbName}.requests`)}</p>
-                <p>Status Code 2XX : {getLatestAttribute(route, `${params.routeName}.${verbName}.status.2XX`)}</p>
-                <p>Status Code 200 : {getLatestAttribute(route, `${params.routeName}.${verbName}.status.200`)}</p>
-              </div>
+              <RouteRequestChart
+                requestsPerSecondArr={getAttributeChangesOverTime(route, `${params.routeName}.${verbName}.requests`)}
+                routeName={params.routeName}
+                verbName={verbName}
+              />
             </div>
           ))}
           {routeVerbs.map(verbName => (
@@ -37,11 +36,12 @@ class SummaryGrid extends Component {
               className="uk-width-1-2@m"
               key={verbName}
             >
-              <RouteRequestAreaChart
-                requestsPerSecondArr={getAttributeChangesOverTime(route, `${params.routeName}.${verbName}.requests`)}
-                routeName={params.routeName}
-                verbName={verbName}
-              />
+              <div className="uk-card uk-card-small uk-card-body">
+                <h3 className="uk-card-title">{`${verbName} ${params.routeName}`}</h3>
+                <p>Requests: {getLatestAttribute(route, `${params.routeName}.${verbName}.requests`)}</p>
+                <p>Status Code 2XX : {getLatestAttribute(route, `${params.routeName}.${verbName}.status.2XX`)}</p>
+                <p>Status Code 200 : {getLatestAttribute(route, `${params.routeName}.${verbName}.status.200`)}</p>
+              </div>
             </div>
           ))}
         </div>

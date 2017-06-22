@@ -39,13 +39,14 @@ export function getLatestAttribute(props, path) {
  * 
  * @param {Object} props - An arbitrary nested object passed from Redux via component props
  * @param {String} path - A string representation of the path to the desired key
+ * @param {String} label - An optional label used as the key for the time series data
  * @returns {Array}
  */
-export function getAttributeOverTime(props, path) {
+export function getAttributeOverTime(props, path, label) {
   if (!props || !path) return [];
   const fullPath = _.get(props, path);
   if (fullPath) {
-    let attribute = _.last(path.split('.'));
+    let attribute = label || _.last(path.split('.'));
     let timestamps = _.keys(fullPath).sort((a, b) => a - b);
     let results = timestamps.map(timestamp => {
       let obj = {};
@@ -84,11 +85,12 @@ export function getAttributeForSparkline(props, path) {
  * 
  * @param {Object} props - An arbitrary nested object passed from Redux via component props
  * @param {String} path - A string representation of the path to the desired key
+ * @param {String} label - An optional label used as the key for the time series data
  * @returns {Array}
  */
-export function getAttributeChangesOverTime(props, path) {
+export function getAttributeChangesOverTime(props, path, label) {
   if (!props || !path) return [];
-  let attributesOverTime = getAttributeOverTime(props, path);
+  let attributesOverTime = getAttributeOverTime(props, path, label);
   if (!attributesOverTime.length) return [];
   // Strip out the time related keys
   let dataKeys = _.without(_.keys(_.last(attributesOverTime)), 'time', 'prettyTime');
@@ -129,25 +131,26 @@ export function getAttributeChangesForSparkline(props, path) {
 }
 
 /**
- * Combine two sets of output of getAttributeChangesOverTime or getAttributeOverTime together
- * to allow them to be rendered on a single chart.
+ * Combine two or more sets of output of getAttributeChangesOverTime or getAttributeOverTime
+ * together to allow them to be rendered on a single chart.
  * 
- * @param {*} firstArrayOfResults - Array of output of getAttributeChangesOverTime or getAttributeOverTime
- * @param {*} secondArrayOfResults - Array of output of getAttributeChangesOverTime or getAttributeOverTime
- * @returns {Array}
+ * @param {Object[]} resultArray - One or more array of output of getAttributeChangesOverTime
+ * or getAttributeOverTime
+ * @returns {Object[]}
  */
-export function mergeResults(firstArrayOfResults, secondArrayOfResults) {
+export function mergeResults(...arrayOfResultArrays) {
+  console.log(arrayOfResultArrays);
   // Note: firstArrayOfResults seems to already have both key/value result pairs. Why? 
-  let arraysOfResultArrays = [firstArrayOfResults, secondArrayOfResults];
   let mergedResults = [];
-  _.forEach(arraysOfResultArrays, (resultArray) => {
+  _.forEach(arrayOfResultArrays, (resultArray) => {
     mergedResults.push(...resultArray);
   });
   let groupedResults = _.values(_.groupBy(mergedResults, result => result.time));
+  console.log(groupedResults);
   let results = _.map(_.values(groupedResults), group => _.merge(...group));
+  console.log(results);
   return results;
 }
-
 
 // Reselect Selectors
 
@@ -189,7 +192,6 @@ export const getThreadCounts = createSelector(getCurrentThreads, (threadsTable =
     all: threadsTable.length
   };
 });
-
 
 export function getBasename() {
   const metaBaseUrl = document.head.querySelector("[property=baseUrl]").content;

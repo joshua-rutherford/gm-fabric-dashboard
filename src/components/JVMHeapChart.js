@@ -2,12 +2,12 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-JVMHeapLineChart.propTypes = {
+JVMHeapChart.propTypes = {
   maxHeap: PropTypes.number.isRequired,
   usedAndCommittedHeapArr: PropTypes.array.isRequired
 };
 
-export default function JVMHeapLineChart({ maxHeap, usedAndCommittedHeapArr }) {
+export default function JVMHeapChart({ maxHeap, usedAndCommittedHeapArr }) {
   const BYTES_TO_MB = 1048576;
   // Map the metrics array and generate array of objects with an array of objects
   // with time stamps and the # of HTTP connections

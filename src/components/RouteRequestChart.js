@@ -2,28 +2,28 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-JVMHeapLineChart.propTypes = {
-  currentLoadedArr: PropTypes.array.isRequired,
-  totalLoaded: PropTypes.number.isRequired,
-  totalUnloaded: PropTypes.number.isRequired
+RouteRequestChart.propTypes = {
+  requestsPerSecondArr: PropTypes.array.isRequired,
+  routeName: PropTypes.string.isRequired,
+  verbName: PropTypes.string.isRequired
 };
 
-export default function JVMHeapLineChart({ currentLoadedArr, totalLoaded, totalUnloaded }) {
+export default function RouteRequestChart({ routeName, verbName, requestsPerSecondArr }) {
   return (
+
     <div className="uk-card uk-card-small uk-card-body">
-      <h3 className="uk-card-title">Classes</h3>
+      <h3 className="uk-card-title">{`${verbName} ${routeName}`}</h3>
       <ResponsiveContainer
         aspect={2}
         height="80%"
         width="100%"
       >
-        <AreaChart data={currentLoadedArr}>
+        <AreaChart data={requestsPerSecondArr}>
           <Area
-            dataKey="currentLoaded"
-            dot={false}
+            dataKey="requestsPerSecond"
             fill="#F3F3F3"
             isAnimationActive={false}
-            name="Current Loaded Classes"
+            name={`${verbName} requests to ${routeName} per second`}
             stroke="#aaaaaa"
             type="monotone"
           />
@@ -37,8 +37,6 @@ export default function JVMHeapLineChart({ currentLoadedArr, totalLoaded, totalU
           <Tooltip />
         </AreaChart>
       </ResponsiveContainer>
-      <div>Total Loaded: {totalLoaded}</div>
-      <div>Total Unloaded: {totalUnloaded}</div>
     </div>
   );
 }

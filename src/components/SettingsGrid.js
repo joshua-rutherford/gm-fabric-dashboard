@@ -41,7 +41,6 @@ function SettingsGrid ({settings}) {
   );
 };
 
-
 function mapStateToProps({ settings }) {
   return { settings };
 };
