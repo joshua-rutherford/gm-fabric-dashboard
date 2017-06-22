@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { NavLink } from 'react-router-dom';
 import { Sparklines, SparklinesLine } from 'react-sparklines';
 import { PropTypes } from 'prop-types';
 
@@ -24,39 +24,39 @@ SummaryBarCard.propTypes = {
 export default function SummaryBarCard({ chartData, href, isActive, lineOne, lineTwo, tabIndex, title, width }) {
   width = width || 'uk-width-small';
   return (
-      <Link
-        activeClassName="summary-bar-card-active"
-        className={`uk-card uk-card-small summary-bar-card ${width}`}
-        tabIndex={tabIndex}
-        to={href}
-      >
-        <div className="summary-bar-card-title">{title}</div>
-        <div className="uk-card-body summary-bar-card-body">
-          {
-            lineOne &&
-            <div className="uk-text-small">{lineOne}</div>
-          }
-          {
-            lineTwo &&
-            <div className="uk-text-small">{lineTwo}</div>
-          }
-          {
-            chartData &&
-            <Sparklines
-              data={chartData}
-              preserveAspectRatio='xMaxYMin'
-              style={{ width: '100%' }}
-            >
-              <SparklinesLine
-                style={{
-                  stroke: "#FFF",
-                  strokeWidth: 3,
-                  fill: "white"
-                }}
-              />
-            </Sparklines>
-          }
-        </div>
-      </Link>
+    <NavLink
+      activeClassName="summary-bar-card-active"
+      className={`uk-card uk-card-small summary-bar-card ${width}`}
+      tabIndex={tabIndex}
+      to={href}
+    >
+      <div className="summary-bar-card-title">{title}</div>
+      <div className="uk-card-body summary-bar-card-body">
+        {
+          lineOne &&
+          <div className="uk-text-small">{lineOne}</div>
+        }
+        {
+          lineTwo &&
+          <div className="uk-text-small">{lineTwo}</div>
+        }
+        {
+          chartData &&
+          <Sparklines
+            data={chartData}
+            preserveAspectRatio='xMaxYMin'
+            style={{ width: '100%' }}
+          >
+            <SparklinesLine
+              style={{
+                stroke: "#FFF",
+                strokeWidth: 3,
+                fill: "white"
+              }}
+            />
+          </Sparklines>
+        }
+      </div>
+    </NavLink>
   );
 };

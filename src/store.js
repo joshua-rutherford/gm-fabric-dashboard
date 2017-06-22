@@ -4,9 +4,10 @@ import logger from 'redux-logger';
 import { notification } from 'uikit';
 import _ from 'lodash';
 import { camelize } from 'humps';
-import { routerReducer } from 'react-router-redux';
+import { routerReducer, routerMiddleware } from 'react-router-redux';
 import { getBasename } from './utils';
 import axios from 'axios';
+import { history } from './index';
 
 // State Objects
 const metrics = State({
@@ -199,13 +200,15 @@ Hook((action, getState) => {
   }
 });
 
+// Prepare Redux Middlewares
 const middlewares = [];
 middlewares.push(CreateJumpstateMiddleware());
+middlewares.push(routerMiddleware(history));
 if (process.env.NODE_ENV === `development`) {
   middlewares.push(logger);
 }  
 
-// Putting it all together
+// Create the Redux store using reducers and middlewares
 export default createStore(
   combineReducers({ metrics, settings, routing: routerReducer }),
   applyMiddleware(...middlewares)

@@ -12,15 +12,14 @@ SummaryBar.propTypes = {
   https: PropTypes.object,
   interval: PropTypes.number,
   jvm: PropTypes.object,
-  pathname: PropTypes.string,
   route: PropTypes.object,
   threads: PropTypes.object
 };
 
-function SummaryBar({ finagle, http, https, interval, jvm, pathname, route, threads }) {
-  const httpsRequests = getLatestAttribute(https, 'requests');
-  const successResponses = getLatestAttribute(https, 'success');
-  const successRate = successResponses ? Math.round(successResponses / httpsRequests * 100) : 100;
+function SummaryBar({ finagle, https, http, interval, jvm, route, threads }) {
+  const httpRequests = Number(getLatestAttribute(http, 'requests')) + Number(getLatestAttribute(https, 'requests'));
+  const successResponses = Number(getLatestAttribute(http, 'success')) + Number(getLatestAttribute(https, 'success'));
+  const successRate = successResponses ? Math.round(successResponses / httpRequests * 100) : 100;
 
   return (
     <div className="summary-bar-container">
@@ -39,7 +38,7 @@ function SummaryBar({ finagle, http, https, interval, jvm, pathname, route, thre
           // The HTTP card displays if the HTTP object exists in Redux
           <SummaryBarCard
             href="/http"
-            lineOne={`${String(httpsRequests).replace(/(.)(?=(\d{3})+$)/g, '$1,')} - ${successRate}%`}
+            lineOne={`${String(httpRequests).replace(/(.)(?=(\d{3})+$)/g, '$1,')} - ${successRate}%`}
             tabIndex={2}
             title="HTTPS"
           />
@@ -108,8 +107,8 @@ function SummaryBar({ finagle, http, https, interval, jvm, pathname, route, thre
   );
 }
 
-function mapStateToProps({ metrics: { finagle, http, https, jvm, route, threads }, routing: { locationBeforeTransitions: { pathname } }, settings: { interval } }) {
-  return { finagle, http, https, interval, jvm, pathname, route, threads };
+function mapStateToProps({ metrics: { finagle, https, http, jvm, route, threads }, settings: { interval } }) {
+  return { finagle, https, http, interval, jvm, route, threads };
 };
 
 export default connect(mapStateToProps)(SummaryBar);
