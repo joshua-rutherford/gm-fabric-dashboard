@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import Navbar from './Navbar';
 import SummaryBar from './SummaryBar';
+import GolangSummaryBar from './golang/SummaryBar';
 
 class Container extends Component {
   static propTypes = {
@@ -25,7 +26,8 @@ class Container extends Component {
         id="app-container"
       >
         <Navbar />
-        <SummaryBar />
+        {this.props.runtime === 'JVM' && <SummaryBar />}
+        {this.props.runtime === 'GOLANG' && <GolangSummaryBar />}
         <div
           className="uk-background-default"
           data-uk-grid
@@ -40,8 +42,8 @@ class Container extends Component {
   };
 }
 
-function mapStateToProps({settings: { metricsEndpoints }}) {
-  return { metricsEndpoints };
+function mapStateToProps({settings: { metricsEndpoints, runtime }}) {
+  return { metricsEndpoints, runtime };
 };
 
 export default connect(mapStateToProps)(Container);

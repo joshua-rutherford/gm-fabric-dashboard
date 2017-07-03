@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import dateFormat from 'dateformat';
 import { createSelector } from 'reselect';
+import { camelize } from 'humps';
 
 // Dashboard Utility Functions
 
@@ -155,7 +156,19 @@ export function mergeResults(...arrayOfResultArrays) {
 // Reselect Selectors
 
 // Reselect Input Selectors
+
+/**
+ * Reselect Input selector that returns the threadsFilter from state.settings.threadsFilter
+ * @param {Object} state
+ * @returns {Object} 
+ */
 const getCurrentThreads = (state) => state.metrics.threadsTable;
+
+/**
+ * Reselect Input selector that returns the threadsFilter from state.settings.threadsFilter
+ * @param {Object} state
+ * @returns {Object} 
+ */
 const getThreadsFilter = (state) => state.settings.threadsFilter;
 
 // Reselect Memoized Selectors
@@ -193,8 +206,122 @@ export const getThreadCounts = createSelector(getCurrentThreads, (threadsTable =
   };
 });
 
+/**
+ * getBasename is a utility function that extracts the baseurl property from the HEAD of the index.html file. This is
+ * the means by which a dashboard is configured to be served out on a deeply nested path.
+ * @returns {String}
+ */
 export function getBasename() {
   const metaBaseUrl = document.head.querySelector("[property=baseUrl]").content;
   const baseUrl = metaBaseUrl.indexOf('__BASE_') !== -1 ? "/" : `${metaBaseUrl}`;
   return baseUrl;
 };
+
+/**
+ * getRuntime is a utility function that extracts the runtime from the HEAD of the index.html file. It's used to determine
+ * how the app should scrape metrics and render React components
+ * @returns {String}
+ */
+export function getRuntime() {
+  const metaRuntime = document.head.querySelector("[property=runtime]").content;
+  const runtime = metaRuntime.indexOf('__BASE_') !== -1 ? "JVM" : `${metaRuntime}`; //default to JVM
+  return runtime;
+};
+
+/**
+ * generateEndpoints is a utility function that returns the endpoints that should be scraped for current runtime
+ * @returns {String[]}
+ */
+export function generateEndpoints() {
+  switch (getRuntime()) {
+    case "GOLANG":
+      return ['metrics'];
+    case "JVM":
+    default:  
+      return ['admin/metrics.json', 'admin/threads'];
+  }
+}
+
+/**
+ * Utility function that takes the raw metrics data scraped from the golang endpoints, normalizes the data in the
+ * form expected by the React UI components, and restructures as timeseries data using the UNIX timestamp of when the
+ * endpoints were polled.
+ * @param {Object} rawScrapedMetrics
+ * @returns {Object}
+ */
+export function parseGolangMetrics(rawScrapedMetrics) {
+  let normalizedTimeseriesData = {};
+  let timestampOfMetricsPoll = Date.now();
+  // Change from slash delimited to dot delimited and from snake case to camel case to be able to
+  // use the lodash set method to build a idiomatic JSON hierarchy of data
+  _.forIn(rawScrapedMetrics, (metricsValue, slashDelimitedPath) => {
+    let dotDelimitedCamelizedPath = camelize(slashDelimitedPath.replace(/\//gi, '.'));
+    _.setWith(normalizedTimeseriesData, `${dotDelimitedCamelizedPath}.${timestampOfMetricsPoll}`, metricsValue);
+  });  
+  console.log(normalizedTimeseriesData);
+  return normalizedTimeseriesData;
+}
+
+/**
+ * Utility function that takes the raw metrics data scraped from the AWS endpoints, normalizes the data in the
+ * form expected by the React UI components, and restructures as timeseries data using the UNIX timestamp of when the
+ * endpoints were polled.
+ * @param {Object} rawScrapedMetrics
+ * @returns {Object}
+ */
+export function parseJVMMetrics(rawScrapedMetrics) {
+  // Transform each snapshot into a hierarchy of nested objects, where the lowest level is an object
+  // of key value pairs, where the key is the time stamp in UNIX time and the value is the value of
+  // the metric at that timestamp.
+  let normalizedTimeseriesData = {};
+  let timestampOfMetricsPoll = Date.now();
+  _.forIn(rawScrapedMetrics, (metricsValue, slashDelimitedPath) => {
+
+    // Parse Threads metrics into a 'threadsTable' ready for display in a table component and a 'threads' structure 
+    // similar to the other metrics that is able to use the utility functions to render time charts.
+    if (slashDelimitedPath === 'threads') {
+      let threadIds = Object.keys(metricsValue);
+      const threadsTable = threadIds.map(id => ({
+        name: metricsValue[id].thread,
+        id: id,
+        priority: metricsValue[id].priority,
+        state: metricsValue[id].state,
+        daemon: metricsValue[id].daemon,
+        stack: metricsValue[id].stack
+      }));
+      _.setWith(normalizedTimeseriesData, `threadsTable`, threadsTable);
+      threadsTable.forEach(resultObj => {
+        _.setWith(normalizedTimeseriesData, `threads.${resultObj.name}.jvm-id-${resultObj.id}.${timestampOfMetricsPoll}`, resultObj);
+      });
+    }
+
+    else if (_.startsWith(slashDelimitedPath, 'route')) {
+      // For route data, use a special regex to be able to sort / used in a path
+      // from / used as a delimiter in metrics.json
+      const routeRegex = /(route)(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
+      const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
+      const routePath = slashDelimitedPath.replace(routeRegex, '$2') || '/';   // Path with trailing slash or root
+      const httpVerb = slashDelimitedPath.replace(routeRegex, '$3');           // Valid HTTP Verb
+      const metadata = slashDelimitedPath.replace(routeRegex, '$4').replace(/\//gi, '.'); // dot delimited 
+      const result = [route, routePath, httpVerb, ...metadata.split('.'), String(timestampOfMetricsPoll)];
+
+      // Temporary example of using a whitelist to filter useful route metrics. This shall be implemented
+      // in a more general solution. https://github.com/DecipherNow/gm-fabric-dashboard/issues/81
+      if (_.includes(window.location.href, '/services/ess/1.0/')) {
+        const whitelist = ['/odrive/_search', '/odrive/_search/'];
+        if (_.includes(whitelist, routePath)) {
+          _.setWith(normalizedTimeseriesData, result, metricsValue);
+        }
+      } else {
+        _.setWith(normalizedTimeseriesData, result, metricsValue);
+      }
+    }
+    else {
+      // Change from slash delimited to dot delimited and from snake case to camel case to be able to
+      // use the lodash set method to build a idiomatic JSON hierarchy of data
+      let dotDelimitedCamelizedPath = camelize(slashDelimitedPath.replace(/\//gi, '.'));
+      _.setWith(normalizedTimeseriesData, `${dotDelimitedCamelizedPath}.${timestampOfMetricsPoll}`, metricsValue);
+    }
+  });
+  return normalizedTimeseriesData;
+}

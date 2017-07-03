@@ -1,11 +1,10 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { State, Effect, Actions, Hook, CreateJumpstateMiddleware } from 'jumpstate';
+import { State, getState, Effect, Actions, Hook, CreateJumpstateMiddleware } from 'jumpstate';
 import logger from 'redux-logger';
 import { notification } from 'uikit';
 import _ from 'lodash';
-import { camelize } from 'humps';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
-import { getBasename } from './utils';
+import { getBasename, getRuntime, generateEndpoints, parseJVMMetrics, parseGolangMetrics } from './utils';
 import axios from 'axios';
 import { history } from './index';
 
@@ -13,58 +12,20 @@ import { history } from './index';
 const metrics = State({
   initial: {},
   fetchMetricsSuccess(state, payload) {
-    // Transform each snapshot into a hierarchy of nested objects, where the lowest level is an object
-    // of key value pairs, where the key is the time stamp in UNIX time and the value is the value of
-    // the metric at that timestamp.
-    let snapshot = {};
-    let time = Date.now();
-    _.forIn(payload, (value, key) => {
-      if (key === 'threads') {
-        let threadIds = Object.keys(value);
-        const results = threadIds.map(id => ({
-          name: value[id].thread,
-          id: id,
-          priority: value[id].priority,
-          state: value[id].state,
-          daemon: value[id].daemon,
-          stack: value[id].stack
-        }));
-        // Threads Table is the latest state of all threads ready for display in a table component
-        _.setWith(snapshot, `threadsTable`, results);
-        // Threads is a structure similar to the other metrics that is able to use the utility
-        // functions to render time charts.
-        results.forEach(resultObj => {
-          _.setWith(snapshot, `threads.${resultObj.name}.jvm-id-${resultObj.id}.${time}`, resultObj);
-        });
-      }
-      else if (_.startsWith(key, 'route')) {
-        // For route data, use a special regex to be able to sort / used in a path
-        // from / used as a delimiter in metrics.json
-        const routeRegex = /(route)(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
-        const route = key.replace(routeRegex, '$1');              // Always 'route'
-        const routePath = key.replace(routeRegex, '$2') || '/';   // Path with trailing slash or root
-        const httpVerb = key.replace(routeRegex, '$3');           // Valid HTTP Verb
-        const metadata = key.replace(routeRegex, '$4').replace(/\//gi, '.'); // dot delimited 
-        const result = [route, routePath, httpVerb, ...metadata.split('.'), String(time)];
-
-        // Temporary example of using a whitelist to filter useful route metrics. This shall be implemented
-        // in a more general solution. https://github.com/DecipherNow/gm-fabric-dashboard/issues/81
-        if (_.includes(window.location.href, '/services/ess/1.0/')) {
-          const whitelist = ['/odrive/_search', '/odrive/_search/'];
-          if (_.includes(whitelist, routePath)) {
-            _.setWith(snapshot, result, value);
-          }
-        } else {
-          _.setWith(snapshot, result, value);
-        }
-      }
-      else {
-        // Change from slash delimited to dot delimited and from snake case to camel case to be able to
-        // use the lodash set method to build a idiomatic JSON hierarchy of data
-        let path = camelize(key.replace(/\//gi, '.'));
-        _.setWith(snapshot, `${path}.${time}`, value);
-      }
-    });
+    let snapshot;
+    const settings = getState().settings;
+    const runtime = (settings && settings.runtime) ? settings.runtime : '';
+    switch (runtime) {
+      case 'GOLANG':
+        snapshot = parseGolangMetrics(payload);
+        break;
+      case 'JVM':
+        snapshot = parseJVMMetrics(payload);
+        break;
+      default:
+        snapshot = {};  
+    };
+    
     // Deep merge the new snapshot into the existing state object.
     return _.merge({}, state, snapshot);
   },
@@ -79,8 +40,9 @@ const settings = State({
     isPolling: true,
     pollingHasInitialized: false,
     interval: 15000,
-    metricsEndpoints: [`admin/metrics.json`, 'admin/threads'],
+    metricsEndpoints: generateEndpoints(),
     pollingFailures: 0,
+    runtime: getRuntime(),
     threadsFilter: 'all'
   },
   setBaseUrl(state, payload) {

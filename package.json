@@ -67,6 +67,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "proxy": "For JVM, use 'http://localhost:9990'. For Golang, use 'http://localhost:9092'",
   "proxy": "http://localhost:9990",
   "homepage": "."
 }
