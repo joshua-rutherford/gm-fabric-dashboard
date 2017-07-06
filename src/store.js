@@ -23,7 +23,7 @@ const metrics = State({
         snapshot = parseJVMMetrics(payload);
         break;
       default:
-        snapshot = {};  
+        snapshot = {};
     };
     
     // Deep merge the new snapshot into the existing state object.

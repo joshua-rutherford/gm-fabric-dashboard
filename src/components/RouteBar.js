@@ -23,7 +23,6 @@ class RouteBar extends Component {
               const escapedRoute = route.replace(/\//g, '%2F');
               return (
                 <Link
-                  activeClassName="route-bar-card-active"
                   className="uk-card uk-card-small route-bar-card"
                   key={route}
                   to={`/route/${escapedRoute}`}

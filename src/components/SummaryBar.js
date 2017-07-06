@@ -3,7 +3,7 @@ import ms from 'ms';
 import { PropTypes } from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { getLatestAttribute, getAttributeForSparkline, getAttributeChangesForSparkline } from '../utils';
+import { getLatestAttribute, getSparkLineOfValue, getSparkLineOfNetChange } from '../utils';
 import SummaryBarCard from './SummaryBarCard';
 
 SummaryBar.propTypes = {
@@ -56,7 +56,7 @@ function SummaryBar({ finagle, https, http, interval, jvm, route, threads }) {
           // The Thread card displays if the metrics store has the thread.count from the jvm or the threads object
           // If it has the thread count, but not the detailed threads object, it is treated as part of /jvm
           <SummaryBarCard
-            chartData={getAttributeForSparkline(jvm, 'thread.count')}
+            chartData={getSparkLineOfValue(jvm, 'thread.count')}
             href={threads ? `/threads` : `/jvm`}
             lineOne={getLatestAttribute(jvm, 'thread.count')}
             tabIndex={4}
@@ -65,7 +65,7 @@ function SummaryBar({ finagle, https, http, interval, jvm, route, threads }) {
         }
         {jvm &&
           <SummaryBarCard
-            chartData={getAttributeForSparkline(jvm, 'mem.current.used')}
+            chartData={getSparkLineOfValue(jvm, 'mem.current.used')}
             href={`/jvm`}
             lineOne={filesize(getLatestAttribute(jvm, 'mem.current.used'))}
             tabIndex={5}
@@ -74,7 +74,7 @@ function SummaryBar({ finagle, https, http, interval, jvm, route, threads }) {
         }
         {jvm &&
           <SummaryBarCard
-            chartData={getAttributeChangesForSparkline(jvm, 'gc.msec')}
+            chartData={getSparkLineOfNetChange(jvm, 'gc.msec')}
             href="/jvm"
             lineOne={ms(getLatestAttribute(jvm, 'gc.msec'))}
             tabIndex={6}

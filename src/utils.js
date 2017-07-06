@@ -2,6 +2,7 @@ import _ from 'lodash';
 import dateFormat from 'dateformat';
 import { createSelector } from 'reselect';
 import { camelize } from 'humps';
+import deepFilter from 'deep-filter';
 
 // Dashboard Utility Functions
 
@@ -13,8 +14,8 @@ import { camelize } from 'humps';
 // of each attribute is appended to the appropriate complex object with a key equal to the timestamp
 // of when the fetched data was received from the server.
 
-// These utility functions are provided to simplify the common use cases of preparing data for
-// display in tables or charts.
+// These utility functions are provided to transform this data into time series, spark lines, and
+// other data structures capable of being consumed by front-end components.
 
 /**
  * Returns the most recent value of a particular attribute as a number or string
@@ -22,6 +23,7 @@ import { camelize } from 'humps';
  * @param {String} path - A string representation of the path to the desired key
  * @returns {Number|String}
  */
+
 export function getLatestAttribute(props, path) {
   if (!props || !path) return 0;
   // _.has is not suitable because some object become arrays and auto insert
@@ -33,17 +35,22 @@ export function getLatestAttribute(props, path) {
   return 0;
 }
 
+// TODO: add array at dataAttributes containing all of the keys storing metrics
+// in this time series. This will allow easier lookup
+
 /**
- * Returns the value of an attribute over time as an array of objects with keys of 
- * time(UNIX time in ms), prettyTime(string of time in h:MMtt), and a dynamically generated
- * key (least significant key passed into the path parameter) with the value of the attribute
+ * Returns time series data of a metric's value
+ *   time - UNIX time in ms
+ *   prettyTime - string of time in hMMtt,
+ *   dataAttribute - value of metric stored at least significant key passed into the path parameter or
+ *     the optional label parameter
  * 
  * @param {Object} props - An arbitrary nested object passed from Redux via component props
  * @param {String} path - A string representation of the path to the desired key
  * @param {String} label - An optional label used as the key for the time series data
  * @returns {Array}
  */
-export function getAttributeOverTime(props, path, label) {
+export function getTimeSeriesOfValue(props, path, label) {
   if (!props || !path) return [];
   const fullPath = _.get(props, path);
   if (fullPath) {
@@ -62,40 +69,36 @@ export function getAttributeOverTime(props, path, label) {
 }
 
 /**
- * Returns the value of an attribute over time as an array of number of strings. All timestamps
- * information is stripped out for use in simple sparkline style charts.
+ * Returns spark line of a metric's value
  * 
  * @param {Object} props - An arbitrary nested object passed from Redux via component props
  * @param {String} path - A string representation of the path to the desired key
  * @returns {Array}
  */
-export function getAttributeForSparkline(props, path) {
+export function getSparkLineOfValue(props, path) {
   if (!props || !path) return [0, 0];
-  const attributesOverTime = getAttributeOverTime(props, path);
-  if (attributesOverTime.length < 2) return [0, 0];
-  let dataKey = _.without(_.keys(_.last(attributesOverTime)), 'time', 'prettyTime')[0];
-  const results = attributesOverTime.map(obj => obj[dataKey]);
+  const timeSeries = getTimeSeriesOfValue(props, path);
+  if (timeSeries.length < 2) return [0, 0];
+  let dataKey = extractDataAttributes(timeSeries)[0];
+  const results = timeSeries.map(obj => obj[dataKey]);
   return results;
 }
 
 /**
- * Returns the net change of an attribute between timestamps as an array of objects with keys of 
- * time(UNIX time in ms), prettyTime(string of time in h:MMtt), and a dynamically generated
- * key (least significant key passed into the path parameter + 'PerSecond') with the net change of 
- * the attribute.
+ * Returns time series data of a metric's net change since that last time the metric was polled
  * 
  * @param {Object} props - An arbitrary nested object passed from Redux via component props
  * @param {String} path - A string representation of the path to the desired key
  * @param {String} label - An optional label used as the key for the time series data
  * @returns {Array}
  */
-export function getAttributeChangesOverTime(props, path, label) {
+export function getTimeSeriesOfNetChange(props, path, label) {
   if (!props || !path) return [];
-  let attributesOverTime = getAttributeOverTime(props, path, label);
-  if (!attributesOverTime.length) return [];
+  let timeSeries = getTimeSeriesOfValue(props, path, label);
+  if (!timeSeries.length) return [];
   // Strip out the time related keys
-  let dataKeys = _.without(_.keys(_.last(attributesOverTime)), 'time', 'prettyTime');
-  let attributeChangesOverTime = attributesOverTime.map(function (attribute, index) {
+  let dataKeys = extractDataAttributes(timeSeries);
+  let attributeChangesOverTime = timeSeries.map(function (attribute, index) {
     // Express the first timestamp as a net change of 0 since there is no basis of comparison
     if (index === 0) {
       let obj = { time: attribute.time, prettyTime: attribute.prettyTime };
@@ -106,8 +109,8 @@ export function getAttributeChangesOverTime(props, path, label) {
     else {
       let obj = { time: attribute.time, prettyTime: attribute.prettyTime };
       _.forEach(dataKeys, (dataKey) => {
-        let elapsedTimeInSeconds = (attribute.time - attributesOverTime[index - 1].time) / 1000;
-        obj[`${dataKey}PerSecond`] = Math.round((attribute[dataKey] - attributesOverTime[index - 1][dataKey]) / elapsedTimeInSeconds);
+        let elapsedTimeInSeconds = (attribute.time - timeSeries[index - 1].time) / 1000;
+        obj[`${dataKey}PerSecond`] = Math.round((attribute[dataKey] - timeSeries[index - 1][dataKey]) / elapsedTimeInSeconds);
       });
       return obj;
     }
@@ -116,40 +119,34 @@ export function getAttributeChangesOverTime(props, path, label) {
 }
 
 /**
- * Returns the net change of an attribute over time as an array of numbers. All timestamps
- * information is stripped out for use in simple sparkline style charts.
+ * Returns sparkline of a metric's net change since that last time the metric was polled
  * 
  * @param {Object} props - An arbitrary nested object passed from Redux via component props
  * @param {String} path - A string representation of the path to the desired key
  * @returns {Array}
  */
-export function getAttributeChangesForSparkline(props, path) {
+export function getSparkLineOfNetChange(props, path) {
   if (!props || !path) return [0, 0];
-  const attributesChangesOverTime = getAttributeChangesOverTime(props, path);
+  const attributesChangesOverTime = getTimeSeriesOfNetChange(props, path);
   if (attributesChangesOverTime.length < 2) return [0, 0];
-  let dataKey = _.without(_.keys(_.last(attributesChangesOverTime)), 'time', 'prettyTime')[0];
+  let dataKey = extractDataAttributes(attributesChangesOverTime)[0];
   return attributesChangesOverTime.map(obj => obj[dataKey]);
 }
 
 /**
- * Combine two or more sets of output of getAttributeChangesOverTime or getAttributeOverTime
- * together to allow them to be rendered on a single chart.
+ * Combine two or more time series together to allow them to be rendered on a single chart.
  * 
- * @param {Object[]} resultArray - One or more array of output of getAttributeChangesOverTime
- * or getAttributeOverTime
+ * @param {Object[]} arrayOfTimeSeries - array containing one or more time series 
  * @returns {Object[]}
  */
-export function mergeResults(...arrayOfResultArrays) {
-  console.log(arrayOfResultArrays);
+export function mergeTimeSeries(...arrayOfTimeSeries) {
   // Note: firstArrayOfResults seems to already have both key/value result pairs. Why? 
   let mergedResults = [];
-  _.forEach(arrayOfResultArrays, (resultArray) => {
-    mergedResults.push(...resultArray);
+  _.forEach(arrayOfTimeSeries, (timeSeries) => {
+    mergedResults.push(...timeSeries);
   });
   let groupedResults = _.values(_.groupBy(mergedResults, result => result.time));
-  console.log(groupedResults);
   let results = _.map(_.values(groupedResults), group => _.merge(...group));
-  console.log(results);
   return results;
 }
 
@@ -250,21 +247,21 @@ export function generateEndpoints() {
  * @returns {Object}
  */
 export function parseGolangMetrics(rawScrapedMetrics) {
-  let normalizedTimeseriesData = {};
+  let normalizedTimeSeriesSample = {};
   let timestampOfMetricsPoll = Date.now();
   // Change from slash delimited to dot delimited and from snake case to camel case to be able to
   // use the lodash set method to build a idiomatic JSON hierarchy of data
   _.forIn(rawScrapedMetrics, (metricsValue, slashDelimitedPath) => {
-    let dotDelimitedCamelizedPath = camelize(slashDelimitedPath.replace(/\//gi, '.'));
-    _.setWith(normalizedTimeseriesData, `${dotDelimitedCamelizedPath}.${timestampOfMetricsPoll}`, metricsValue);
+    let path = slashDelimitedPath.split(/[./]/).map(e => camelize(e));
+    path.push(timestampOfMetricsPoll.toString());
+    _.setWith(normalizedTimeSeriesSample, path, metricsValue);
   });  
-  console.log(normalizedTimeseriesData);
-  return normalizedTimeseriesData;
+  return normalizedTimeSeriesSample;
 }
 
 /**
  * Utility function that takes the raw metrics data scraped from the AWS endpoints, normalizes the data in the
- * form expected by the React UI components, and restructures as timeseries data using the UNIX timestamp of when the
+ * form expected by the React UI components, and restructures as time series using the UNIX timestamp of when the
  * endpoints were polled.
  * @param {Object} rawScrapedMetrics
  * @returns {Object}
@@ -273,7 +270,7 @@ export function parseJVMMetrics(rawScrapedMetrics) {
   // Transform each snapshot into a hierarchy of nested objects, where the lowest level is an object
   // of key value pairs, where the key is the time stamp in UNIX time and the value is the value of
   // the metric at that timestamp.
-  let normalizedTimeseriesData = {};
+  let normalizedTimeSeriesSample = {};
   let timestampOfMetricsPoll = Date.now();
   _.forIn(rawScrapedMetrics, (metricsValue, slashDelimitedPath) => {
 
@@ -289,39 +286,124 @@ export function parseJVMMetrics(rawScrapedMetrics) {
         daemon: metricsValue[id].daemon,
         stack: metricsValue[id].stack
       }));
-      _.setWith(normalizedTimeseriesData, `threadsTable`, threadsTable);
+      _.setWith(normalizedTimeSeriesSample, `threadsTable`, threadsTable, Object);
       threadsTable.forEach(resultObj => {
-        _.setWith(normalizedTimeseriesData, `threads.${resultObj.name}.jvm-id-${resultObj.id}.${timestampOfMetricsPoll}`, resultObj);
+        let path = ['threads', resultObj.name, String(resultObj.id), String(timestampOfMetricsPoll)];
+        _.setWith(normalizedTimeSeriesSample, path, resultObj, Object);
       });
     }
 
     else if (_.startsWith(slashDelimitedPath, 'route')) {
-      // For route data, use a special regex to be able to sort / used in a path
-      // from / used as a delimiter in metrics.json
-      const routeRegex = /(route)(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
-      const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
-      const routePath = slashDelimitedPath.replace(routeRegex, '$2') || '/';   // Path with trailing slash or root
-      const httpVerb = slashDelimitedPath.replace(routeRegex, '$3');           // Valid HTTP Verb
-      const metadata = slashDelimitedPath.replace(routeRegex, '$4').replace(/\//gi, '.'); // dot delimited 
-      const result = [route, routePath, httpVerb, ...metadata.split('.'), String(timestampOfMetricsPoll)];
-
-      // Temporary example of using a whitelist to filter useful route metrics. This shall be implemented
-      // in a more general solution. https://github.com/DecipherNow/gm-fabric-dashboard/issues/81
-      if (_.includes(window.location.href, '/services/ess/1.0/')) {
-        const whitelist = ['/odrive/_search', '/odrive/_search/'];
-        if (_.includes(whitelist, routePath)) {
-          _.setWith(normalizedTimeseriesData, result, metricsValue);
-        }
-      } else {
-        _.setWith(normalizedTimeseriesData, result, metricsValue);
-      }
+      const [route, routePath, httpVerb, metadata] = parseJVMRoute(slashDelimitedPath); 
+      const result = [route, routePath, httpVerb, ...metadata, String(timestampOfMetricsPoll)];
+      _.setWith(normalizedTimeSeriesSample, result, metricsValue, Object);
     }
+      
     else {
-      // Change from slash delimited to dot delimited and from snake case to camel case to be able to
-      // use the lodash set method to build a idiomatic JSON hierarchy of data
-      let dotDelimitedCamelizedPath = camelize(slashDelimitedPath.replace(/\//gi, '.'));
-      _.setWith(normalizedTimeseriesData, `${dotDelimitedCamelizedPath}.${timestampOfMetricsPoll}`, metricsValue);
+      // Build a path array to use the lodash set method to build a idiomatic JSON hierarchy of data
+      let path = slashDelimitedPath.split(/[./]/).map(e => camelize(e));
+      let pathWithTimestamps = [...path, timestampOfMetricsPoll.toString()];
+      _.setWith(normalizedTimeSeriesSample, pathWithTimestamps, metricsValue, Object);
     }
   });
-  return normalizedTimeseriesData;
+  return normalizedTimeSeriesSample;
 }
+
+/**
+ * Helper function used to parse the route information provided by Finagle though a regex
+ * to be able to sort '/' characters used in a UNIX path from / used as a delimiter in metrics.json
+ * @param {String} slashDelimitedPath
+ * @returns {String[]}
+ */
+function parseJVMRoute(slashDelimitedPath) {
+  // 
+  const routeRegex = /(route)(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
+  const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
+  const routePath = slashDelimitedPath.replace(routeRegex, '$2') || '/';   // Path with trailing slash or root
+  const httpVerb = slashDelimitedPath.replace(routeRegex, '$3');           // Valid HTTP Verb
+  const metadata = slashDelimitedPath.replace(routeRegex, '$4').split(/[./]/); // dot delimited 
+  return [route, routePath, httpVerb, metadata];
+}
+
+/**
+ * A method to iteratively build out a time series less structure that shadows the normal
+ * metrics store. This approach is currently not used in favor of the extractDataAttributes
+ * function.
+ * @param {Object} rawScrapedMetrics
+ * @returns {Object} 
+ */
+export function parseJVMPaths(rawScrapedMetrics) {
+  let normalizedTimeSeriesHeader = {};
+  _.forIn(rawScrapedMetrics, (metricsValue, slashDelimitedPath) => {
+    if (_.startsWith(slashDelimitedPath, 'route')) {
+      const [route, routePath, httpVerb, metadata] = parseJVMRoute(slashDelimitedPath);
+      _.update(normalizedTimeSeriesHeader, [route, routePath, httpVerb], metadata);
+    } else {
+      // Build a path array to use the lodash set method to build a idiomatic JSON hierarchy of data
+      let path = slashDelimitedPath.split(/[./]/).map(e => camelize(e));
+      if (path.length === 1) {
+        _.update(normalizedTimeSeriesHeader, [], path);
+      } else if (path.length > 1) {
+        _.update(normalizedTimeSeriesHeader, path.slice(0,-1), path.slice(-1));
+      }
+    }
+  });
+  return normalizedTimeSeriesHeader;
+}
+
+/**
+ * return an array of all strings used as data attribute keys in the most recent sample
+ * @param {Object[]} timeSeries
+ * @returns {String[]}
+ */
+export function extractDataAttributes(timeSeries) {
+  return _.without(_.keys(_.last(timeSeries)), 'time', 'prettyTime');
+}
+
+/**
+ * Creates a copy of the metrics hierarchy with the actual time series replaced
+ * by empty objects and excluding structures in a blacklist. This derived structure
+ * is intended to be used for navigation trees, searches, and type-aheads that
+ * benefit from a smaller navigation structure that preserves the path needed to
+ * generate charts.
+ * @param {Object} timeSeries
+ * @returns {Object}
+ */
+export function extractPaths(timeSeries) {
+  return deepFilter(timeSeries, (value, key, parent) => {
+    const blacklist = ['threadsTable'];
+    if (_.includes(blacklist, key)) {
+      return false;
+    // If the key can be cast to a UNIX timestamp from 2000 on, assume this is a time series
+    } else if (Number(key) > 946684800) { 
+      return false;
+    } else {
+      return true;
+    }
+  });
+}
+
+/**
+ * @callback dataAttributesMapper
+ * @param {String} currentValue
+ * @returns {String}
+ */
+
+/**
+ * Maps over a time series and runs the mapFunc against all data attributes specified in the arrayOfDataAttributes.
+ * This provides a convenient means for basic transformations like unit conversion
+ *
+ * @param {Object} timeSeries 
+ * @param {String[]} arrayOfDataAttributes 
+ * @param {dataAttributesMapper} mapFunc
+ * @returns {Object}
+ */
+export const mapOverTimeSeries= (timeSeries, arrayOfDataAttributes, mapFunc) => {
+  return timeSeries.map((currentValue, index, array) => {
+    const mappedObj = { ...currentValue };
+    arrayOfDataAttributes.forEach(dataAttribute => {
+      if (currentValue[dataAttribute]) mappedObj[dataAttribute] = mapFunc(currentValue[dataAttribute]);
+    });
+    return mappedObj;
+  });
+};

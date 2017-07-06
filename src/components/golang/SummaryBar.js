@@ -2,7 +2,7 @@ import filesize from 'filesize';
 import { PropTypes } from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { getLatestAttribute, getAttributeForSparkline } from '../../utils';
+import { getLatestAttribute, getSparkLineOfValue } from '../../utils';
 import SummaryBarCard from '../SummaryBarCard';
 
 SummaryBar.propTypes = {
@@ -25,7 +25,7 @@ function SummaryBar({ memory }) {
           title="Summary"
         />
         <SummaryBarCard
-          chartData={getAttributeForSparkline(memory, 'used')}
+          chartData={getSparkLineOfValue(memory, 'used')}
           href={`/summary`}
           lineOne={filesize(getLatestAttribute(memory, 'used'))}
           tabIndex={5}
