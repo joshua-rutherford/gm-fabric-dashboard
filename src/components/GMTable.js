@@ -7,7 +7,7 @@ HTTPStats.propTypes = {
   title: PropTypes.string.isRequired
 };
 
-export default function HTTPStats({ title, headers, rows }) {
+export default function HTTPStats({ title, headers, rows = []}) {
   return (
     <div className="uk-card uk-card-small uk-card-body left-border">
       <h3 className="uk-card-title">{title}</h3>
@@ -23,7 +23,7 @@ export default function HTTPStats({ title, headers, rows }) {
         <tbody>
           {rows.map((row, rowIndex) => (
             <tr key={`row-${rowIndex}`}>
-              {row.map((cell, cellIndex) => ((
+              {row && row.map((cell, cellIndex) => ((
                 <td key={`row-${rowIndex}-cell-${cellIndex}`}>{cell}</td>  
               )))}
             </tr>

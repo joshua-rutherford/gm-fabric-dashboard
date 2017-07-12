@@ -15,6 +15,7 @@ import randomColor from "randomcolor";
 
 /**
  * Reuseable Line Chart component for rendering a time series
+ *
  * Required Props include title (the string to show at that top of the card) and time series (the data to render).
  * Optional props include any number of detailLines, an array of strings listed below the line chart.
  */
@@ -83,7 +84,10 @@ export default class GMLineChart extends React.Component {
         <h3 className="uk-card-title">
           {title}
         </h3>
-        <ResponsiveContainer aspect={2} height="80%" width="100%">
+        <ResponsiveContainer aspect={2}
+          height="80%"
+          width="100%"
+        >
           <LineChart data={timeSeries}>
             {dataKeys.map(dataKey =>
               <Line

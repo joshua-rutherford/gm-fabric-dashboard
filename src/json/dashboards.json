@@ -1,0 +1,411 @@
+{
+  "http": {
+    "name": "HTTP",
+    "runtime": "JVM",
+    "summaryCard": {
+      "lineOne": [
+        {
+          "type": "string",
+          "value": "HTTP:"
+        },
+        {
+          "type": "latest",
+          "value": "http/success"
+        },
+        {
+          "type": "string",
+          "value": "/"
+        },
+        {
+          "type": "latest",
+          "value": "http/requests"
+        }
+      ],
+      "lineTwo": [
+        {
+          "type": "string",
+          "value": "HTTPS:"
+        },
+        {
+          "type": "latest",
+          "value": "https/success"
+        },
+        {
+          "type": "string",
+          "value": "/"
+        },
+        {
+          "type": "latest",
+          "value": "https/requests"
+        }
+      ]
+    },
+    "grid": {
+      "breakpoints": {
+        "lg": 1200,
+        "md": 996,
+        "sm": 768
+      },
+      "cols": {
+        "lg": 12,
+        "md": 8,
+        "sm": 4
+      },
+      "rowHeight": 60
+    },
+    "charts": [
+      {
+        "title": "HTTP Connections",
+        "type": "GMLineChart",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "w": 4,
+          "h": 6,
+          "minW": 3,
+          "minH": 4
+        },
+        "data": {
+          "timeseries": [
+            {
+              "type": "value",
+              "attribute": "http/connections",
+              "label": "HTTP Connections"
+            }
+          ]
+        }
+      },
+      {
+        "title": "Data Transfer Rates",
+        "type": "GMLineChart",
+        "position": {
+          "x": 4,
+          "y": 0,
+          "w": 4,
+          "h": 6,
+          "minW": 3,
+          "minH": 4
+        },
+        "data": {
+          "timeseries": [
+            {
+              "type": "netChange",
+              "attribute": "http/sent_bytes",
+              "label": "HTTP Sent Bytes (kBps)",
+              "baseUnit": "B",
+              "resultUnit": "kB",
+              "precision": 3
+            },
+            {
+              "type": "netChange",
+              "attribute": "https/sent_bytes",
+              "label": "HTTPS Sent Bytes (kBps)",
+              "baseUnit": "B",
+              "resultUnit": "kB",
+              "precision": 3
+            },
+            {
+              "type": "netChange",
+              "attribute": "http/received_bytes",
+              "label": "HTTP Received (kBps)",
+              "baseUnit": "B",
+              "resultUnit": "kB",
+              "precision": 3
+            },
+            {
+              "type": "netChange",
+              "attribute": "https/received_bytes",
+              "label": "HTTPS Received (kBps)",
+              "baseUnit": "B",
+              "resultUnit": "kB",
+              "precision": 3
+            }
+          ]
+        }
+      },
+      {
+        "title": "HTTP Stats",
+        "type": "GMTable",
+        "position": {
+          "x": 8,
+          "y": 0,
+          "w": 4,
+          "h": 6,
+          "minW": 3,
+          "minH": 4
+        },
+        "data": {
+          "headers": [
+            "Requests",
+            "Success"
+          ],
+          "rows": [
+            [
+              "http",
+              "http/requests",
+              "http/success"
+            ],
+            [
+              "https",
+              "https/requests",
+              "https/success"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "jvm": {
+    "name": "JVM",
+    "runtime": "JVM",
+    "summaryCard": {
+      "chart": {
+        "type": "value",
+        "dataAttribute": "jvm/mem/current/used"
+      },
+      "lineOne": [
+        {
+          "type": "latest",
+          "value": "jvm/mem/current/used",
+          "baseUnit": "B",
+          "resultUnit": "MB",
+          "precision": 3
+        },
+        {
+          "type": "string",
+          "value": "MB"
+        }
+      ],
+      "lineTwo": []
+    },
+    "grid": {
+      "breakpoints": {
+        "lg": 1200,
+        "md": 996,
+        "sm": 768
+      },
+      "cols": {
+        "lg": 12,
+        "md": 8,
+        "sm": 4
+      },
+      "rowHeight": 60
+    },
+    "charts": [
+      {
+        "title": "Heap",
+        "type": "GMLineChart",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "w": 6,
+          "h": 9,
+          "minW": 4,
+          "minH": 5
+        },
+        "data": {
+          "detailLines": [
+            [
+              {
+                "type": "string",
+                "value": "Max Heap:"
+              },
+              {
+                "type": "latest",
+                "value": "jvm/heap/max",
+                "baseUnit": "B",
+                "resultUnit": "GB",
+                "precision": 3
+              },
+              {
+                "type": "string",
+                "value": "GB"
+              }
+            ]
+          ],
+          "timeseries": [
+            {
+              "type": "value",
+              "attribute": "jvm/heap/committed",
+              "label": "JVM Heap Committed (MB)",
+              "baseUnit": "B",
+              "resultUnit": "MB",
+              "precision": 3
+            },
+            {
+              "type": "value",
+              "attribute": "jvm/heap/used",
+              "label": "JVM Heap Used (MB)",
+              "baseUnit": "B",
+              "resultUnit": "MB",
+              "precision": 3
+            }
+          ]
+        }
+      },
+      {
+        "title": "Classes",
+        "type": "GMLineChart",
+        "position": {
+          "x": 6,
+          "y": 0,
+          "w": 6,
+          "h": 9,
+          "minW": 4,
+          "minH": 5
+        },
+        "data": {
+          "detailLines": [
+            [
+              {
+                "type": "string",
+                "value": "Total Loaded:"
+              },
+              {
+                "type": "latest",
+                "value": "jvm/classes/total_loaded"
+              }
+            ],
+            [
+              {
+                "type": "string",
+                "value": "Total Unloaded:"
+              },
+              {
+                "type": "latest",
+                "value": "jvm/classes/total_unloaded"
+              }
+            ]
+          ],
+          "timeseries": [
+            {
+              "type": "value",
+              "attribute": "jvm/classes/current_loaded",
+              "label": "# of currently loaded JVM Classes"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "finagle": {
+    "name": "Finagle",
+    "runtime": "JVM",
+    "summaryCard": {
+      "lineOne": [
+        {
+          "type": "latest",
+          "value": "finagle/future_pool/active_tasks"
+        },
+        {
+          "type": "string",
+          "value": "Active"
+        }
+      ],
+      "lineTwo": [
+        {
+          "type": "latest",
+          "value": "finagle/timer/pending_tasks.count"
+        },
+        {
+          "type": "string",
+          "value": "Pending"
+        }
+      ]
+    },
+    "grid": {
+      "breakpoints": {
+        "lg": 1200,
+        "md": 996,
+        "sm": 768
+      },
+      "cols": {
+        "lg": 12,
+        "md": 8,
+        "sm": 4
+      },
+      "rowHeight": 60
+    },
+    "charts": [
+      {
+        "title": "Timer Deviation",
+        "type": "GMBasicMetrics",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "w": 4,
+          "h": 5,
+          "minW": 3,
+          "minH": 5
+        },
+        "data": {
+          "detailLines": {
+            "Count": "finagle/timer/deviation_ms.count",
+            "Average": "finagle/timer/deviation_ms.avg",
+            "Max": "finagle/timer/deviation_ms.max",
+            "Min": "finagle/timer/deviation_ms.min",
+            "Sum": "finagle/timer/deviation_ms.sum"
+          }
+        }
+      },
+      {
+        "title": "Pending Timer Tasks",
+        "type": "GMBasicMetrics",
+        "position": {
+          "x": 4,
+          "y": 0,
+          "w": 4,
+          "h": 5,
+          "minW": 3,
+          "minH": 5
+        },
+        "data": {
+          "detailLines": {
+            "Count": "finagle/timer/pending_tasks.count",
+            "Average": "finagle/timer/pending_tasks.avg",
+            "Max": "finagle/timer/pending_tasks.max",
+            "Min": "finagle/timer/pending_tasks.min",
+            "Sum": "finagle/timer/pending_tasks.sum"
+          }
+        }
+      },
+      {
+        "title": "Future Pool",
+        "type": "GMBasicMetrics",
+        "position": {
+          "x": 8,
+          "y": 0,
+          "w": 4,
+          "h": 5,
+          "minW": 3,
+          "minH": 5
+        },
+        "data": {
+          "detailLines": {
+            "Active Tasks": "finagle/future_pool/active_tasks",
+            "Completed Tasks": "finagle/futurePool/completed_tasks",
+            "Pool Size": "finagle/timer/pool_size"
+          }
+        }
+      },
+      {
+        "title": "Client Registry",
+        "type": "GMBasicMetrics",
+        "position": {
+          "x": 0,
+          "y": 5,
+          "w": 4,
+          "h": 5,
+          "minW": 3,
+          "minH": 5
+        },
+        "data": {
+          "detailLines": {
+            "Initial Resolution": "finagle/clientregistry/initialresolution_ms",
+            "Size": "finagle/clientregistry/size"
+          }
+        }
+      }
+    ]
+  }
+}

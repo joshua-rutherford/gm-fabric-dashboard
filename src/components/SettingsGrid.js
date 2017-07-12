@@ -1,10 +1,10 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
-import PollingSettings from './PollingSettings';
 import UIkit from 'uikit';
-import 'react-input-range/lib/css/index.css';
 import { Actions } from 'jumpstate';
+import PollingSettings from './PollingSettings';
+import 'react-input-range/lib/css/index.css';
 
 SettingsGrid.propTypes = {
   settings: PropTypes.object

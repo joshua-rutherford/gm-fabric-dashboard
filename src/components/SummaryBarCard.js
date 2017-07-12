@@ -1,7 +1,7 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import { Sparklines, SparklinesLine } from 'react-sparklines';
-import { PropTypes } from 'prop-types';
 
 SummaryBarCard.propTypes = {
   chartData: PropTypes.array,

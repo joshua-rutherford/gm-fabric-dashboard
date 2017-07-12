@@ -12,6 +12,7 @@
     "jquery": "~3.2.1",
     "jumpstate": "~2.2.2",
     "lodash": "~4.17.4",
+    "mathjs": "^3.14.2",
     "ms": "~2.0.0",
     "prop-types": "~15.5.8",
     "randomcolor": "^0.5.3",
@@ -70,7 +71,6 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "proxy": "For JVM, use 'http://localhost:9990'. For Golang, use 'http://localhost:9092'",
   "proxy": "http://localhost:9990",
   "homepage": "."
 }

@@ -3,6 +3,7 @@ import dateFormat from 'dateformat';
 import { createSelector } from 'reselect';
 import { camelize } from 'humps';
 import deepFilter from 'deep-filter';
+import Mathjs from 'mathjs';
 
 // Dashboard Utility Functions
 
@@ -24,11 +25,14 @@ import deepFilter from 'deep-filter';
  * @returns {Number|String}
  */
 
-export function getLatestAttribute(props, path) {
+export function getLatestAttribute(props, path, baseUnit, resultUnit, precision) {
   if (!props || !path) return 0;
   // _.has is not suitable because some object become arrays and auto insert
   // keys from 0...n with values of undefined.
   const fullPath = _.get(props, path);
+  if (fullPath && baseUnit && resultUnit && precision) {
+    return Mathjs.round(Mathjs.unit(fullPath[_.last(_.keys(fullPath).sort((a, b) => a - b))], baseUnit).toNumber(resultUnit), precision);
+  }
   if (fullPath) {
     return fullPath[_.last(_.keys(fullPath).sort((a, b) => a - b))];
   }
@@ -50,7 +54,7 @@ export function getLatestAttribute(props, path) {
  * @param {String} label - An optional label used as the key for the time series data
  * @returns {Array}
  */
-export function getTimeSeriesOfValue(props, path, label) {
+export function getTimeSeriesOfValue(props, path, label, baseUnit, resultUnit, precision) {
   if (!props || !path) return [];
   const fullPath = _.get(props, path);
   if (fullPath) {
@@ -60,7 +64,11 @@ export function getTimeSeriesOfValue(props, path, label) {
       let obj = {};
       obj['time'] = Number(timestamp);
       obj['prettyTime'] = dateFormat(obj.time, "h:MMtt");
-      obj[attribute] = fullPath[timestamp];
+      if (baseUnit && resultUnit && precision) {
+        obj[attribute] = Mathjs.round(Mathjs.unit(fullPath[timestamp], baseUnit).toNumber(resultUnit), precision);
+      } else {
+        obj[attribute] = fullPath[timestamp];
+      }
       return obj;
     });
     return results;
@@ -92,7 +100,7 @@ export function getSparkLineOfValue(props, path) {
  * @param {String} label - An optional label used as the key for the time series data
  * @returns {Array}
  */
-export function getTimeSeriesOfNetChange(props, path, label) {
+export function getTimeSeriesOfNetChange(props, path, label, baseUnit, resultUnit, precision) {
   if (!props || !path) return [];
   let timeSeries = getTimeSeriesOfValue(props, path, label);
   if (!timeSeries.length) return [];
@@ -102,7 +110,7 @@ export function getTimeSeriesOfNetChange(props, path, label) {
     // Express the first timestamp as a net change of 0 since there is no basis of comparison
     if (index === 0) {
       let obj = { time: attribute.time, prettyTime: attribute.prettyTime };
-      _.forEach(dataKeys, (dataKey) => obj[`${dataKey}PerSecond`] = 0);
+      _.forEach(dataKeys, (dataKey) => obj[dataKey] = 0);
       return obj;
     }
     // Otherwise, calculate the net change and append to a key equal to the attribute appended by 'PerSecond'
@@ -110,7 +118,11 @@ export function getTimeSeriesOfNetChange(props, path, label) {
       let obj = { time: attribute.time, prettyTime: attribute.prettyTime };
       _.forEach(dataKeys, (dataKey) => {
         let elapsedTimeInSeconds = (attribute.time - timeSeries[index - 1].time) / 1000;
-        obj[`${dataKey}PerSecond`] = Math.round((attribute[dataKey] - timeSeries[index - 1][dataKey]) / elapsedTimeInSeconds);
+        if (baseUnit && resultUnit && precision) {
+          obj[`${dataKey}PerSecond`] = Mathjs.round(Mathjs.unit((attribute[dataKey] - timeSeries[index - 1][dataKey]) / elapsedTimeInSeconds, baseUnit).toNumber(resultUnit), precision);
+        } else {
+          obj[`${dataKey}PerSecond`] = Math.round((attribute[dataKey] - timeSeries[index - 1][dataKey]) / elapsedTimeInSeconds);
+        }
       });
       return obj;
     }
@@ -139,7 +151,13 @@ export function getSparkLineOfNetChange(props, path) {
  * @param {Object[]} arrayOfTimeSeries - array containing one or more time series 
  * @returns {Object[]}
  */
-export function mergeTimeSeries(...arrayOfTimeSeries) {
+export function mergeTimeSeries(arrayOfTimeSeries) {
+// export function mergeTimeSeries(...arrayOfTimeSeries) {
+
+  // If we map over JSON, we likely already have an array;
+  // if (Array.isArray(arrayOfTimeSeries[0])) {
+    // arrayOfTimeSeries = arrayOfTimeSeries[0];
+  // };
   // Note: firstArrayOfResults seems to already have both key/value result pairs. Why? 
   let mergedResults = [];
   _.forEach(arrayOfTimeSeries, (timeSeries) => {
@@ -153,6 +171,28 @@ export function mergeTimeSeries(...arrayOfTimeSeries) {
 // Reselect Selectors
 
 // Reselect Input Selectors
+
+const getMetrics = state => state.metrics;
+
+export const getRoutes = createSelector(getMetrics,
+  (metrics) => {
+    const routeArr = Object.keys(metrics).filter(key => key.indexOf('route') !== -1);
+    const routeList = {};
+    routeArr.forEach(route => {
+      const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
+      // const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
+      const routePath = route.replace(routeRegex, '$1') || '/';   // Path with trailing slash or root
+      const httpVerb = route.replace(routeRegex, '$2');           // Valid HTTP Verb
+      // const metadata = route.replace(routeRegex, '$3').split(/[./]/); // dot delimited 
+      if (_.has(routeList, [routePath, httpVerb])) {
+        routeList[routePath][httpVerb].push(route);
+      } else {
+        _.set(routeList, [routePath, httpVerb], [route]);
+      }
+    });
+    return routeList;
+  }
+);
 
 /**
  * Reselect Input selector that returns the threadsFilter from state.settings.threadsFilter
@@ -309,20 +349,38 @@ export function parseJVMMetrics(rawScrapedMetrics) {
   return normalizedTimeSeriesSample;
 }
 
+export function generateRouteList(metrics) {
+  const routeArr = Object.keys(metrics).filter(key => key.indexOf('route') !== -1);
+  const routeList = {};
+  routeArr.forEach(route => {
+    const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
+    // const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
+    const routePath = route.replace(routeRegex, '$1') || '/';   // Path with trailing slash or root
+    const httpVerb = route.replace(routeRegex, '$2');           // Valid HTTP Verb
+    // const metadata = route.replace(routeRegex, '$3').split(/[./]/); // dot delimited 
+    if (_.has(routeList, [routePath, httpVerb])) {
+      routeList[routePath][httpVerb].push(route);
+    } else {
+      _.set(routeList, [routePath, httpVerb],[route]);
+    }
+  });
+}
+
 /**
  * Helper function used to parse the route information provided by Finagle though a regex
  * to be able to sort '/' characters used in a UNIX path from / used as a delimiter in metrics.json
  * @param {String} slashDelimitedPath
  * @returns {String[]}
  */
-function parseJVMRoute(slashDelimitedPath) {
-  // 
+function parseJVMRoute(slashDelimitedPath = "") {
+  if (slashDelimitedPath === "") return null;
   const routeRegex = /(route)(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
-  const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
+  // const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
+  {}
   const routePath = slashDelimitedPath.replace(routeRegex, '$2') || '/';   // Path with trailing slash or root
   const httpVerb = slashDelimitedPath.replace(routeRegex, '$3');           // Valid HTTP Verb
   const metadata = slashDelimitedPath.replace(routeRegex, '$4').split(/[./]/); // dot delimited 
-  return [route, routePath, httpVerb, metadata];
+  return [routePath, httpVerb, metadata];
 }
 
 /**
@@ -407,3 +465,25 @@ export const mapOverTimeSeries= (timeSeries, arrayOfDataAttributes, mapFunc) => 
     return mappedObj;
   });
 };
+
+/**
+ * Helper function that inspects the JSON string format for type of 'latest',
+ * retrieves the value if required, and formats as a string
+ * @param {String[]|String} line 
+ * @param {Object} metrics 
+ */
+export function parseJSONString(line, metrics) {
+  if (Array.isArray(line)) {
+    return line.map(element => {
+      if (element.type === 'string') {
+        return element.value;
+      } else if (element.type === 'latest' && element.baseUnit && element.resultUnit && element.precision) {
+        return getLatestAttribute(metrics, element.value, element.baseUnit, element.resultUnit, element.precision);
+      } else {
+        return getLatestAttribute(metrics, element.value);
+      }
+    }).join(' '); 
+  } else {
+    return line;
+  }
+}

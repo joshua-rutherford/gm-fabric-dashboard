@@ -4,7 +4,8 @@ import logger from 'redux-logger';
 import { notification } from 'uikit';
 import _ from 'lodash';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
-import { getBasename, getRuntime, generateEndpoints, parseJVMMetrics, parseGolangMetrics } from './utils';
+import { getBasename, getRuntime, generateEndpoints } from './utils';
+import initialDashboards from './json/dashboards.json';
 import axios from 'axios';
 import { history } from './index';
 
@@ -12,25 +13,42 @@ import { history } from './index';
 const metrics = State({
   initial: {},
   fetchMetricsSuccess(state, payload) {
-    let snapshot;
-    const settings = getState().settings;
-    const runtime = (settings && settings.runtime) ? settings.runtime : '';
-    switch (runtime) {
-      case 'GOLANG':
-        snapshot = parseGolangMetrics(payload);
-        break;
-      case 'JVM':
-        snapshot = parseJVMMetrics(payload);
-        break;
-      default:
-        snapshot = {};
-    };
-    
+    const timestamp = Date.now() + "";
+    const snapshot = {};
+    Object.keys(payload).forEach(metric => {
+      const timeSeries = {};
+      timeSeries[timestamp] = payload[metric];
+      snapshot[metric] = timeSeries;
+    });
     // Deep merge the new snapshot into the existing state object.
     return _.merge({}, state, snapshot);
   },
   clearMetrics(state, payload) {
     return {};
+  }
+});
+
+const threadsTable = State({
+  initial: {},
+  generateThreadsTable(state, payload) {
+    let results;
+    if (getRuntime() === 'JVM') {
+
+    }
+    // Just replace the existing state
+    return results || {};
+  }
+});
+
+const dashboards = State({
+  initial: initialDashboards, // key always must be lowercase
+  fetchDashboardsSuccess(state, dashboards) {
+    const newState = Object.assign({}, state);
+    dashboards.forEach(dashboard => {
+      if (dashboard.runtime === getState().settings.runtime) {
+        newState[dashboard.route] = dashboard;
+      }
+    });
   }
 });
 
@@ -126,9 +144,16 @@ Hook((action, getState) => {
 // Stop polling after three failures and reset failure counter
 // The Notification will persist for 24 hours unless manually dismissed by the user.
 Hook((action, getState) => {
+  console.log("What is in here? ", action);
   const pollingFailures = getState().settings.pollingFailures;
+  if (action.type === 'fetchMetricsSuccess') {
+    Actions.generateThreadsTable(action.payload);
+  }
   if (action.type === 'fetchMetricsSuccess' && pollingFailures > 0) {
     Actions.resetPollingFailures();
+    // Generate Heirarchy
+    // Generate Threads
+    // Generate Routes
   } else if (getState().settings.pollingFailures > 2) {
     notification('Automatically disabling the fetching of metrics after three attempts. You can turn polling back on in Settings.',
       {
@@ -172,6 +197,6 @@ if (process.env.NODE_ENV === `development`) {
 
 // Create the Redux store using reducers and middlewares
 export default createStore(
-  combineReducers({ metrics, settings, routing: routerReducer }),
+  combineReducers({ metrics, settings, threadsTable, dashboards, routing: routerReducer }),
   applyMiddleware(...middlewares)
 );
