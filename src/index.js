@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { getState } from 'jumpstate';
 
 import { Provider } from 'react-redux';
 import { createBrowserHistory, createHashHistory } from 'history';
@@ -72,11 +73,12 @@ ReactDOM.render(
             component={SummaryGrid}
             path="/summary"
           />
-          {/* <Route
-            component={ThreadsGrid}
-            path="/threads"
-          />*/  
-          }  
+          {getState().settings.runtime === "JVM" &&
+            <Route
+              component={ThreadsGrid}
+              path="/threads"
+            />
+          }
           <Route
             component={JSONComponent}
             path="/json"

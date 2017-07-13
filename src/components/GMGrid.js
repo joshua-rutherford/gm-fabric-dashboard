@@ -69,11 +69,7 @@ class GMGrid extends Component {
                     headers={chart.data.headers}
                     rows={chart.data.rows.map((row, outerIdx) => {
                       return row.map((cell, innerIdx) => {
-                        if (innerIdx === 0) {
-                          return cell;
-                        } else if (innerIdx > 0) {
-                          return getLatestAttribute(metrics, cell);
-                        }
+                        return (innerIdx > 0) ? getLatestAttribute(metrics, cell) : cell;
                       });
                     })}
                     title={chart.title}

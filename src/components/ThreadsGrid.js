@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
+import { Actions } from 'jumpstate';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
+
 import JVMThreadsSection from './JVMThreadsSection';
 
 class ThreadsGrid extends Component {
   static propTypes = {
     threadsTable: PropTypes.array
   };
+
+  componentDidMount() {
+    Actions.fetchThreads();
+  }
+
   render() {
     const { threadsTable } = this.props;
     return (
@@ -24,6 +31,7 @@ class ThreadsGrid extends Component {
   };
 };
 
+// TODO: Change this to new threadsTable object
 function mapStateToProps({ metrics: { threadsTable } }) {
   return { threadsTable };
 };

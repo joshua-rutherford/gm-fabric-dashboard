@@ -17,6 +17,7 @@ class Container extends Component {
   // This triggers hooks which initialize polling using the default parameters
   componentDidMount() {
     Actions.fetchMetrics(this.props.metricsEndpoints);
+    if (this.props.runtime === 'jvm') Actions.fetchThreads();
   }
 
   render() {

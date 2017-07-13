@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { PropTypes } from "prop-types";
 import { connect } from "react-redux";
-import { camelize } from "humps";
 import _ from 'lodash';
 import {
   mergeTimeSeries,
   getLatestAttribute,
   getTimeSeriesOfNetChange,
-  getRoutes
+  getRouteMetrics,
+  getRouteTree
 } from "../utils";
 import GMLineChart from "./GMLineChart";
 import { Responsive, WidthProvider } from "react-grid-layout";
@@ -16,28 +16,52 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 class SummaryGrid extends Component {
   static propTypes = {
     match: PropTypes.object,
-    metrics: PropTypes.object,
-    route: PropTypes.object
-  };
+    routeMetrics: PropTypes.object,
+    routeTree: PropTypes.object
+  }
+
+  state = {
+    requestsPerSecond: [],
+    routeVerbs: [],
+    selectedRoute: ''
+  }
+
+  componentWillMount() {
+    this.updateState(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.updateState(nextProps);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !_.isEqual(nextProps.routeMetrics, this.props.routeMetrics) || !_.isEqual(nextProps.routeTree, this.props.routeTree);
+  }
+
+  updateState({routeMetrics, routeTree}) {
+    // Pull the selected route from React Router, replacing %2F with slashes
+    const selectedRoute = _.hasIn(this.props, ['match', 'params', 'routeName']) ? this.props.match.params.routeName.replace("%2F", "/") : ""; 
+    // Get the HTTP verbs used on the selected route
+    const routeVerbs =
+      routeTree && selectedRoute && routeTree[selectedRoute]
+        ? (Object.keys(routeTree[selectedRoute]))
+        : [];
+    const arrayOfRequestMetrics = routeVerbs.map(routeVerb => (
+        getTimeSeriesOfNetChange(
+          routeMetrics,
+          `route${selectedRoute}/${routeVerb}/requests`,
+          `${routeVerb.toLowerCase()} ${selectedRoute.slice(1)} Requests`
+        )
+    ));
+    this.setState({
+      selectedRoute,
+      requestsPerSecond: mergeTimeSeries(arrayOfRequestMetrics),
+      routeVerbs
+    });
+  }
 
   render() {
-    const { route, metrics } = this.props;
-    const selectedRoute = _.hasIn(this.props, ['match', 'params', 'routeName']) ? this.props.match.params.routeName.replace("%2F", "/") : "";  
-    const routeVerbs =
-      route && selectedRoute && route[selectedRoute]
-        ? (Object.keys(route[selectedRoute]))
-        : [];
-    const arrayOfRequestMetrics = routeVerbs.reduce((acc, verbName) => {
-      return [
-        ...acc,
-        ...getTimeSeriesOfNetChange(
-          metrics,
-          `route${selectedRoute}/${verbName}/requests`,
-          camelize(`${verbName.toLowerCase()} ${selectedRoute.slice(1)} Requests`)
-        )
-      ];
-    }, []);
-    const requestsPerSecondArr = mergeTimeSeries(arrayOfRequestMetrics);
+    const { routeMetrics } = this.props;
     return (
       <div>
         <ResponsiveReactGridLayout
@@ -54,11 +78,11 @@ class SummaryGrid extends Component {
             }}
           >
             <GMLineChart
-              timeSeries={requestsPerSecondArr}
-              title={`Requests Per Second - ${selectedRoute}`}
+              timeSeries={this.state.requestsPerSecond}
+              title={`Requests Per Second - ${this.state.selectedRoute}`}
             />
           </div>
-          {routeVerbs.map((verbName, index) => {
+          {this.state.routeVerbs.map((verbName, index) => {
             return (
               <div
                 data-grid={{ x: 6, y: 5, w: 2, h: 3, minW: 2, minH: 3 }}
@@ -69,26 +93,26 @@ class SummaryGrid extends Component {
                 }}
               >
                 <div className="uk-card uk-card-small uk-card-body">
-                  <h3 className="uk-card-title">{`${verbName} ${selectedRoute}`}</h3>
+                  <h3 className="uk-card-title">{`${verbName} ${this.state.selectedRoute}`}</h3>
                   <p>
                     Requests:{" "}
                     {getLatestAttribute(
-                      metrics,
-                      `route${selectedRoute}/${verbName}/requests`
+                      routeMetrics,
+                      `route${this.state.selectedRoute}/${verbName}/requests`
                     )}
                   </p>
                   <p>
                     Status Code 2XX :{" "}
                     {getLatestAttribute(
-                      route,
-                      `route${selectedRoute}/${verbName}/status/2XX`
+                      routeMetrics,
+                      `route${this.state.selectedRoute}/${verbName}/status/2XX`
                     )}
                   </p>
                   <p>
                     Status Code 200 :{" "}
                     {getLatestAttribute(
-                      route,
-                      `route${selectedRoute}/${verbName}/status/200`
+                      routeMetrics,
+                      `route${this.state.selectedRoute}/${verbName}/status/200`
                     )}
                   </p>
                 </div>
@@ -103,8 +127,8 @@ class SummaryGrid extends Component {
 
 function mapStateToProps(state) {
   return {
-    metrics: state.metrics,
-    route: getRoutes(state)
+    routeMetrics: getRouteMetrics(state),
+    routeTree: getRouteTree(state)
   };
 }
 

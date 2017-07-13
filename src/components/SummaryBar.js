@@ -7,12 +7,13 @@ import { getLatestAttribute, getSparkLineOfValue, getSparkLineOfNetChange, parse
 import SummaryBarCard from './SummaryBarCard';
 
 SummaryBar.propTypes = {
-  dashboards: PropTypes.object,
-  interval: PropTypes.number,
-  metrics: PropTypes.object
+  dashboards: PropTypes.object.isRequired,
+  interval: PropTypes.number.isRequired,
+  metrics: PropTypes.object.isRequired,
+  runtime: PropTypes.string
 };
 
-function SummaryBar({ dashboards, metrics, interval }) {
+function SummaryBar({ dashboards, metrics, interval, runtime }) {
   return (
     <div className="summary-bar-container">
       <div
@@ -26,26 +27,28 @@ function SummaryBar({ dashboards, metrics, interval }) {
           tabIndex={1}
           title="Summary"
         />
-        <SummaryBarCard
-          href="/route"
-          tabIndex={3}
-          title="Routes"
-        />
-        {/*<SummaryBarCard
-          chartData={getSparkLineOfValue(metrics, 'jvm/thread/count')}
-          href="/threads"
-          lineOne={getLatestAttribute(metrics, 'jvm/thread/count')}
-          tabIndex={4}
-          title="Threads"
-        />
-        */}  
+        {runtime === "JVM" &&
+          <SummaryBarCard
+            href="/route"
+            tabIndex={3}
+            title="Routes"
+          />
+        }
+        {runtime === "JVM" &&
+          <SummaryBarCard
+            chartData={getSparkLineOfValue(metrics, 'jvm/thread/count')}
+            href="/threads"
+            lineOne={getLatestAttribute(metrics, 'jvm/thread/count')}
+            tabIndex={4}
+            title="Threads"
+          />
+        }
         {_.toPairs(dashboards).map(pair => {
           const hasValidChart = _.has(pair[1], 'summaryCard.chart.type'); // && _.has(dashboard, 'summaryCard.chart.dataAttribute')
           const lineOne = parseJSONString(pair[1].summaryCard.lineOne, metrics);
           const lineTwo = parseJSONString(pair[1].summaryCard.lineTwo, metrics);
           let chartData;
           if (hasValidChart && pair[1].summaryCard.chart.type === 'value') {
-            console.log("VALUE");
             chartData = getSparkLineOfValue(metrics, pair[1].summaryCard.chart.dataAttribute);
           } else if (hasValidChart &&  pair[1].summaryCard.chart.type === 'netChange') {
             chartData = getSparkLineOfNetChange(metrics, pair[1].summaryCard.chart.dataAttribute);
@@ -56,6 +59,7 @@ function SummaryBar({ dashboards, metrics, interval }) {
             <SummaryBarCard
               chartData={chartData}
               href={`/dashboard/${pair[0]}`}
+              key={`/dashboard/${pair[0]}`}
               lineOne={lineOne}
               lineTwo={lineTwo}
               tabIndex={9}
@@ -80,8 +84,8 @@ function SummaryBar({ dashboards, metrics, interval }) {
   );
 }
 
-function mapStateToProps({ dashboards, metrics, settings: { interval } }) {
-  return { dashboards, metrics, interval };
+function mapStateToProps({ dashboards, metrics, settings: { interval, runtime } }) {
+  return { dashboards, metrics, interval, runtime };
 };
 
 export default connect(mapStateToProps)(SummaryBar);

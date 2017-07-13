@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
-import { getRoutes } from '../utils';
+import { getRouteTree } from '../utils';
 
 class RouteBar extends Component {
   static propTypes = {
@@ -45,7 +45,7 @@ class RouteBar extends Component {
 
 function mapStateToProps(state) {
   return {
-    route: getRoutes(state)
+    route: getRouteTree(state)
   };
 };
 

@@ -1,8 +1,6 @@
 import _ from 'lodash';
 import dateFormat from 'dateformat';
 import { createSelector } from 'reselect';
-import { camelize } from 'humps';
-import deepFilter from 'deep-filter';
 import Mathjs from 'mathjs';
 
 // Dashboard Utility Functions
@@ -38,9 +36,6 @@ export function getLatestAttribute(props, path, baseUnit, resultUnit, precision)
   }
   return 0;
 }
-
-// TODO: add array at dataAttributes containing all of the keys storing metrics
-// in this time series. This will allow easier lookup
 
 /**
  * Returns time series data of a metric's value
@@ -148,100 +143,27 @@ export function getSparkLineOfNetChange(props, path) {
 /**
  * Combine two or more time series together to allow them to be rendered on a single chart.
  * 
- * @param {Object[]} arrayOfTimeSeries - array containing one or more time series 
+ * @param {Object[][]} arrayOfTimeSeries - array containing one or more time series (arrays of objects)
  * @returns {Object[]}
  */
 export function mergeTimeSeries(arrayOfTimeSeries) {
-// export function mergeTimeSeries(...arrayOfTimeSeries) {
-
-  // If we map over JSON, we likely already have an array;
-  // if (Array.isArray(arrayOfTimeSeries[0])) {
-    // arrayOfTimeSeries = arrayOfTimeSeries[0];
-  // };
-  // Note: firstArrayOfResults seems to already have both key/value result pairs. Why? 
-  let mergedResults = [];
-  _.forEach(arrayOfTimeSeries, (timeSeries) => {
-    mergedResults.push(...timeSeries);
-  });
-  let groupedResults = _.values(_.groupBy(mergedResults, result => result.time));
-  let results = _.map(_.values(groupedResults), group => _.merge(...group));
-  return results;
-}
-
-// Reselect Selectors
-
-// Reselect Input Selectors
-
-const getMetrics = state => state.metrics;
-
-export const getRoutes = createSelector(getMetrics,
-  (metrics) => {
-    const routeArr = Object.keys(metrics).filter(key => key.indexOf('route') !== -1);
-    const routeList = {};
-    routeArr.forEach(route => {
-      const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
-      // const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
-      const routePath = route.replace(routeRegex, '$1') || '/';   // Path with trailing slash or root
-      const httpVerb = route.replace(routeRegex, '$2');           // Valid HTTP Verb
-      // const metadata = route.replace(routeRegex, '$3').split(/[./]/); // dot delimited 
-      if (_.has(routeList, [routePath, httpVerb])) {
-        routeList[routePath][httpVerb].push(route);
-      } else {
-        _.set(routeList, [routePath, httpVerb], [route]);
-      }
+  if (arrayOfTimeSeries.length === 0) return [];
+  // Short circuit if there isn't more than one timeseries
+  const validArrays = arrayOfTimeSeries.filter(arr => arr.length > 0);
+  if (validArrays.length === 0) {
+    return [];
+  } else if (validArrays.length === 1) {
+    return validArrays[0];
+  } else {
+    let mergedResults = [];
+    _.forEach(validArrays, (timeSeries) => {
+      mergedResults.push(...timeSeries);
     });
-    return routeList;
+    let groupedResults = _.values(_.groupBy(mergedResults, result => result.time));
+    let results = _.map(_.values(groupedResults), group => _.merge(...group));
+    return results;
   }
-);
-
-/**
- * Reselect Input selector that returns the threadsFilter from state.settings.threadsFilter
- * @param {Object} state
- * @returns {Object} 
- */
-const getCurrentThreads = (state) => state.metrics.threadsTable;
-
-/**
- * Reselect Input selector that returns the threadsFilter from state.settings.threadsFilter
- * @param {Object} state
- * @returns {Object} 
- */
-const getThreadsFilter = (state) => state.settings.threadsFilter;
-
-// Reselect Memoized Selectors
-
-/**
- * Filter the current threads according to store.settings.threadsFilter in the
- * Redux store.
- */
-export const getVisibleThreads = createSelector([getCurrentThreads, getThreadsFilter],
-  (threadsTable, threadsFilter) => {
-    switch (threadsFilter) {
-      case 'active':
-        return threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE');
-      case 'idle':
-        return threadsTable.filter(threadItem => threadItem.state === 'WAITING' || threadItem.state === 'TIMED_WAITING');
-      case 'stopped':
-        return threadsTable.filter(threadItem => threadItem.state === 'TERMINATED' || threadItem.state === 'BLOCKED' || threadItem.state === 'NEW');
-      case 'all':
-      default:
-        return threadsTable;
-    }
-  }
-);
-
-/**
- * Count the current threads according to the state and provide an object containing
- * these totals.
- */
-export const getThreadCounts = createSelector(getCurrentThreads, (threadsTable = []) => {
-  return {
-    active: threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE').length,
-    idle: threadsTable.filter(threadItem => threadItem.state === 'WAITING' || threadItem.state === 'TIMED_WAITING').length,
-    stopped: threadsTable.filter(threadItem => threadItem.state === 'TERMINATED' || threadItem.state === 'BLOCKED' || threadItem.state === 'NEW').length,
-    all: threadsTable.length
-  };
-});
+}
 
 /**
  * getBasename is a utility function that extracts the baseurl property from the HEAD of the index.html file. This is
@@ -267,146 +189,33 @@ export function getRuntime() {
 
 /**
  * generateEndpoints is a utility function that returns the endpoints that should be scraped for current runtime
+ * This should ONLY be used to populate the initial Redux state
  * @returns {String[]}
  */
 export function generateEndpoints() {
   switch (getRuntime()) {
-    case "GOLANG":
+    case 'JVM':
+      return ['admin/metrics.json'];
+    case 'GOLANG':
       return ['metrics'];
-    case "JVM":
-    default:  
-      return ['admin/metrics.json', 'admin/threads'];
+    default:
+      return [];  
   }
 }
 
 /**
- * Utility function that takes the raw metrics data scraped from the golang endpoints, normalizes the data in the
- * form expected by the React UI components, and restructures as timeseries data using the UNIX timestamp of when the
- * endpoints were polled.
- * @param {Object} rawScrapedMetrics
- * @returns {Object}
+ * generateThreadEndpoints is a utility function that returns the endpoints that should be scraped for current runtime
+ * This should ONLY be used to populate the initial Redux state
+ * @returns {String}
  */
-export function parseGolangMetrics(rawScrapedMetrics) {
-  let normalizedTimeSeriesSample = {};
-  let timestampOfMetricsPoll = Date.now();
-  // Change from slash delimited to dot delimited and from snake case to camel case to be able to
-  // use the lodash set method to build a idiomatic JSON hierarchy of data
-  _.forIn(rawScrapedMetrics, (metricsValue, slashDelimitedPath) => {
-    let path = slashDelimitedPath.split(/[./]/).map(e => camelize(e));
-    path.push(timestampOfMetricsPoll.toString());
-    _.setWith(normalizedTimeSeriesSample, path, metricsValue);
-  });  
-  return normalizedTimeSeriesSample;
-}
-
-/**
- * Utility function that takes the raw metrics data scraped from the AWS endpoints, normalizes the data in the
- * form expected by the React UI components, and restructures as time series using the UNIX timestamp of when the
- * endpoints were polled.
- * @param {Object} rawScrapedMetrics
- * @returns {Object}
- */
-export function parseJVMMetrics(rawScrapedMetrics) {
-  // Transform each snapshot into a hierarchy of nested objects, where the lowest level is an object
-  // of key value pairs, where the key is the time stamp in UNIX time and the value is the value of
-  // the metric at that timestamp.
-  let normalizedTimeSeriesSample = {};
-  let timestampOfMetricsPoll = Date.now();
-  _.forIn(rawScrapedMetrics, (metricsValue, slashDelimitedPath) => {
-
-    // Parse Threads metrics into a 'threadsTable' ready for display in a table component and a 'threads' structure 
-    // similar to the other metrics that is able to use the utility functions to render time charts.
-    if (slashDelimitedPath === 'threads') {
-      let threadIds = Object.keys(metricsValue);
-      const threadsTable = threadIds.map(id => ({
-        name: metricsValue[id].thread,
-        id: id,
-        priority: metricsValue[id].priority,
-        state: metricsValue[id].state,
-        daemon: metricsValue[id].daemon,
-        stack: metricsValue[id].stack
-      }));
-      _.setWith(normalizedTimeSeriesSample, `threadsTable`, threadsTable, Object);
-      threadsTable.forEach(resultObj => {
-        let path = ['threads', resultObj.name, String(resultObj.id), String(timestampOfMetricsPoll)];
-        _.setWith(normalizedTimeSeriesSample, path, resultObj, Object);
-      });
-    }
-
-    else if (_.startsWith(slashDelimitedPath, 'route')) {
-      const [route, routePath, httpVerb, metadata] = parseJVMRoute(slashDelimitedPath); 
-      const result = [route, routePath, httpVerb, ...metadata, String(timestampOfMetricsPoll)];
-      _.setWith(normalizedTimeSeriesSample, result, metricsValue, Object);
-    }
-      
-    else {
-      // Build a path array to use the lodash set method to build a idiomatic JSON hierarchy of data
-      let path = slashDelimitedPath.split(/[./]/).map(e => camelize(e));
-      let pathWithTimestamps = [...path, timestampOfMetricsPoll.toString()];
-      _.setWith(normalizedTimeSeriesSample, pathWithTimestamps, metricsValue, Object);
-    }
-  });
-  return normalizedTimeSeriesSample;
-}
-
-export function generateRouteList(metrics) {
-  const routeArr = Object.keys(metrics).filter(key => key.indexOf('route') !== -1);
-  const routeList = {};
-  routeArr.forEach(route => {
-    const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
-    // const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
-    const routePath = route.replace(routeRegex, '$1') || '/';   // Path with trailing slash or root
-    const httpVerb = route.replace(routeRegex, '$2');           // Valid HTTP Verb
-    // const metadata = route.replace(routeRegex, '$3').split(/[./]/); // dot delimited 
-    if (_.has(routeList, [routePath, httpVerb])) {
-      routeList[routePath][httpVerb].push(route);
-    } else {
-      _.set(routeList, [routePath, httpVerb],[route]);
-    }
-  });
-}
-
-/**
- * Helper function used to parse the route information provided by Finagle though a regex
- * to be able to sort '/' characters used in a UNIX path from / used as a delimiter in metrics.json
- * @param {String} slashDelimitedPath
- * @returns {String[]}
- */
-function parseJVMRoute(slashDelimitedPath = "") {
-  if (slashDelimitedPath === "") return null;
-  const routeRegex = /(route)(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
-  // const route = slashDelimitedPath.replace(routeRegex, '$1');              // Always 'route'
-  {}
-  const routePath = slashDelimitedPath.replace(routeRegex, '$2') || '/';   // Path with trailing slash or root
-  const httpVerb = slashDelimitedPath.replace(routeRegex, '$3');           // Valid HTTP Verb
-  const metadata = slashDelimitedPath.replace(routeRegex, '$4').split(/[./]/); // dot delimited 
-  return [routePath, httpVerb, metadata];
-}
-
-/**
- * A method to iteratively build out a time series less structure that shadows the normal
- * metrics store. This approach is currently not used in favor of the extractDataAttributes
- * function.
- * @param {Object} rawScrapedMetrics
- * @returns {Object} 
- */
-export function parseJVMPaths(rawScrapedMetrics) {
-  let normalizedTimeSeriesHeader = {};
-  _.forIn(rawScrapedMetrics, (metricsValue, slashDelimitedPath) => {
-    if (_.startsWith(slashDelimitedPath, 'route')) {
-      const [route, routePath, httpVerb, metadata] = parseJVMRoute(slashDelimitedPath);
-      _.update(normalizedTimeSeriesHeader, [route, routePath, httpVerb], metadata);
-    } else {
-      // Build a path array to use the lodash set method to build a idiomatic JSON hierarchy of data
-      let path = slashDelimitedPath.split(/[./]/).map(e => camelize(e));
-      if (path.length === 1) {
-        _.update(normalizedTimeSeriesHeader, [], path);
-      } else if (path.length > 1) {
-        _.update(normalizedTimeSeriesHeader, path.slice(0,-1), path.slice(-1));
-      }
-    }
-  });
-  return normalizedTimeSeriesHeader;
+export function generateThreadsEndpoint() {
+  switch (getRuntime()) {
+    case 'JVM':
+      return 'admin/threads';
+    case 'GOLANG':
+    default:  
+      return '';
+  }
 }
 
 /**
@@ -416,29 +225,6 @@ export function parseJVMPaths(rawScrapedMetrics) {
  */
 export function extractDataAttributes(timeSeries) {
   return _.without(_.keys(_.last(timeSeries)), 'time', 'prettyTime');
-}
-
-/**
- * Creates a copy of the metrics hierarchy with the actual time series replaced
- * by empty objects and excluding structures in a blacklist. This derived structure
- * is intended to be used for navigation trees, searches, and type-aheads that
- * benefit from a smaller navigation structure that preserves the path needed to
- * generate charts.
- * @param {Object} timeSeries
- * @returns {Object}
- */
-export function extractPaths(timeSeries) {
-  return deepFilter(timeSeries, (value, key, parent) => {
-    const blacklist = ['threadsTable'];
-    if (_.includes(blacklist, key)) {
-      return false;
-    // If the key can be cast to a UNIX timestamp from 2000 on, assume this is a time series
-    } else if (Number(key) > 946684800) { 
-      return false;
-    } else {
-      return true;
-    }
-  });
 }
 
 /**
@@ -487,3 +273,75 @@ export function parseJSONString(line, metrics) {
     return line;
   }
 }
+
+// Reselect Selectors
+
+// Reselect Input Selectors
+
+const getMetrics = state => state.metrics;
+const getCurrentThreads = state => state.threadsTable;
+const getThreadsFilter = state => state.settings.threadsFilter;
+
+// Reselect Memoized Selectors
+
+export const getRouteMetrics = createSelector(getMetrics,
+  (metrics) => {
+    return _.pick(metrics, Object.keys(metrics).filter(key => key.indexOf('route') !== -1));
+  }
+);
+
+export const getRouteTree = createSelector(getRouteMetrics,
+  (routeMetrics) => {
+    const keys = Object.keys(routeMetrics);
+    // Short circuit if metrics hasn't yet been populated
+    if (keys.length === 0) return {};
+
+    const routeList = {};
+    keys.forEach(route => {
+      const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
+      const routePath = route.replace(routeRegex, '$1') || '/';   // Path with trailing slash or root
+      const httpVerb = route.replace(routeRegex, '$2');           // Valid HTTP Verb
+      // if (_.has(routeList, [routePath, httpVerb])) {
+      // routeList[routePath][httpVerb].push(route);
+      // } else {
+      _.set(routeList, [routePath, httpVerb], route);
+      // }
+      // debugger;
+    });
+    return routeList;
+  }
+);
+
+/**
+ * Filter the current threads according to store.settings.threadsFilter in the
+ * Redux store.
+ */
+export const getVisibleThreads = createSelector([getCurrentThreads, getThreadsFilter],
+  (threadsTable, threadsFilter) => {
+    switch (threadsFilter) {
+      case 'active':
+        return threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE');
+      case 'idle':
+        return threadsTable.filter(threadItem => threadItem.state === 'WAITING' || threadItem.state === 'TIMED_WAITING');
+      case 'stopped':
+        return threadsTable.filter(threadItem => threadItem.state === 'TERMINATED' || threadItem.state === 'BLOCKED' || threadItem.state === 'NEW');
+      case 'all':
+      default:
+        return threadsTable;
+    }
+  }
+);
+
+/**
+ * Count the current threads according to the state and provide an object containing
+ * these totals.
+ */
+export const getThreadCounts = createSelector(getCurrentThreads, (threadsTable = []) => {
+  return {
+    active: threadsTable ? threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE').length : 0,
+    idle: threadsTable ? threadsTable.filter(threadItem => threadItem.state === 'WAITING' || threadItem.state === 'TIMED_WAITING').length : 0,
+    stopped: threadsTable ? threadsTable.filter(threadItem => threadItem.state === 'TERMINATED' || threadItem.state === 'BLOCKED' || threadItem.state === 'NEW').length: 0,
+    all: threadsTable.length
+  };
+});
+

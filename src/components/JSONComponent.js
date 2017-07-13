@@ -19,19 +19,23 @@ class JSONComponent extends Component {
   };
 
   componentWillMount() {
-    this.setState({ headers: Object.keys(this.props.metrics).sort() });
+    this.setState({ headers: this.props.keys.sort() });
   }
+
   componentWillReceiveProps(nextProps) {
-    if (_.isEqual(Object.keys(nextProps.metrics), Object.keys(this.props.metrics))) {
-      this.setState({ headers: Object.keys(nextProps.metrics).sort() });
+    if (!_.isEqual(nextProps.keys, this.props.keys)) {
+      this.setState({ headers: nextProps.keys.sort() });
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     // Update If the keys are different in metrics
-    if (!_.isEqual(nextState.headers), this.state.headers) {
+    if (!_.isEqual(nextState.headers, this.state.headers)) {
       return true;
-    // Or if the selected object has changed / state of the selected object has changed
+    // Or if the selected object has changed
+    } else if (this.state.selectedMetrics !== nextState.selectedMetrics) {
+      return true;
+    // Or if the state of the selected object has changed
     } else if (!_.isEqual(this.props.metrics[this.state.selectedMetrics], this.props.metrics[this.state.selectedMetrics])) {
       return true;
     } else {
@@ -45,7 +49,9 @@ class JSONComponent extends Component {
       <div>
         <ResponsiveReactGridLayout
           breakpoints={{lg: 1200, md: 996, sm: 768}}  
-          cols={{lg: 12, md: 8, sm: 4}}
+          cols={{ lg: 12, md: 8, sm: 4 }}
+          isDraggable={false}
+          isResizable={false}
           rowHeight={60}
         >
           <div
@@ -58,9 +64,7 @@ class JSONComponent extends Component {
           >
             <Inspector
               data={this.state.headers}
-              onClick={(clicked) => {
-                this.setState({ selectedMetrics: clicked.value });
-              }}
+              onClick={(clicked) => this.setState({ selectedMetrics: clicked.value })}
               tabIndex={20}
             />
           </div>
