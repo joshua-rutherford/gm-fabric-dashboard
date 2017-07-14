@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import dateFormat from 'dateformat';
-import { createSelector } from 'reselect';
+import _ from 'lodash';
 import Mathjs from 'mathjs';
+import { createSelector } from 'reselect';
 
 // Dashboard Utility Functions
 
@@ -284,29 +284,31 @@ const getThreadsFilter = state => state.settings.threadsFilter;
 
 // Reselect Memoized Selectors
 
+/**
+ * A Reselect selector that filters the metrics and only returns the timeseries
+ * that contain the string 'route' somewhere in the key.
+ */
 export const getRouteMetrics = createSelector(getMetrics,
   (metrics) => {
     return _.pick(metrics, Object.keys(metrics).filter(key => key.indexOf('route') !== -1));
   }
 );
 
+/**
+ * A Reselect selector that generates a special hierarchical tree structure from
+ * the timeseries keys. It's used to render the special Route dashboards for the JVM
+ */
 export const getRouteTree = createSelector(getRouteMetrics,
   (routeMetrics) => {
     const keys = Object.keys(routeMetrics);
     // Short circuit if metrics hasn't yet been populated
     if (keys.length === 0) return {};
-
     const routeList = {};
     keys.forEach(route => {
       const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
       const routePath = route.replace(routeRegex, '$1') || '/';   // Path with trailing slash or root
       const httpVerb = route.replace(routeRegex, '$2');           // Valid HTTP Verb
-      // if (_.has(routeList, [routePath, httpVerb])) {
-      // routeList[routePath][httpVerb].push(route);
-      // } else {
       _.set(routeList, [routePath, httpVerb], route);
-      // }
-      // debugger;
     });
     return routeList;
   }

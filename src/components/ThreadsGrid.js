@@ -31,7 +31,6 @@ class ThreadsGrid extends Component {
   };
 };
 
-// TODO: Change this to new threadsTable object
 function mapStateToProps({ metrics: { threadsTable } }) {
   return { threadsTable };
 };

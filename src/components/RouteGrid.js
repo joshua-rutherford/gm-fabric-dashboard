@@ -1,7 +1,9 @@
-import React, { Component } from "react";
-import { PropTypes } from "prop-types";
-import { connect } from "react-redux";
 import _ from 'lodash';
+import { PropTypes } from "prop-types";
+import React, { Component } from "react";
+import { Responsive, WidthProvider } from "react-grid-layout";
+import { connect } from "react-redux";
+
 import {
   mergeTimeSeries,
   getLatestAttribute,
@@ -10,7 +12,7 @@ import {
   getRouteTree
 } from "../utils";
 import GMLineChart from "./GMLineChart";
-import { Responsive, WidthProvider } from "react-grid-layout";
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 class SummaryGrid extends Component {
@@ -67,10 +69,12 @@ class SummaryGrid extends Component {
         <ResponsiveReactGridLayout
           breakpoints={{ lg: 1200, md: 996, sm: 768 }}
           cols={{ lg: 12, md: 8, sm: 4 }}
+          isDraggable={false}
+          isResizable={false}
           rowHeight={60}
         >
           <div
-            data-grid={{ x: 0, y: 0, w: 6, h: 9, minW: 3, minH: 4 }}
+            data-grid={{ x: 0, y: 0, w: 8, h: 10, minW: 3, minH: 4 }}
             key="routeRequestChart"
             style={{
               border: "solid",
@@ -85,7 +89,7 @@ class SummaryGrid extends Component {
           {this.state.routeVerbs.map((verbName, index) => {
             return (
               <div
-                data-grid={{ x: 6, y: 5, w: 2, h: 3, minW: 2, minH: 3 }}
+                data-grid={{ x: 8, y: 0, w: 4, h: 10, minW: 2, minH: 3 }}
                 key={`${verbName}Stats`}
                 style={{
                   border: "solid",

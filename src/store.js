@@ -1,9 +1,11 @@
+import axios from 'axios';
+import localforage from 'localforage';
+import _ from 'lodash';
+import { Effect, Actions, Hook, getState, CreateJumpstateMiddleware } from 'jumpstate';
+import { routerReducer, routerMiddleware } from 'react-router-redux';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Effect, Actions, Hook, CreateJumpstateMiddleware } from 'jumpstate';
 import logger from 'redux-logger';
 import { notification } from 'uikit';
-import { routerReducer, routerMiddleware } from 'react-router-redux';
-import axios from 'axios';
 
 import { getBasename, generateThreadsEndpoint } from './utils';
 import { history } from './index';
@@ -11,8 +13,13 @@ import metrics from './jumpstate/metrics';
 import settings from './jumpstate/settings';
 import threadsTable from './jumpstate/threadsTable';
 import dashboards from './jumpstate/dashboards';
+import defaultDashboards from './json/dashboards.json';
 
-// Effects
+// Effects / Asynchronous Actions
+
+/**
+ * Async Action that fetches metrics and calls success or failure actions.
+ */
 Effect('fetchMetrics', (endpoints) => {
   if (!endpoints) return;
   const basename = getBasename();
@@ -29,12 +36,19 @@ Effect('fetchMetrics', (endpoints) => {
     .catch(err => Actions.fetchMetricsFailure(err));
 });
 
+/**
+ * Action that handles fetch thread errors, notifying the user via a popup and the console
+ * and incrementing a counter that disables the polling interval on repeat failures.
+ */
 Effect('fetchMetricsFailure', (err) => {
   notification('Fetching Metrics failed', { status: 'danger' });
   console.log('Fetching Metrics failed', err);
   Actions.incrementPollingFailures();
 });
 
+/**
+ * Action that fetches threads information (JVM) and stores in Redux
+ */
 Effect('fetchThreads', (endpoint = generateThreadsEndpoint()) => {
   if (!endpoint) return;
   axios.get(`${getBasename()}${endpoint}`, { responseType: 'json' })
@@ -42,11 +56,17 @@ Effect('fetchThreads', (endpoint = generateThreadsEndpoint()) => {
     .catch(err => Actions.fetchThreadsFailure(err));
 });
 
+/**
+ * Action that handles fetch thread errors, notifying the user via a popup and the console
+ */
 Effect('fetchThreadsFailure', (err) => {
   notification('Fetching Threads Data failed', { status: 'danger' });
   console.log('Fetching Threads failed', err);
 });
 
+/**
+ * Action that starts a polling interval for scraping metrics, overwriting if needed
+ */
 Effect('startPolling', function ({ endpoints, interval }) {
   const refreshMetricsFunctionFactory = (endpoints) => () => {
     const eps = endpoints;
@@ -55,8 +75,62 @@ Effect('startPolling', function ({ endpoints, interval }) {
   window.refreshMetricsInterval = window.setInterval(refreshMetricsFunctionFactory(endpoints), interval);
 });
 
+/**
+ * Action that clears the polling interval for metrics scraping
+ */
 Effect('stopPolling', (endpoints, interval) => {
   clearInterval(window.refreshMetricsInterval);
+});
+
+/**
+ * Synchronous action that performs initial setup of localforage
+ */
+Effect('initLocalForage', () => {
+  localforage.config({
+    name: `grey-matter-fabric-${getBasename()}`,
+    description: 'Persistent storage of Grey Matter Fabric dashboards and settings'
+  });
+});
+
+/**
+ * Asynchronous action that fetches dashboards from localforage if they exist
+ * and falls back to the default dashboards if not found
+ */
+Effect('fetchDashboards', () => {
+  localforage.getItem('dashboards')
+    .then(data => {
+      if (data) {
+        console.log('fetchDashboards returned valid data: ', data);
+        Actions.updateDashboardsRedux(data);
+      } else {
+        console.log('fetchDashboards data was null, so loading default dashboards');
+        Actions.updateDashboardsRedux(defaultDashboards);
+      }
+    })
+    .catch(err => console.log('fetchDashboards failed with ', err));
+});
+
+/**
+ * Asynchronous action that takes an updated dashboard, merges it into the dashboards
+ * object and then writes it to Redux and localstorage
+ */
+Effect('updateDashboard', (updatedDashboard) => {
+  const dashboards = _.merge({}, getState().dashboards, updatedDashboard);
+  Actions.updateDashboardsRedux(dashboards);
+  localforage.setItem('dashboards', dashboards)
+    .then(data => console.log('Successfully persisted dashboards to local storage: ', data))  
+    .catch(err => console.log('Failed to persist dashboards to local storage: ', err));
+});
+
+/**
+ * Asynchronous action that clears all dashboard state from Redux and Local Storage,
+ * forcing the defaults to reload.
+ */
+Effect('clearDashboards', () => {
+  Actions.updateDashboardsRedux(defaultDashboards);
+  localforage.removeItem('dashboards')
+    .then(data => console.log('Successfully cleared dashboards from local storage: ', data))  
+    .catch(err => console.log('Failed to clear dashboards from local storage: ', err));
 });
 
 // Hooks
@@ -108,6 +182,17 @@ Hook((action, getState) => {
 });
 
 // Stop the interval, change the endpoint, and restart when state.settings.interval is changed while polling is live
+Hook((action, getState) => {
+  if (action.type === 'setInterval') {
+    Actions.stopPolling();
+    Actions.startPolling({
+      endpoints: getState().settings.metricsEndpoints,
+      interval: getState().settings.interval
+    });
+  }
+});
+
+// Persist dashboards to localStorage 
 Hook((action, getState) => {
   if (action.type === 'setInterval') {
     Actions.stopPolling();

@@ -1,12 +1,15 @@
-import React, { Component } from 'react';
+import { Actions } from 'jumpstate';
+import _ from 'lodash';
 import { PropTypes } from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Responsive, WidthProvider } from 'react-grid-layout';
+
 import GMBasicMetrics from './GMBasicMetrics';
 import GMLineChart from './GMLineChart';
 import GMTable from './GMTable';
 import { getLatestAttribute, getTimeSeriesOfValue, getTimeSeriesOfNetChange, mergeTimeSeries, parseJSONString } from '../utils';
-import { Responsive, WidthProvider } from 'react-grid-layout';
-import _ from 'lodash';
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 /**
@@ -18,19 +21,47 @@ class GMGrid extends Component {
   static propTypes = {
     dashboards: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    metrics: PropTypes.object.isRequired
+    metrics: PropTypes.object.isRequired,
+    name: PropTypes.string
   };
 
-  render() {
-    const { dashboards, metrics } = this.props;
+  state = {
+    name: ""
+  }
+
+  componentWillMount() {
+    this.setName(this.props);
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setName(nextProps);
+  }
+
+  setName(props) {
+    const nameInURL = _.hasIn(props, ['match', 'params', 'dashboardName']) && props.match.params.dashboardName.replace("%2F", "/").toLowerCase();
+    if (nameInURL !== this.state.name) this.setState({ name: nameInURL });
+  }
+
+  getDashboard() {
     const selectedDashboardName = _.hasIn(this.props, ['match', 'params', 'dashboardName']) && this.props.match.params.dashboardName.replace("%2F", "/").toLowerCase();
-    const dashboard = dashboards[selectedDashboardName]; // This should be case insensitive at all times
-    if (!dashboard) return <div>{`Dashboard ${selectedDashboardName} does not exist`}</div>;
+    return [selectedDashboardName, this.props.dashboards[selectedDashboardName]]; // This should be case insensitive at all times
+  }
+
+  render() {
+    const { metrics } = this.props;
+    const dashboard = (this.state.name) ? this.props.dashboards[this.state.name] : undefined;
+    
+    if (!dashboard) return <div>{`Dashboard ${this.state.name} does not exist`}</div>;
     return (
       <div>
         <ResponsiveReactGridLayout
           breakpoints={dashboard.grid.breakpoints}
           cols={dashboard.grid.cols}
+          layouts={dashboard.grid.layouts}
+          onLayoutChange={(currentLayout, allLayouts) => {
+            const dashboardState = {};
+            _.set(dashboardState, [this.state.name, 'grid', 'layouts'], allLayouts);
+            Actions.updateDashboard(dashboardState);
+          }}
           rowHeight={dashboard.grid.rowHeight}
         >
           {dashboard.charts.map((chart) => {

@@ -51,20 +51,29 @@
         "md": 8,
         "sm": 4
       },
+      "layouts": {
+        "lg": [
+          { "i": "HTTP Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
+          { "i": "Data Transfer Rates", "x": 4, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
+          { "i": "HTTP Stats",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
+        ],
+        "md": [
+          { "i": "HTTP Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
+          { "i": "Data Transfer Rates", "x": 4, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
+          { "i": "HTTP Stats",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
+        ],
+        "sm": [
+          { "i": "HTTP Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
+          { "i": "Data Transfer Rates", "x": 4, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
+          { "i": "HTTP Stats",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
+        ]
+      },
       "rowHeight": 60
     },
     "charts": [
       {
         "title": "HTTP Connections",
         "type": "GMLineChart",
-        "position": {
-          "x": 0,
-          "y": 0,
-          "w": 4,
-          "h": 6,
-          "minW": 3,
-          "minH": 4
-        },
         "data": {
           "timeseries": [
             {
@@ -78,14 +87,6 @@
       {
         "title": "Data Transfer Rates",
         "type": "GMLineChart",
-        "position": {
-          "x": 4,
-          "y": 0,
-          "w": 4,
-          "h": 6,
-          "minW": 3,
-          "minH": 4
-        },
         "data": {
           "timeseries": [
             {
@@ -126,14 +127,6 @@
       {
         "title": "HTTP Stats",
         "type": "GMTable",
-        "position": {
-          "x": 8,
-          "y": 0,
-          "w": 4,
-          "h": 6,
-          "minW": 3,
-          "minH": 4
-        },
         "data": {
           "headers": [
             "Requests",
@@ -189,20 +182,26 @@
         "md": 8,
         "sm": 4
       },
+      "layouts": {
+        "lg": [
+          { "i": "Heap",                "x": 0, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 },
+          { "i": "Classes",             "x": 6, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 }
+        ],
+        "md": [
+          { "i": "Heap",                "x": 0, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 },
+          { "i": "Classes",             "x": 6, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 }
+        ],
+        "sm": [
+          { "i": "Heap",                "x": 0, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 },
+          { "i": "Classes",             "x": 6, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 }
+        ]
+      },
       "rowHeight": 60
     },
     "charts": [
       {
         "title": "Heap",
         "type": "GMLineChart",
-        "position": {
-          "x": 0,
-          "y": 0,
-          "w": 6,
-          "h": 9,
-          "minW": 4,
-          "minH": 5
-        },
         "data": {
           "detailLines": [
             [
@@ -246,14 +245,6 @@
       {
         "title": "Classes",
         "type": "GMLineChart",
-        "position": {
-          "x": 6,
-          "y": 0,
-          "w": 6,
-          "h": 9,
-          "minW": 4,
-          "minH": 5
-        },
         "data": {
           "detailLines": [
             [
@@ -324,20 +315,32 @@
         "md": 8,
         "sm": 4
       },
+      "layouts": {
+        "lg": [
+          { "i": "Timer Deviation",     "x": 0, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
+          { "i": "Pending Timer Tasks", "x": 4, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
+          { "i": "Future Pool",         "x": 8, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
+          { "i": "Client Registry",     "x": 0, "y": 5, "w": 4, "h": 5, "minW": 3, "minH": 5 }
+        ],
+        "md": [
+          { "i": "Timer Deviation",     "x": 0, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
+          { "i": "Pending Timer Tasks", "x": 4, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
+          { "i": "Future Pool",         "x": 8, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
+          { "i": "Client Registry",     "x": 0, "y": 5, "w": 4, "h": 5, "minW": 3, "minH": 5 }
+        ],
+        "sm": [
+          { "i": "Timer Deviation",     "x": 0, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
+          { "i": "Pending Timer Tasks", "x": 4, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
+          { "i": "Future Pool",         "x": 8, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
+          { "i": "Client Registry",     "x": 0, "y": 5, "w": 4, "h": 5, "minW": 3, "minH": 5 }
+        ]
+      },
       "rowHeight": 60
     },
     "charts": [
       {
         "title": "Timer Deviation",
         "type": "GMBasicMetrics",
-        "position": {
-          "x": 0,
-          "y": 0,
-          "w": 4,
-          "h": 5,
-          "minW": 3,
-          "minH": 5
-        },
         "data": {
           "detailLines": {
             "Count": "finagle/timer/deviation_ms.count",
@@ -351,14 +354,6 @@
       {
         "title": "Pending Timer Tasks",
         "type": "GMBasicMetrics",
-        "position": {
-          "x": 4,
-          "y": 0,
-          "w": 4,
-          "h": 5,
-          "minW": 3,
-          "minH": 5
-        },
         "data": {
           "detailLines": {
             "Count": "finagle/timer/pending_tasks.count",
@@ -372,14 +367,6 @@
       {
         "title": "Future Pool",
         "type": "GMBasicMetrics",
-        "position": {
-          "x": 8,
-          "y": 0,
-          "w": 4,
-          "h": 5,
-          "minW": 3,
-          "minH": 5
-        },
         "data": {
           "detailLines": {
             "Active Tasks": "finagle/future_pool/active_tasks",
@@ -391,14 +378,6 @@
       {
         "title": "Client Registry",
         "type": "GMBasicMetrics",
-        "position": {
-          "x": 0,
-          "y": 5,
-          "w": 4,
-          "h": 5,
-          "minW": 3,
-          "minH": 5
-        },
         "data": {
           "detailLines": {
             "Initial Resolution": "finagle/clientregistry/initialresolution_ms",
