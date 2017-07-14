@@ -10,7 +10,7 @@ class SummaryGrid extends Component {
     jvm: PropTypes.object
   }
   render() {
-    const { jvm } = this.props;
+    const { metrics } = this.props;
     return (
       <div className="uk-section uk-section-default">
         <div
@@ -22,15 +22,15 @@ class SummaryGrid extends Component {
             <h3>Essentials</h3>
             <hr />
             <div className="summary-grid-title">Start Time</div>
-            <div>{dateFormat(getLatestAttribute(jvm, 'startTime'))}</div>
+            <div>{dateFormat(getLatestAttribute(metrics, 'jvm/start_time'))}</div>
             <div className="summary-grid-title">Uptime</div>
-            <div>{ms(getLatestAttribute(jvm, 'uptime'))}</div>
+            <div>{ms(getLatestAttribute(metrics, 'jvm/uptime'))}</div>
           </div>
           <div className="uk-panel">
             <h3>Details</h3>
             <hr />
             <div className="summary-grid-title">Processor Cores</div>
-            <div>{getLatestAttribute(jvm, 'numCpus')}</div>
+            <div>{getLatestAttribute(metrics, 'jvm/num_cpus')}</div>
             <div className="summary-grid-title">IP Address or Domain Name</div>
             <div>{`${window.location.hostname}:${window.location.port}`}</div>
           </div>
@@ -40,8 +40,8 @@ class SummaryGrid extends Component {
   };
 };
 
-function mapStateToProps({ metrics: { jvm } }) {
-  return { jvm };
+function mapStateToProps({ metrics }) {
+  return { metrics };
 };
 
 export default connect(mapStateToProps)(SummaryGrid);

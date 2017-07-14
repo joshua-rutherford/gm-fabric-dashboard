@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { getState } from 'jumpstate';
 
 import { Provider } from 'react-redux';
 import { createBrowserHistory, createHashHistory } from 'history';
@@ -11,11 +12,9 @@ import Icons from 'uikit/dist/js/uikit-icons';
 import registerServiceWorker from './registerServiceWorker';
 import Container from './components/Container';
 import JSONComponent from './components/JSONComponent';
+import GMGrid from './components/GMGrid';
 import store from './store';
 import SummaryGrid from './components/SummaryGrid';
-import HTTPGrid from './components/HTTPGrid';
-import JVMGrid from './components/JVMGrid';
-import FinagleGrid from './components/FinagleGrid';
 import SettingsGrid from './components/SettingsGrid';
 import RouteBar from './components/RouteBar';
 import RouteGrid from './components/RouteGrid';
@@ -74,22 +73,12 @@ ReactDOM.render(
             component={SummaryGrid}
             path="/summary"
           />
-          <Route
-            component={HTTPGrid}
-            path="/http"
-          />
-          <Route
-            component={JVMGrid}
-            path="/jvm"
-          />
-          <Route
-            component={ThreadsGrid}
-            path="/threads"
-          />
-          <Route
-            component={FinagleGrid}
-            path="/finagle"
-          />
+          {getState().settings.runtime === "JVM" &&
+            <Route
+              component={ThreadsGrid}
+              path="/threads"
+            />
+          }
           <Route
             component={JSONComponent}
             path="/json"
@@ -101,6 +90,10 @@ ReactDOM.render(
           <Route
             component={RouteBar}
             path="/route"
+          />
+          <Route
+            component={GMGrid}
+            path="/dashboard/:dashboardName"
           />
           <Route
             component={NotFound}

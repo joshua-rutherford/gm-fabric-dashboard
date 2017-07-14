@@ -1,26 +1,19 @@
-import filesize from 'filesize';
-import ms from 'ms';
-import { PropTypes } from 'prop-types';
 import React from 'react';
+import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
-import { getLatestAttribute, getAttributeForSparkline, getAttributeChangesForSparkline } from '../utils';
+import ms from 'ms';
+import _ from 'lodash';
+import { getLatestAttribute, getSparkLineOfValue, getSparkLineOfNetChange, parseJSONString } from '../utils';
 import SummaryBarCard from './SummaryBarCard';
 
 SummaryBar.propTypes = {
-  finagle: PropTypes.object,
-  http: PropTypes.object,
-  https: PropTypes.object,
-  interval: PropTypes.number,
-  jvm: PropTypes.object,
-  route: PropTypes.object,
-  threads: PropTypes.object
+  dashboards: PropTypes.object.isRequired,
+  interval: PropTypes.number.isRequired,
+  metrics: PropTypes.object.isRequired,
+  runtime: PropTypes.string
 };
 
-function SummaryBar({ finagle, https, http, interval, jvm, route, threads }) {
-  const httpRequests = Number(getLatestAttribute(http, 'requests')) + Number(getLatestAttribute(https, 'requests'));
-  const successResponses = Number(getLatestAttribute(http, 'success')) + Number(getLatestAttribute(https, 'success'));
-  const successRate = successResponses ? Math.round(successResponses / httpRequests * 100) : 100;
-
+function SummaryBar({ dashboards, metrics, interval, runtime }) {
   return (
     <div className="summary-bar-container">
       <div
@@ -30,66 +23,50 @@ function SummaryBar({ finagle, https, http, interval, jvm, route, threads }) {
       >
         <SummaryBarCard
           href="/summary"
-          lineOne={`${ms(getLatestAttribute(jvm, 'uptime'))} UPTIME`}
+          lineOne={`${ms(getLatestAttribute(metrics, 'jvm/uptime'))} UPTIME`}
           tabIndex={1}
           title="Summary"
         />
-        {(https || http) &&
-          // The HTTP card displays if the HTTP object exists in Redux
-          <SummaryBarCard
-            href="/http"
-            lineOne={`${String(httpRequests).replace(/(.)(?=(\d{3})+$)/g, '$1,')} - ${successRate}%`}
-            tabIndex={2}
-            title="HTTPS"
-          />
-        }
-        {route &&
-          // The Route card displays if the route object exists in Redux
+        {runtime === "JVM" &&
           <SummaryBarCard
             href="/route"
-            lineOne={route ? Object.keys(route).length : 0}
             tabIndex={3}
             title="Routes"
           />
         }
-        {(jvm || threads) &&
-          // The Thread card displays if the metrics store has the thread.count from the jvm or the threads object
-          // If it has the thread count, but not the detailed threads object, it is treated as part of /jvm
+        {runtime === "JVM" &&
           <SummaryBarCard
-            chartData={getAttributeForSparkline(jvm, 'thread.count')}
-            href={threads ? `/threads` : `/jvm`}
-            lineOne={getLatestAttribute(jvm, 'thread.count')}
+            chartData={getSparkLineOfValue(metrics, 'jvm/thread/count')}
+            href="/threads"
+            lineOne={getLatestAttribute(metrics, 'jvm/thread/count')}
             tabIndex={4}
             title="Threads"
           />
         }
-        {jvm &&
-          <SummaryBarCard
-            chartData={getAttributeForSparkline(jvm, 'mem.current.used')}
-            href={`/jvm`}
-            lineOne={filesize(getLatestAttribute(jvm, 'mem.current.used'))}
-            tabIndex={5}
-            title="Memory Used"
-          />
-        }
-        {jvm &&
-          <SummaryBarCard
-            chartData={getAttributeChangesForSparkline(jvm, 'gc.msec')}
-            href="/jvm"
-            lineOne={ms(getLatestAttribute(jvm, 'gc.msec'))}
-            tabIndex={6}
-            title="Garbage Col."
-          />
-        }
-        {finagle &&
-          <SummaryBarCard
-            href="/finagle"
-            lineOne={`${getLatestAttribute(finagle, 'futurePool.activeTasks')} Active`}
-            lineTwo={`${getLatestAttribute(finagle, 'timer.pendingTasks.count')} Pending`}
-            tabIndex={7}
-            title="Finagle"
-          />
-        }
+        {_.toPairs(dashboards).map(pair => {
+          const hasValidChart = _.has(pair[1], 'summaryCard.chart.type'); // && _.has(dashboard, 'summaryCard.chart.dataAttribute')
+          const lineOne = parseJSONString(pair[1].summaryCard.lineOne, metrics);
+          const lineTwo = parseJSONString(pair[1].summaryCard.lineTwo, metrics);
+          let chartData;
+          if (hasValidChart && pair[1].summaryCard.chart.type === 'value') {
+            chartData = getSparkLineOfValue(metrics, pair[1].summaryCard.chart.dataAttribute);
+          } else if (hasValidChart &&  pair[1].summaryCard.chart.type === 'netChange') {
+            chartData = getSparkLineOfNetChange(metrics, pair[1].summaryCard.chart.dataAttribute);
+          } else {
+            chartData = undefined;
+          }
+          return (
+            <SummaryBarCard
+              chartData={chartData}
+              href={`/dashboard/${pair[0]}`}
+              key={`/dashboard/${pair[0]}`}
+              lineOne={lineOne}
+              lineTwo={lineTwo}
+              tabIndex={9}
+              title={pair[1].name}
+            />
+          );
+        })}
         <SummaryBarCard
           href={`/json`}
           lineOne={`{ ... }`}
@@ -107,8 +84,8 @@ function SummaryBar({ finagle, https, http, interval, jvm, route, threads }) {
   );
 }
 
-function mapStateToProps({ metrics: { finagle, https, http, jvm, route, threads }, settings: { interval } }) {
-  return { finagle, https, http, interval, jvm, route, threads };
+function mapStateToProps({ dashboards, metrics, settings: { interval, runtime } }) {
+  return { dashboards, metrics, interval, runtime };
 };
 
 export default connect(mapStateToProps)(SummaryBar);

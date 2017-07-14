@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
+import { getRouteTree } from '../utils';
 
 class RouteBar extends Component {
   static propTypes = {
@@ -23,7 +24,6 @@ class RouteBar extends Component {
               const escapedRoute = route.replace(/\//g, '%2F');
               return (
                 <Link
-                  activeClassName="route-bar-card-active"
                   className="uk-card uk-card-small route-bar-card"
                   key={route}
                   to={`/route/${escapedRoute}`}
@@ -43,8 +43,10 @@ class RouteBar extends Component {
   };
 };
 
-function mapStateToProps({ metrics: { route } }) {
-  return { route };
+function mapStateToProps(state) {
+  return {
+    route: getRouteTree(state)
+  };
 };
 
 export default connect(mapStateToProps)(RouteBar);

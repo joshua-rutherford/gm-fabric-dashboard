@@ -10,12 +10,16 @@
     "humps": "~2.0.0",
     "jquery": "~3.2.1",
     "jumpstate": "~2.2.2",
+    "localforage": "^1.5.0",
     "lodash": "~4.17.4",
+    "mathjs": "^3.14.2",
     "ms": "~2.0.0",
     "prop-types": "~15.5.8",
+    "randomcolor": "^0.5.3",
     "react": "~15.6.1",
     "react-collapse": "~4.0.2",
     "react-dom": "~15.6.1",
+    "react-grid-layout": "^0.14.6",
     "react-height": "~3.0.0",
     "react-input-range": "~1.1.2",
     "react-json-inspector": "~7.0.0",
@@ -67,7 +71,6 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "proxy": "For JVM, use 'http://localhost:9990'. For Golang, use 'http://localhost:9092'",
   "proxy": "http://localhost:9990",
   "homepage": "."
 }
