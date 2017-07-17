@@ -53,26 +53,26 @@
       },
       "layouts": {
         "lg": [
-          { "i": "HTTP Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
+          { "i": "Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
           { "i": "Data Transfer Rates", "x": 4, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
-          { "i": "HTTP Stats",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
+          { "i": "Requests",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
         ],
         "md": [
-          { "i": "HTTP Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
+          { "i": "Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
           { "i": "Data Transfer Rates", "x": 4, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
-          { "i": "HTTP Stats",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
+          { "i": "Requests",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
         ],
         "sm": [
-          { "i": "HTTP Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
+          { "i": "Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
           { "i": "Data Transfer Rates", "x": 4, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
-          { "i": "HTTP Stats",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
+          { "i": "Requests",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
         ]
       },
       "rowHeight": 60
     },
     "charts": [
       {
-        "title": "HTTP Connections",
+        "title": "Connections",
         "type": "GMLineChart",
         "data": {
           "timeseries": [
@@ -80,6 +80,11 @@
               "type": "value",
               "attribute": "http/connections",
               "label": "HTTP Connections"
+            },
+            {
+              "type": "value",
+              "attribute": "https/connections",
+              "label": "HTTPS Connections"
             }
           ]
         }
@@ -125,7 +130,7 @@
         }
       },
       {
-        "title": "HTTP Stats",
+        "title": "Requests",
         "type": "GMTable",
         "data": {
           "headers": [

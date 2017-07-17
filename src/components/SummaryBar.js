@@ -68,10 +68,10 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
           );
         })}
         <SummaryBarCard
-          href={`/json`}
+          href={`/explorer`}
           lineOne={`{ ... }`}
           tabIndex={8}
-          title="JSON"
+          title="Explorer"
         />
         <SummaryBarCard
           href={`/settings`}

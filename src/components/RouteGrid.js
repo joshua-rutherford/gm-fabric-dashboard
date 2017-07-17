@@ -37,12 +37,14 @@ class SummaryGrid extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !_.isEqual(nextProps.routeMetrics, this.props.routeMetrics) || !_.isEqual(nextProps.routeTree, this.props.routeTree);
+    return !_.isEqual(nextProps.routeMetrics, this.props.routeMetrics) ||
+      !_.isEqual(nextProps.routeTree, this.props.routeTree) ||
+      !_.isEqual(nextState.selectedRoute, this.state.selectedRoute);
   }
 
-  updateState({routeMetrics, routeTree}) {
+  updateState({routeMetrics, routeTree, match}) {
     // Pull the selected route from React Router, replacing %2F with slashes
-    const selectedRoute = _.hasIn(this.props, ['match', 'params', 'routeName']) ? this.props.match.params.routeName.replace("%2F", "/") : ""; 
+    const selectedRoute = _.hasIn(match, [ 'params', 'routeName']) ? match.params.routeName.replace("%2F", "/") : "";
     // Get the HTTP verbs used on the selected route
     const routeVerbs =
       routeTree && selectedRoute && routeTree[selectedRoute]

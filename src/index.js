@@ -11,7 +11,7 @@ import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import registerServiceWorker from './registerServiceWorker';
 import Container from './components/Container';
-import JSONComponent from './components/JSONComponent';
+import Explorer from './components/Explorer';
 import GMGrid from './components/GMGrid';
 import store from './store';
 import SummaryGrid from './components/SummaryGrid';
@@ -80,8 +80,8 @@ ReactDOM.render(
             />
           }
           <Route
-            component={JSONComponent}
-            path="/json"
+            component={Explorer}
+            path="/explorer"
           />
           <Route
             component={SettingsGrid}

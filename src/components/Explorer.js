@@ -8,7 +8,7 @@ import GMLineChart from './GMLineChart';
 import { getTimeSeriesOfValue } from '../utils';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-class JSONComponent extends Component {
+class Explorer extends Component {
   static propTypes = {
     metrics: PropTypes.object
   };
@@ -101,4 +101,4 @@ function mapStateToProps({ metrics }) {
   };
 };
 
-export default connect(mapStateToProps)(JSONComponent);
+export default connect(mapStateToProps)(Explorer);

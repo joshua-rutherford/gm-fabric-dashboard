@@ -77,6 +77,7 @@ class GMGrid extends Component {
                 {chart.type === "GMLineChart" &&
                   <GMLineChart
                     detailLines={chart.data.detailLines && chart.data.detailLines.map(line => parseJSONString(line, metrics))}
+                    expectedAttributes={chart.data.timeseries.map(ts => ts.attribute)}
                     timeSeries={
                       mergeTimeSeries(
                         chart.data.timeseries.map(

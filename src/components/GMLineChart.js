@@ -23,6 +23,7 @@ export default class GMLineChart extends React.Component {
 
   static propTypes = {
     detailLines: PropTypes.array,
+    expectedAttributes: PropTypes.array,
     timeSeries: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired
   }
@@ -88,28 +89,42 @@ export default class GMLineChart extends React.Component {
           height="80%"
           width="100%"
         >
-          <LineChart data={timeSeries}>
-            {dataKeys.map(dataKey =>
-              <Line
-                dataKey={dataKey}
-                dot={false}
-                isAnimationActive={false}
-                key={dataKey}
-                name={dataKey}
-                stroke={colors[dataKey]}
-                type="monotone"
-              />
-            )}
-            <CartesianGrid stroke="#f2efef" />
-            <XAxis
-              dataKey="prettyTime"
-              interval="preserveStartEnd"
-              minTickGap={10}
-              padding={{ left: 25 }}
-            />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-          </LineChart>
+          {
+            (this.props.timeSeries.length === 0) ?
+              <div>
+                <div>No Data to Chart</div>
+                {this.props.expectedAttributes && this.props.expectedAttributes.length > 0 &&
+                  <div>These expected metrics were not found:
+                  <ul>
+                    {this.props.expectedAttributes.map(attribute => <li key={attribute}>{attribute}</li>)}
+                  </ul>    
+                  </div>
+                }
+              </div>
+              :
+              <LineChart data={timeSeries}>
+                {dataKeys.map(dataKey =>
+                  <Line
+                    dataKey={dataKey}
+                    dot={false}
+                    isAnimationActive={false}
+                    key={dataKey}
+                    name={dataKey}
+                    stroke={colors[dataKey]}
+                    type="monotone"
+                  />
+                )}
+                <CartesianGrid stroke="#f2efef" />
+                <XAxis
+                  dataKey="prettyTime"
+                  interval="preserveStartEnd"
+                  minTickGap={10}
+                  padding={{ left: 25 }}
+                />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+              </LineChart>  
+          }  
         </ResponsiveContainer>
         {detailLines.map(element => (
           <div key={element}>{element}</div>
