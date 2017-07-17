@@ -39,27 +39,31 @@ class SummaryGrid extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !_.isEqual(nextProps.routeMetrics, this.props.routeMetrics) ||
       !_.isEqual(nextProps.routeTree, this.props.routeTree) ||
-      !_.isEqual(nextState.selectedRoute, this.state.selectedRoute);
+      !_.isEqual(nextState.selectedRoute, this.state.selectedRoute) ||
+      !_.isEqual(nextState.requestsPerSecond, this.state.requestsPerSecond) ||
+      !_.isEqual(nextState.routeVerbs, this.state.routeVerbs);
   }
 
-  updateState({routeMetrics, routeTree, match}) {
+  updateState({ routeMetrics, routeTree, match }) {
     // Pull the selected route from React Router, replacing %2F with slashes
-    const selectedRoute = _.hasIn(match, [ 'params', 'routeName']) ? match.params.routeName.replace("%2F", "/") : "";
+    const selectedRoute = _.hasIn(match, ['params', 'routeName']) ? match.params.routeName.replace(/%2F/gi, '/') : '';
     // Get the HTTP verbs used on the selected route
     const routeVerbs =
       routeTree && selectedRoute && routeTree[selectedRoute]
         ? (Object.keys(routeTree[selectedRoute]))
         : [];
     const arrayOfRequestMetrics = routeVerbs.map(routeVerb => (
-        getTimeSeriesOfNetChange(
-          routeMetrics,
-          `route${selectedRoute}/${routeVerb}/requests`,
+      getTimeSeriesOfNetChange(
+        routeMetrics,
+        // Replace the root route with an empty string to avoid having an extra slash
+        `route${selectedRoute !== '/' ? selectedRoute : ''}/${routeVerb}/requests`,
           `${routeVerb.toLowerCase()} ${selectedRoute.slice(1)} Requests`
         )
     ));
+    const requestsPerSecond = mergeTimeSeries(arrayOfRequestMetrics);
     this.setState({
       selectedRoute,
-      requestsPerSecond: mergeTimeSeries(arrayOfRequestMetrics),
+      requestsPerSecond,
       routeVerbs
     });
   }

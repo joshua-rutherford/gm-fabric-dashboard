@@ -308,7 +308,8 @@ export const getRouteTree = createSelector(getRouteMetrics,
       const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
       const routePath = route.replace(routeRegex, '$1') || '/';   // Path with trailing slash or root
       const httpVerb = route.replace(routeRegex, '$2');           // Valid HTTP Verb
-      _.set(routeList, [routePath, httpVerb], route);
+      // route just keeps overriding the previous value, but route seems to be unused
+      _.set(routeList, [routePath, httpVerb], route); 
     });
     return routeList;
   }
