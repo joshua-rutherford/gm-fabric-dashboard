@@ -20,22 +20,21 @@ import randomColor from "randomcolor";
  * Optional props include any number of detailLines, an array of strings listed below the line chart.
  */
 export default class GMLineChart extends React.Component {
-
   static propTypes = {
     detailLines: PropTypes.array,
     expectedAttributes: PropTypes.array,
     timeSeries: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired
-  }
+  };
 
   static defaultProps = {
     detailLines: []
-  }
+  };
 
   state = {
     dataKeys: [],
     colors: {}
-  }
+  };
 
   componentWillMount() {
     const dataKeys = extractDataAttributes(this.props.timeSeries);
@@ -62,9 +61,9 @@ export default class GMLineChart extends React.Component {
    * @param {Object} currentColorsState
    * @returns {Object}
    */
-  generateColors(dataKeys, currentColorsState = this.state.colors ) {
+  generateColors(dataKeys, currentColorsState = this.state.colors) {
     const newColors = {};
-    dataKeys.forEach((dataKey) => {
+    dataKeys.forEach(dataKey => {
       if (currentColorsState[dataKey]) {
         newColors[dataKey] = currentColorsState[dataKey];
       } else {
@@ -79,30 +78,28 @@ export default class GMLineChart extends React.Component {
     const { detailLines, title, timeSeries } = this.props;
 
     return (
-      <div
-        className="uk-card uk-card-small uk-card-body"
-      >
+      <div className="uk-card uk-card-small uk-card-body">
         <h3 className="uk-card-title">
           {title}
         </h3>
-        <ResponsiveContainer aspect={2}
-          height="80%"
-          width="100%"
-        >
-          {
-            (this.props.timeSeries.length === 0) ?
-              <div>
+        <ResponsiveContainer aspect={2} height="80%" width="100%">
+          {this.props.timeSeries.length === 0
+            ? <div>
                 <div>No Data to Chart</div>
-                {this.props.expectedAttributes && this.props.expectedAttributes.length > 0 &&
-                  <div>These expected metrics were not found:
-                  <ul>
-                    {this.props.expectedAttributes.map(attribute => <li key={attribute}>{attribute}</li>)}
-                  </ul>    
-                  </div>
-                }
+                {this.props.expectedAttributes &&
+                  this.props.expectedAttributes.length > 0 &&
+                  <div>
+                    These expected metrics were not found:
+                    <ul>
+                      {this.props.expectedAttributes.map(attribute =>
+                        <li key={attribute}>
+                          {attribute}
+                        </li>
+                      )}
+                    </ul>
+                  </div>}
               </div>
-              :
-              <LineChart data={timeSeries}>
+            : <LineChart data={timeSeries}>
                 {dataKeys.map(dataKey =>
                   <Line
                     dataKey={dataKey}
@@ -123,12 +120,13 @@ export default class GMLineChart extends React.Component {
                 />
                 <YAxis allowDecimals={false} />
                 <Tooltip />
-              </LineChart>  
-          }  
+              </LineChart>}
         </ResponsiveContainer>
-        {detailLines.map(element => (
-          <div key={element}>{element}</div>
-        ))}
+        {detailLines.map(element =>
+          <div key={element}>
+            {element}
+          </div>
+        )}
       </div>
     );
   }

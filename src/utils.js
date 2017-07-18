@@ -1,13 +1,13 @@
-import dateFormat from 'dateformat';
-import _ from 'lodash';
-import Mathjs from 'mathjs';
-import { createSelector } from 'reselect';
+import dateFormat from "dateformat";
+import _ from "lodash";
+import Mathjs from "mathjs";
+import { createSelector } from "reselect";
 
 // Dashboard Utility Functions
 
-// The client-side Redux store expresses metrics over time as a hierarchy of JavaScript objects. 
+// The client-side Redux store expresses metrics over time as a hierarchy of JavaScript objects.
 // At the lowest level, a metric is represented by a key of the metric name and a complex object
-// representing the value of that metric over time. The complex object has keys 
+// representing the value of that metric over time. The complex object has keys
 // equal to a UNIX timestamp and values equal to the value of the metric at the associated timestamp.
 // When the client fetches metrics data from the server, the data is deconstructed and the value
 // of each attribute is appended to the appropriate complex object with a key equal to the timestamp
@@ -23,13 +23,25 @@ import { createSelector } from 'reselect';
  * @returns {Number|String}
  */
 
-export function getLatestAttribute(props, path, baseUnit, resultUnit, precision) {
+export function getLatestAttribute(
+  props,
+  path,
+  baseUnit,
+  resultUnit,
+  precision
+) {
   if (!props || !path) return 0;
   // _.has is not suitable because some object become arrays and auto insert
   // keys from 0...n with values of undefined.
   const fullPath = _.get(props, path);
   if (fullPath && baseUnit && resultUnit && precision) {
-    return Mathjs.round(Mathjs.unit(fullPath[_.last(_.keys(fullPath).sort((a, b) => a - b))], baseUnit).toNumber(resultUnit), precision);
+    return Mathjs.round(
+      Mathjs.unit(
+        fullPath[_.last(_.keys(fullPath).sort((a, b) => a - b))],
+        baseUnit
+      ).toNumber(resultUnit),
+      precision
+    );
   }
   if (fullPath) {
     return fullPath[_.last(_.keys(fullPath).sort((a, b) => a - b))];
@@ -49,18 +61,28 @@ export function getLatestAttribute(props, path, baseUnit, resultUnit, precision)
  * @param {String} label - An optional label used as the key for the time series data
  * @returns {Array}
  */
-export function getTimeSeriesOfValue(props, path, label, baseUnit, resultUnit, precision) {
+export function getTimeSeriesOfValue(
+  props,
+  path,
+  label,
+  baseUnit,
+  resultUnit,
+  precision
+) {
   if (!props || !path) return [];
   const fullPath = _.get(props, path);
   if (fullPath) {
-    let attribute = label || _.last(path.split('.'));
+    let attribute = label || _.last(path.split("."));
     let timestamps = _.keys(fullPath).sort((a, b) => a - b);
     let results = timestamps.map(timestamp => {
       let obj = {};
-      obj['time'] = Number(timestamp);
-      obj['prettyTime'] = dateFormat(obj.time, "h:MMtt");
+      obj["time"] = Number(timestamp);
+      obj["prettyTime"] = dateFormat(obj.time, "h:MMtt");
       if (baseUnit && resultUnit && precision) {
-        obj[attribute] = Mathjs.round(Mathjs.unit(fullPath[timestamp], baseUnit).toNumber(resultUnit), precision);
+        obj[attribute] = Mathjs.round(
+          Mathjs.unit(fullPath[timestamp], baseUnit).toNumber(resultUnit),
+          precision
+        );
       } else {
         obj[attribute] = fullPath[timestamp];
       }
@@ -95,28 +117,45 @@ export function getSparkLineOfValue(props, path) {
  * @param {String} label - An optional label used as the key for the time series data
  * @returns {Array}
  */
-export function getTimeSeriesOfNetChange(props, path, label, baseUnit, resultUnit, precision) {
+export function getTimeSeriesOfNetChange(
+  props,
+  path,
+  label,
+  baseUnit,
+  resultUnit,
+  precision
+) {
   if (!props || !path) return [];
   let timeSeries = getTimeSeriesOfValue(props, path, label);
   if (!timeSeries.length) return [];
   // Strip out the time related keys
   let dataKeys = extractDataAttributes(timeSeries);
-  let attributeChangesOverTime = timeSeries.map(function (attribute, index) {
+  let attributeChangesOverTime = timeSeries.map(function(attribute, index) {
     // Express the first timestamp as a net change of 0 since there is no basis of comparison
     if (index === 0) {
       let obj = { time: attribute.time, prettyTime: attribute.prettyTime };
-      _.forEach(dataKeys, (dataKey) => obj[dataKey] = 0);
+      _.forEach(dataKeys, dataKey => (obj[dataKey] = 0));
       return obj;
-    }
-    // Otherwise, calculate the net change and append to a key equal to the attribute appended by 'PerSecond'
-    else {
+    } else {
+      // Otherwise, calculate the net change and append to a key equal to the attribute appended by 'PerSecond'
       let obj = { time: attribute.time, prettyTime: attribute.prettyTime };
-      _.forEach(dataKeys, (dataKey) => {
-        let elapsedTimeInSeconds = (attribute.time - timeSeries[index - 1].time) / 1000;
+      _.forEach(dataKeys, dataKey => {
+        let elapsedTimeInSeconds =
+          (attribute.time - timeSeries[index - 1].time) / 1000;
         if (baseUnit && resultUnit && precision) {
-          obj[`${dataKey}PerSecond`] = Mathjs.round(Mathjs.unit((attribute[dataKey] - timeSeries[index - 1][dataKey]) / elapsedTimeInSeconds, baseUnit).toNumber(resultUnit), precision);
+          obj[`${dataKey}PerSecond`] = Mathjs.round(
+            Mathjs.unit(
+              (attribute[dataKey] - timeSeries[index - 1][dataKey]) /
+                elapsedTimeInSeconds,
+              baseUnit
+            ).toNumber(resultUnit),
+            precision
+          );
         } else {
-          obj[`${dataKey}PerSecond`] = Math.round((attribute[dataKey] - timeSeries[index - 1][dataKey]) / elapsedTimeInSeconds);
+          obj[`${dataKey}PerSecond`] = Math.round(
+            (attribute[dataKey] - timeSeries[index - 1][dataKey]) /
+              elapsedTimeInSeconds
+          );
         }
       });
       return obj;
@@ -156,10 +195,12 @@ export function mergeTimeSeries(arrayOfTimeSeries) {
     return validArrays[0];
   } else {
     let mergedResults = [];
-    _.forEach(validArrays, (timeSeries) => {
+    _.forEach(validArrays, timeSeries => {
       mergedResults.push(...timeSeries);
     });
-    let groupedResults = _.values(_.groupBy(mergedResults, result => result.time));
+    let groupedResults = _.values(
+      _.groupBy(mergedResults, result => result.time)
+    );
     let results = _.map(_.values(groupedResults), group => _.merge(...group));
     return results;
   }
@@ -172,9 +213,10 @@ export function mergeTimeSeries(arrayOfTimeSeries) {
  */
 export function getBasename() {
   const metaBaseUrl = document.head.querySelector("[property=baseUrl]").content;
-  const baseUrl = metaBaseUrl.indexOf('__BASE_') !== -1 ? "/" : `${metaBaseUrl}`;
+  const baseUrl =
+    metaBaseUrl.indexOf("__BASE_") !== -1 ? "/" : `${metaBaseUrl}`;
   return baseUrl;
-};
+}
 
 /**
  * getRuntime is a utility function that extracts the runtime from the HEAD of the index.html file. It's used to determine
@@ -183,9 +225,10 @@ export function getBasename() {
  */
 export function getRuntime() {
   const metaRuntime = document.head.querySelector("[property=runtime]").content;
-  const runtime = metaRuntime.indexOf('__BASE_') !== -1 ? "JVM" : `${metaRuntime}`; //default to JVM
+  const runtime =
+    metaRuntime.indexOf("__BASE_") !== -1 ? "JVM" : `${metaRuntime}`; //default to JVM
   return runtime;
-};
+}
 
 /**
  * generateEndpoints is a utility function that returns the endpoints that should be scraped for current runtime
@@ -194,12 +237,12 @@ export function getRuntime() {
  */
 export function generateEndpoints() {
   switch (getRuntime()) {
-    case 'JVM':
-      return ['admin/metrics.json'];
-    case 'GOLANG':
-      return ['metrics'];
+    case "JVM":
+      return ["admin/metrics.json"];
+    case "GOLANG":
+      return ["metrics"];
     default:
-      return [];  
+      return [];
   }
 }
 
@@ -210,11 +253,11 @@ export function generateEndpoints() {
  */
 export function generateThreadsEndpoint() {
   switch (getRuntime()) {
-    case 'JVM':
-      return 'admin/threads';
-    case 'GOLANG':
-    default:  
-      return '';
+    case "JVM":
+      return "admin/threads";
+    case "GOLANG":
+    default:
+      return "";
   }
 }
 
@@ -224,7 +267,7 @@ export function generateThreadsEndpoint() {
  * @returns {String[]}
  */
 export function extractDataAttributes(timeSeries) {
-  return _.without(_.keys(_.last(timeSeries)), 'time', 'prettyTime');
+  return _.without(_.keys(_.last(timeSeries)), "time", "prettyTime");
 }
 
 /**
@@ -242,11 +285,16 @@ export function extractDataAttributes(timeSeries) {
  * @param {dataAttributesMapper} mapFunc
  * @returns {Object}
  */
-export const mapOverTimeSeries= (timeSeries, arrayOfDataAttributes, mapFunc) => {
+export const mapOverTimeSeries = (
+  timeSeries,
+  arrayOfDataAttributes,
+  mapFunc
+) => {
   return timeSeries.map((currentValue, index, array) => {
     const mappedObj = { ...currentValue };
     arrayOfDataAttributes.forEach(dataAttribute => {
-      if (currentValue[dataAttribute]) mappedObj[dataAttribute] = mapFunc(currentValue[dataAttribute]);
+      if (currentValue[dataAttribute])
+        mappedObj[dataAttribute] = mapFunc(currentValue[dataAttribute]);
     });
     return mappedObj;
   });
@@ -260,15 +308,28 @@ export const mapOverTimeSeries= (timeSeries, arrayOfDataAttributes, mapFunc) => 
  */
 export function parseJSONString(line, metrics) {
   if (Array.isArray(line)) {
-    return line.map(element => {
-      if (element.type === 'string') {
-        return element.value;
-      } else if (element.type === 'latest' && element.baseUnit && element.resultUnit && element.precision) {
-        return getLatestAttribute(metrics, element.value, element.baseUnit, element.resultUnit, element.precision);
-      } else {
-        return getLatestAttribute(metrics, element.value);
-      }
-    }).join(' '); 
+    return line
+      .map(element => {
+        if (element.type === "string") {
+          return element.value;
+        } else if (
+          element.type === "latest" &&
+          element.baseUnit &&
+          element.resultUnit &&
+          element.precision
+        ) {
+          return getLatestAttribute(
+            metrics,
+            element.value,
+            element.baseUnit,
+            element.resultUnit,
+            element.precision
+          );
+        } else {
+          return getLatestAttribute(metrics, element.value);
+        }
+      })
+      .join(" ");
   } else {
     return line;
   }
@@ -288,47 +349,58 @@ const getThreadsFilter = state => state.settings.threadsFilter;
  * A Reselect selector that filters the metrics and only returns the timeseries
  * that contain the string 'route' somewhere in the key.
  */
-export const getRouteMetrics = createSelector(getMetrics,
-  (metrics) => {
-    return _.pick(metrics, Object.keys(metrics).filter(key => key.indexOf('route') !== -1));
-  }
-);
+export const getRouteMetrics = createSelector(getMetrics, metrics => {
+  return _.pick(
+    metrics,
+    Object.keys(metrics).filter(key => key.indexOf("route") !== -1)
+  );
+});
 
 /**
  * A Reselect selector that generates a special hierarchical tree structure from
  * the timeseries keys. It's used to render the special Route dashboards for the JVM
  */
-export const getRouteTree = createSelector(getRouteMetrics,
-  (routeMetrics) => {
-    const keys = Object.keys(routeMetrics);
-    // Short circuit if metrics hasn't yet been populated
-    if (keys.length === 0) return {};
-    const routeList = {};
-    keys.forEach(route => {
-      const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
-      const routePath = route.replace(routeRegex, '$1') || '/';   // Path with trailing slash or root
-      const httpVerb = route.replace(routeRegex, '$2');           // Valid HTTP Verb
-      // route just keeps overriding the previous value, but route seems to be unused
-      _.set(routeList, [routePath, httpVerb], route); 
-    });
-    return routeList;
-  }
-);
+export const getRouteTree = createSelector(getRouteMetrics, routeMetrics => {
+  const keys = Object.keys(routeMetrics);
+  // Short circuit if metrics hasn't yet been populated
+  if (keys.length === 0) return {};
+  const routeList = {};
+  keys.forEach(route => {
+    const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
+    const routePath = route.replace(routeRegex, "$1") || "/"; // Path with trailing slash or root
+    const httpVerb = route.replace(routeRegex, "$2"); // Valid HTTP Verb
+    // route just keeps overriding the previous value, but route seems to be unused
+    _.set(routeList, [routePath, httpVerb], route);
+  });
+  return routeList;
+});
 
 /**
  * Filter the current threads according to store.settings.threadsFilter in the
  * Redux store.
  */
-export const getVisibleThreads = createSelector([getCurrentThreads, getThreadsFilter],
+export const getVisibleThreads = createSelector(
+  [getCurrentThreads, getThreadsFilter],
   (threadsTable, threadsFilter) => {
     switch (threadsFilter) {
-      case 'active':
-        return threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE');
-      case 'idle':
-        return threadsTable.filter(threadItem => threadItem.state === 'WAITING' || threadItem.state === 'TIMED_WAITING');
-      case 'stopped':
-        return threadsTable.filter(threadItem => threadItem.state === 'TERMINATED' || threadItem.state === 'BLOCKED' || threadItem.state === 'NEW');
-      case 'all':
+      case "active":
+        return threadsTable.filter(
+          threadItem => threadItem.state === "RUNNABLE"
+        );
+      case "idle":
+        return threadsTable.filter(
+          threadItem =>
+            threadItem.state === "WAITING" ||
+            threadItem.state === "TIMED_WAITING"
+        );
+      case "stopped":
+        return threadsTable.filter(
+          threadItem =>
+            threadItem.state === "TERMINATED" ||
+            threadItem.state === "BLOCKED" ||
+            threadItem.state === "NEW"
+        );
+      case "all":
       default:
         return threadsTable;
     }
@@ -339,12 +411,30 @@ export const getVisibleThreads = createSelector([getCurrentThreads, getThreadsFi
  * Count the current threads according to the state and provide an object containing
  * these totals.
  */
-export const getThreadCounts = createSelector(getCurrentThreads, (threadsTable = []) => {
-  return {
-    active: threadsTable ? threadsTable.filter(threadItem => threadItem.state === 'RUNNABLE').length : 0,
-    idle: threadsTable ? threadsTable.filter(threadItem => threadItem.state === 'WAITING' || threadItem.state === 'TIMED_WAITING').length : 0,
-    stopped: threadsTable ? threadsTable.filter(threadItem => threadItem.state === 'TERMINATED' || threadItem.state === 'BLOCKED' || threadItem.state === 'NEW').length: 0,
-    all: threadsTable.length
-  };
-});
-
+export const getThreadCounts = createSelector(
+  getCurrentThreads,
+  (threadsTable = []) => {
+    return {
+      active: threadsTable
+        ? threadsTable.filter(threadItem => threadItem.state === "RUNNABLE")
+            .length
+        : 0,
+      idle: threadsTable
+        ? threadsTable.filter(
+            threadItem =>
+              threadItem.state === "WAITING" ||
+              threadItem.state === "TIMED_WAITING"
+          ).length
+        : 0,
+      stopped: threadsTable
+        ? threadsTable.filter(
+            threadItem =>
+              threadItem.state === "TERMINATED" ||
+              threadItem.state === "BLOCKED" ||
+              threadItem.state === "NEW"
+          ).length
+        : 0,
+      all: threadsTable.length
+    };
+  }
+);

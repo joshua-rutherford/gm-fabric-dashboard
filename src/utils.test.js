@@ -1,4 +1,6 @@
-const { getVisibleThreads, getThreadCounts } = require.requireActual('./utils.js');
+const { getVisibleThreads, getThreadCounts } = require.requireActual(
+  "./utils.js"
+);
 
 const state = {
   threadsTable: [
@@ -86,8 +88,8 @@ const state = {
   }
 };
 
-describe('Reselect selector getVisibleThreads', () =>
-  test('returns an array of thread objects matching state.settings.threadsFilter ', () => {
+describe("Reselect selector getVisibleThreads", () =>
+  test("returns an array of thread objects matching state.settings.threadsFilter ", () => {
     expect(getVisibleThreads(state)).toEqual([
       {
         daemon: true,
@@ -103,16 +105,14 @@ describe('Reselect selector getVisibleThreads', () =>
         state: "RUNNABLE"
       }
     ]);
-  })
-);
+  }));
 
-describe('Reselect selector getThreadCounts', () =>
-  test('returns an array of totals for each thread type ', () => {
+describe("Reselect selector getThreadCounts", () =>
+  test("returns an array of totals for each thread type ", () => {
     expect(getThreadCounts(state)).toEqual({
       active: 1,
       all: 6,
       idle: 2,
       stopped: 3
     });
-  })
-);
+  }));

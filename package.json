@@ -38,10 +38,13 @@
   },
   "devDependencies": {
     "enzyme": "~2.8.2",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-plugin-prettier": "^2.1.2",
     "jest-junit-reporter": "~1.1.0",
     "less": "~2.7.2",
     "npm-run-all": "~4.0.2",
     "npm-watch": "~0.1.8",
+    "prettier": "^1.5.3",
     "react-a11y": "~0.3.3",
     "react-addons-test-utils": "~15.6.0",
     "react-scripts": "1.0.7",
@@ -50,23 +53,27 @@
   },
   "watch": {
     "build-css": {
-      "patterns": [
-        "src/style",
-        "src/style/components/",
-        "src/style/views"
-      ],
+      "patterns": ["src/style", "src/style/components/", "src/style/views"],
       "extensions": "less"
     }
   },
   "scripts": {
-    "build-css": "./node_modules/less/bin/lessc -ru src/style/index.less src/style/index.css",
-    "watch": "npm-watch",
-    "start-js": "react-scripts start",
-    "start": "npm-run-all -p watch start-js",
-    "lint-css": "stylelint 'src/style/**/*.less'",
     "build": "npm run build-css && react-scripts build",
+    "build-css": "./node_modules/less/bin/lessc -ru src/style/index.less src/style/index.css",
+    "eslint-prettier-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
+    "eject": "react-scripts eject",
+    "lint-css": "stylelint 'src/style/**/*.less'",
+    "lint-js": "eslint 'src'",
+    "precommit": "lint-staged",
+    "start": "npm-run-all -p watch start-js",
+    "start-js": "react-scripts start",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "watch": "npm-watch"
+  },
+  "lint-staged": {
+    "*.js": ["prettier --write", "git add"],
+    "*.less": ["stylelint --fix", "git add"],
+    "*.css": ["stylelint --fix", "git add"]
   },
   "eslintConfig": {
     "extends": "react-app"

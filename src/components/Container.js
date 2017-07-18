@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { PropTypes } from 'prop-types';
-import { Actions } from 'jumpstate';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { PropTypes } from "prop-types";
+import { Actions } from "jumpstate";
+import { connect } from "react-redux";
 
-import Navbar from './Navbar';
-import SummaryBar from './SummaryBar';
-import GolangSummaryBar from './golang/SummaryBar';
+import Navbar from "./Navbar";
+import SummaryBar from "./SummaryBar";
 
 class Container extends Component {
   static propTypes = {
     children: PropTypes.any,
-    metricsEndpoints: PropTypes.array
-  }
+    metricsEndpoints: PropTypes.array,
+    runtime: PropTypes.string
+  };
 
   // Perform an initial fetch of metrics on mount.
   // This triggers hooks which initialize polling using the default parameters
@@ -19,34 +19,26 @@ class Container extends Component {
     Actions.fetchMetrics(this.props.metricsEndpoints);
     Actions.initLocalForage();
     Actions.fetchDashboards();
-    if (this.props.runtime === 'jvm') Actions.fetchThreads();
+    if (this.props.runtime === "jvm") Actions.fetchThreads();
   }
 
   render() {
     return (
-      <div
-        className="uk-container uk-container-expand"
-        id="app-container"
-      >
+      <div className="uk-container uk-container-expand" id="app-container">
         <Navbar />
-        {this.props.runtime === 'JVM' && <SummaryBar />}
-        {this.props.runtime === 'GOLANG' && <GolangSummaryBar />}
-        <div
-          className="uk-background-default"
-          data-uk-grid
-          data-uk-grid-margin
-        >
+        <SummaryBar />
+        <div className="uk-background-default" data-uk-grid data-uk-grid-margin>
           <main className="uk-width-1-1@s">
             {this.props.children}
           </main>
         </div>
       </div>
     );
-  };
+  }
 }
 
-function mapStateToProps({settings: { metricsEndpoints, runtime }}) {
+function mapStateToProps({ settings: { metricsEndpoints, runtime } }) {
   return { metricsEndpoints, runtime };
-};
+}
 
 export default connect(mapStateToProps)(Container);

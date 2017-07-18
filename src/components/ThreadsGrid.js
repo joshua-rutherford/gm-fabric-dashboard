@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Actions } from 'jumpstate';
-import { PropTypes } from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { Actions } from "jumpstate";
+import { PropTypes } from "prop-types";
+import { connect } from "react-redux";
 
-import JVMThreadsSection from './JVMThreadsSection';
+import JVMThreadsSection from "./JVMThreadsSection";
 
 class ThreadsGrid extends Component {
   static propTypes = {
@@ -28,11 +28,11 @@ class ThreadsGrid extends Component {
         </div>
       </div>
     );
-  };
-};
+  }
+}
 
 function mapStateToProps({ metrics: { threadsTable } }) {
   return { threadsTable };
-};
+}
 
 export default connect(mapStateToProps)(ThreadsGrid);

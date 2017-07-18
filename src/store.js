@@ -1,29 +1,39 @@
-import axios from 'axios';
-import localforage from 'localforage';
-import _ from 'lodash';
-import { Effect, Actions, Hook, getState, CreateJumpstateMiddleware } from 'jumpstate';
-import { routerReducer, routerMiddleware } from 'react-router-redux';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import logger from 'redux-logger';
-import { notification } from 'uikit';
+import axios from "axios";
+import localforage from "localforage";
+import _ from "lodash";
+import {
+  Effect,
+  Actions,
+  Hook,
+  getState,
+  CreateJumpstateMiddleware
+} from "jumpstate";
+import { routerReducer, routerMiddleware } from "react-router-redux";
+import { createStore, applyMiddleware, combineReducers } from "redux";
+import logger from "redux-logger";
+import { notification } from "uikit";
 
-import { getBasename, generateThreadsEndpoint } from './utils';
-import { history } from './index';
-import metrics from './jumpstate/metrics';
-import settings from './jumpstate/settings';
-import threadsTable from './jumpstate/threadsTable';
-import dashboards from './jumpstate/dashboards';
-import defaultDashboards from './json/dashboards.json';
+import { getBasename, generateThreadsEndpoint } from "./utils";
+import { history } from "./index";
+import metrics from "./jumpstate/metrics";
+import settings from "./jumpstate/settings";
+import threadsTable from "./jumpstate/threadsTable";
+import dashboards from "./jumpstate/dashboards";
+import defaultDashboards from "./json/dashboards.json";
 
 // Effects / Asynchronous Actions
 
 /**
  * Async Action that fetches metrics and calls success or failure actions.
  */
-Effect('fetchMetrics', (endpoints) => {
+Effect("fetchMetrics", endpoints => {
   if (!endpoints) return;
   const basename = getBasename();
-  Promise.all(endpoints.map(endpoint => axios.get(`${basename}${endpoint}`, { responseType: 'json' })))
+  Promise.all(
+    endpoints.map(endpoint =>
+      axios.get(`${basename}${endpoint}`, { responseType: "json" })
+    )
+  )
     .then(jsons => jsons.map(json => json.data))
     .then(jsons => {
       let results = {};
@@ -40,18 +50,19 @@ Effect('fetchMetrics', (endpoints) => {
  * Action that handles fetch thread errors, notifying the user via a popup and the console
  * and incrementing a counter that disables the polling interval on repeat failures.
  */
-Effect('fetchMetricsFailure', (err) => {
-  notification('Fetching Metrics failed', { status: 'danger' });
-  console.log('Fetching Metrics failed', err);
+Effect("fetchMetricsFailure", err => {
+  notification("Fetching Metrics failed", { status: "danger" });
+  console.log("Fetching Metrics failed", err);
   Actions.incrementPollingFailures();
 });
 
 /**
  * Action that fetches threads information (JVM) and stores in Redux
  */
-Effect('fetchThreads', (endpoint = generateThreadsEndpoint()) => {
+Effect("fetchThreads", (endpoint = generateThreadsEndpoint()) => {
   if (!endpoint) return;
-  axios.get(`${getBasename()}${endpoint}`, { responseType: 'json' })
+  axios
+    .get(`${getBasename()}${endpoint}`, { responseType: "json" })
     .then(json => Actions.fetchThreadsSuccess(json.data))
     .catch(err => Actions.fetchThreadsFailure(err));
 });
@@ -59,36 +70,40 @@ Effect('fetchThreads', (endpoint = generateThreadsEndpoint()) => {
 /**
  * Action that handles fetch thread errors, notifying the user via a popup and the console
  */
-Effect('fetchThreadsFailure', (err) => {
-  notification('Fetching Threads Data failed', { status: 'danger' });
-  console.log('Fetching Threads failed', err);
+Effect("fetchThreadsFailure", err => {
+  notification("Fetching Threads Data failed", { status: "danger" });
+  console.log("Fetching Threads failed", err);
 });
 
 /**
  * Action that starts a polling interval for scraping metrics, overwriting if needed
  */
-Effect('startPolling', function ({ endpoints, interval }) {
-  const refreshMetricsFunctionFactory = (endpoints) => () => {
+Effect("startPolling", function({ endpoints, interval }) {
+  const refreshMetricsFunctionFactory = endpoints => () => {
     const eps = endpoints;
     if (eps && eps.length) Actions.fetchMetrics(eps);
   };
-  window.refreshMetricsInterval = window.setInterval(refreshMetricsFunctionFactory(endpoints), interval);
+  window.refreshMetricsInterval = window.setInterval(
+    refreshMetricsFunctionFactory(endpoints),
+    interval
+  );
 });
 
 /**
  * Action that clears the polling interval for metrics scraping
  */
-Effect('stopPolling', (endpoints, interval) => {
+Effect("stopPolling", (endpoints, interval) => {
   clearInterval(window.refreshMetricsInterval);
 });
 
 /**
  * Synchronous action that performs initial setup of localforage
  */
-Effect('initLocalForage', () => {
+Effect("initLocalForage", () => {
   localforage.config({
     name: `grey-matter-fabric-${getBasename()}`,
-    description: 'Persistent storage of Grey Matter Fabric dashboards and settings'
+    description:
+      "Persistent storage of Grey Matter Fabric dashboards and settings"
   });
 });
 
@@ -96,41 +111,54 @@ Effect('initLocalForage', () => {
  * Asynchronous action that fetches dashboards from localforage if they exist
  * and falls back to the default dashboards if not found
  */
-Effect('fetchDashboards', () => {
-  localforage.getItem('dashboards')
+Effect("fetchDashboards", () => {
+  localforage
+    .getItem("dashboards")
     .then(data => {
       if (data) {
-        console.log('fetchDashboards returned valid data: ', data);
+        console.log("fetchDashboards returned valid data: ", data);
         Actions.updateDashboardsRedux(data);
       } else {
-        console.log('fetchDashboards data was null, so loading default dashboards');
+        console.log(
+          "fetchDashboards data was null, so loading default dashboards"
+        );
         Actions.updateDashboardsRedux(defaultDashboards);
       }
     })
-    .catch(err => console.log('fetchDashboards failed with ', err));
+    .catch(err => console.log("fetchDashboards failed with ", err));
 });
 
 /**
  * Asynchronous action that takes an updated dashboard, merges it into the dashboards
- * object and then writes it to Redux and localstorage
+ * object and then writes it to Redux and local storage
  */
-Effect('updateDashboard', (updatedDashboard) => {
+Effect("updateDashboard", updatedDashboard => {
   const dashboards = _.merge({}, getState().dashboards, updatedDashboard);
   Actions.updateDashboardsRedux(dashboards);
-  localforage.setItem('dashboards', dashboards)
-    .then(data => console.log('Successfully persisted dashboards to local storage: ', data))  
-    .catch(err => console.log('Failed to persist dashboards to local storage: ', err));
+  localforage
+    .setItem("dashboards", dashboards)
+    .then(data =>
+      console.log("Successfully persisted dashboards to local storage: ", data)
+    )
+    .catch(err =>
+      console.log("Failed to persist dashboards to local storage: ", err)
+    );
 });
 
 /**
  * Asynchronous action that clears all dashboard state from Redux and Local Storage,
  * forcing the defaults to reload.
  */
-Effect('clearDashboards', () => {
+Effect("clearDashboards", () => {
   Actions.updateDashboardsRedux(defaultDashboards);
-  localforage.removeItem('dashboards')
-    .then(data => console.log('Successfully cleared dashboards from local storage: ', data))  
-    .catch(err => console.log('Failed to clear dashboards from local storage: ', err));
+  localforage
+    .removeItem("dashboards")
+    .then(data =>
+      console.log("Successfully cleared dashboards from local storage: ", data)
+    )
+    .catch(err =>
+      console.log("Failed to clear dashboards from local storage: ", err)
+    );
 });
 
 // Hooks
@@ -143,12 +171,12 @@ Hook((action, getState) => {
       endpoints: getState().settings.metricsEndpoints,
       interval: getState().settings.interval
     });
-  };
+  }
 });
 
 // Clear the interval when an action sets state.settings.isPolling to false
 Hook((action, getState) => {
-  if (action.type === 'togglePolling' && !getState().settings.isPolling) {
+  if (action.type === "togglePolling" && !getState().settings.isPolling) {
     Actions.stopPolling();
   }
 });
@@ -157,12 +185,13 @@ Hook((action, getState) => {
 // The Notification will persist for 24 hours unless manually dismissed by the user.
 Hook((action, getState) => {
   const pollingFailures = getState().settings.pollingFailures;
-  if (action.type === 'fetchMetricsSuccess' && pollingFailures > 0) {
+  if (action.type === "fetchMetricsSuccess" && pollingFailures > 0) {
     Actions.resetPollingFailures();
   } else if (getState().settings.pollingFailures > 2) {
-    notification('Automatically disabling the fetching of metrics after three attempts. You can turn polling back on in Settings.',
+    notification(
+      "Automatically disabling the fetching of metrics after three attempts. You can turn polling back on in Settings.",
       {
-        status: 'danger',
+        status: "danger",
         timeout: 86400000
       }
     );
@@ -173,7 +202,7 @@ Hook((action, getState) => {
 
 // Start the interval when an action sets state.settings.isPolling to true
 Hook((action, getState) => {
-  if (action.type === 'togglePolling' && getState().settings.isPolling) {
+  if (action.type === "togglePolling" && getState().settings.isPolling) {
     Actions.startPolling({
       endpoints: getState().settings.metricsEndpoints,
       interval: getState().settings.interval
@@ -183,7 +212,7 @@ Hook((action, getState) => {
 
 // Stop the interval, change the endpoint, and restart when state.settings.interval is changed while polling is live
 Hook((action, getState) => {
-  if (action.type === 'setInterval') {
+  if (action.type === "setInterval") {
     Actions.stopPolling();
     Actions.startPolling({
       endpoints: getState().settings.metricsEndpoints,
@@ -192,9 +221,9 @@ Hook((action, getState) => {
   }
 });
 
-// Persist dashboards to localStorage 
+// Persist dashboards to localStorage
 Hook((action, getState) => {
-  if (action.type === 'setInterval') {
+  if (action.type === "setInterval") {
     Actions.stopPolling();
     Actions.startPolling({
       endpoints: getState().settings.metricsEndpoints,
@@ -209,10 +238,16 @@ middlewares.push(CreateJumpstateMiddleware());
 middlewares.push(routerMiddleware(history));
 if (process.env.NODE_ENV === `development`) {
   middlewares.push(logger);
-}  
+}
 
 // Create the Redux store using reducers and middlewares
 export default createStore(
-  combineReducers({ metrics, settings, threadsTable, dashboards, routing: routerReducer }),
+  combineReducers({
+    metrics,
+    settings,
+    threadsTable,
+    dashboards,
+    routing: routerReducer
+  }),
   applyMiddleware(...middlewares)
 );

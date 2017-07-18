@@ -53,19 +53,91 @@
       },
       "layouts": {
         "lg": [
-          { "i": "Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
-          { "i": "Data Transfer Rates", "x": 4, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
-          { "i": "Requests",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
+          {
+            "i": "Connections",
+            "x": 0,
+            "y": 0,
+            "w": 4,
+            "h": 6,
+            "minW": 3,
+            "minH": 4
+          },
+          {
+            "i": "Data Transfer Rates",
+            "x": 4,
+            "y": 0,
+            "w": 4,
+            "h": 6,
+            "minW": 3,
+            "minH": 4
+          },
+          {
+            "i": "Requests",
+            "x": 8,
+            "y": 0,
+            "w": 4,
+            "h": 6,
+            "minW": 3,
+            "minH": 4
+          }
         ],
         "md": [
-          { "i": "Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
-          { "i": "Data Transfer Rates", "x": 4, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
-          { "i": "Requests",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
+          {
+            "i": "Connections",
+            "x": 0,
+            "y": 0,
+            "w": 4,
+            "h": 6,
+            "minW": 3,
+            "minH": 4
+          },
+          {
+            "i": "Data Transfer Rates",
+            "x": 4,
+            "y": 0,
+            "w": 4,
+            "h": 6,
+            "minW": 3,
+            "minH": 4
+          },
+          {
+            "i": "Requests",
+            "x": 8,
+            "y": 0,
+            "w": 4,
+            "h": 6,
+            "minW": 3,
+            "minH": 4
+          }
         ],
         "sm": [
-          { "i": "Connections",    "x": 0, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
-          { "i": "Data Transfer Rates", "x": 4, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 },
-          { "i": "Requests",          "x": 8, "y": 0, "w": 4, "h": 6, "minW": 3, "minH": 4 }
+          {
+            "i": "Connections",
+            "x": 0,
+            "y": 0,
+            "w": 4,
+            "h": 6,
+            "minW": 3,
+            "minH": 4
+          },
+          {
+            "i": "Data Transfer Rates",
+            "x": 4,
+            "y": 0,
+            "w": 4,
+            "h": 6,
+            "minW": 3,
+            "minH": 4
+          },
+          {
+            "i": "Requests",
+            "x": 8,
+            "y": 0,
+            "w": 4,
+            "h": 6,
+            "minW": 3,
+            "minH": 4
+          }
         ]
       },
       "rowHeight": 60
@@ -133,21 +205,10 @@
         "title": "Requests",
         "type": "GMTable",
         "data": {
-          "headers": [
-            "Requests",
-            "Success"
-          ],
+          "headers": ["Requests", "Success"],
           "rows": [
-            [
-              "http",
-              "http/requests",
-              "http/success"
-            ],
-            [
-              "https",
-              "https/requests",
-              "https/success"
-            ]
+            ["http", "http/requests", "http/success"],
+            ["https", "https/requests", "https/success"]
           ]
         }
       }
@@ -189,16 +250,40 @@
       },
       "layouts": {
         "lg": [
-          { "i": "Heap",                "x": 0, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 },
-          { "i": "Classes",             "x": 6, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 }
+          { "i": "Heap", "x": 0, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 },
+          {
+            "i": "Classes",
+            "x": 6,
+            "y": 0,
+            "w": 6,
+            "h": 9,
+            "minW": 4,
+            "minH": 5
+          }
         ],
         "md": [
-          { "i": "Heap",                "x": 0, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 },
-          { "i": "Classes",             "x": 6, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 }
+          { "i": "Heap", "x": 0, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 },
+          {
+            "i": "Classes",
+            "x": 6,
+            "y": 0,
+            "w": 6,
+            "h": 9,
+            "minW": 4,
+            "minH": 5
+          }
         ],
         "sm": [
-          { "i": "Heap",                "x": 0, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 },
-          { "i": "Classes",             "x": 6, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 }
+          { "i": "Heap", "x": 0, "y": 0, "w": 6, "h": 9, "minW": 4, "minH": 5 },
+          {
+            "i": "Classes",
+            "x": 6,
+            "y": 0,
+            "w": 6,
+            "h": 9,
+            "minW": 4,
+            "minH": 5
+          }
         ]
       },
       "rowHeight": 60
@@ -322,22 +407,118 @@
       },
       "layouts": {
         "lg": [
-          { "i": "Timer Deviation",     "x": 0, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
-          { "i": "Pending Timer Tasks", "x": 4, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
-          { "i": "Future Pool",         "x": 8, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
-          { "i": "Client Registry",     "x": 0, "y": 5, "w": 4, "h": 5, "minW": 3, "minH": 5 }
+          {
+            "i": "Timer Deviation",
+            "x": 0,
+            "y": 0,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          },
+          {
+            "i": "Pending Timer Tasks",
+            "x": 4,
+            "y": 0,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          },
+          {
+            "i": "Future Pool",
+            "x": 8,
+            "y": 0,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          },
+          {
+            "i": "Client Registry",
+            "x": 0,
+            "y": 5,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          }
         ],
         "md": [
-          { "i": "Timer Deviation",     "x": 0, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
-          { "i": "Pending Timer Tasks", "x": 4, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
-          { "i": "Future Pool",         "x": 8, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
-          { "i": "Client Registry",     "x": 0, "y": 5, "w": 4, "h": 5, "minW": 3, "minH": 5 }
+          {
+            "i": "Timer Deviation",
+            "x": 0,
+            "y": 0,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          },
+          {
+            "i": "Pending Timer Tasks",
+            "x": 4,
+            "y": 0,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          },
+          {
+            "i": "Future Pool",
+            "x": 8,
+            "y": 0,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          },
+          {
+            "i": "Client Registry",
+            "x": 0,
+            "y": 5,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          }
         ],
         "sm": [
-          { "i": "Timer Deviation",     "x": 0, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
-          { "i": "Pending Timer Tasks", "x": 4, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
-          { "i": "Future Pool",         "x": 8, "y": 0, "w": 4, "h": 5, "minW": 3, "minH": 5 },
-          { "i": "Client Registry",     "x": 0, "y": 5, "w": 4, "h": 5, "minW": 3, "minH": 5 }
+          {
+            "i": "Timer Deviation",
+            "x": 0,
+            "y": 0,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          },
+          {
+            "i": "Pending Timer Tasks",
+            "x": 4,
+            "y": 0,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          },
+          {
+            "i": "Future Pool",
+            "x": 8,
+            "y": 0,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          },
+          {
+            "i": "Client Registry",
+            "x": 0,
+            "y": 5,
+            "w": 4,
+            "h": 5,
+            "minW": 3,
+            "minH": 5
+          }
         ]
       },
       "rowHeight": 60

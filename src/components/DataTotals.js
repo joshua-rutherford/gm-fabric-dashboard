@@ -1,6 +1,6 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
-import filesize from 'filesize';
+import React from "react";
+import { PropTypes } from "prop-types";
+import filesize from "filesize";
 
 DataTotals.propTypes = {
   receivedBytes: PropTypes.number.isRequired,
@@ -13,11 +13,15 @@ export default function DataTotals({ receivedBytes, sentBytes }) {
       <h3 className="uk-card-title">Data Totals</h3>
       <div>
         <i data-uk-icon="icon: upload; ratio: 2" />
-        <span className="uk-text-large"> {filesize(receivedBytes)} </span>
+        <span className="uk-text-large">
+          {" "}{filesize(receivedBytes)}{" "}
+        </span>
       </div>
       <div>
         <i data-uk-icon="icon: download; ratio: 2" />
-        <span className="uk-text-large"> {filesize(sentBytes)} </span>
+        <span className="uk-text-large">
+          {" "}{filesize(sentBytes)}{" "}
+        </span>
       </div>
     </div>
   );

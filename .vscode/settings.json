@@ -1,0 +1,11 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "stylelint.enable": true,
+  "cSpell.enabledLanguageIds": ["markdown", "latex", "plaintext", "text"],
+  "cSpell.ignorePaths": ["node_modules", "vscode-extension", ".git"]
+}

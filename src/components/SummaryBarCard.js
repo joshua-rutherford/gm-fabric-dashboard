@@ -1,7 +1,7 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
-import { NavLink } from 'react-router-dom';
-import { Sparklines, SparklinesLine } from 'react-sparklines';
+import React from "react";
+import { PropTypes } from "prop-types";
+import { NavLink } from "react-router-dom";
+import { Sparklines, SparklinesLine } from "react-sparklines";
 
 SummaryBarCard.propTypes = {
   chartData: PropTypes.array,
@@ -12,17 +12,23 @@ SummaryBarCard.propTypes = {
     PropTypes.number,
     PropTypes.object
   ]),
-  lineTwo: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
+  lineTwo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   tabIndex: PropTypes.number,
   title: PropTypes.string,
   width: PropTypes.string
 };
 
-export default function SummaryBarCard({ chartData, href, isActive, lineOne, lineTwo, tabIndex, title, width }) {
-  width = width || 'uk-width-small';
+export default function SummaryBarCard({
+  chartData,
+  href,
+  isActive,
+  lineOne,
+  lineTwo,
+  tabIndex,
+  title,
+  width
+}) {
+  width = width || "uk-width-small";
   return (
     <NavLink
       activeClassName="summary-bar-card-active"
@@ -30,22 +36,23 @@ export default function SummaryBarCard({ chartData, href, isActive, lineOne, lin
       tabIndex={tabIndex}
       to={href}
     >
-      <div className="summary-bar-card-title">{title}</div>
+      <div className="summary-bar-card-title">
+        {title}
+      </div>
       <div className="uk-card-body summary-bar-card-body">
-        {
-          lineOne &&
-          <div className="uk-text-small">{lineOne}</div>
-        }
-        {
-          lineTwo &&
-          <div className="uk-text-small">{lineTwo}</div>
-        }
-        {
-          chartData &&
+        {lineOne &&
+          <div className="uk-text-small">
+            {lineOne}
+          </div>}
+        {lineTwo &&
+          <div className="uk-text-small">
+            {lineTwo}
+          </div>}
+        {chartData &&
           <Sparklines
             data={chartData}
-            preserveAspectRatio='xMaxYMin'
-            style={{ width: '100%' }}
+            preserveAspectRatio="xMaxYMin"
+            style={{ width: "100%" }}
           >
             <SparklinesLine
               style={{
@@ -54,9 +61,8 @@ export default function SummaryBarCard({ chartData, href, isActive, lineOne, lin
                 fill: "white"
               }}
             />
-          </Sparklines>
-        }
+          </Sparklines>}
       </div>
     </NavLink>
   );
-};
+}

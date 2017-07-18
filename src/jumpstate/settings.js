@@ -1,10 +1,14 @@
-import { State} from 'jumpstate';
+import { State } from "jumpstate";
 
-import { getRuntime, generateEndpoints, generateThreadsEndpoint } from '../utils';
+import {
+  getRuntime,
+  generateEndpoints,
+  generateThreadsEndpoint
+} from "../utils";
 
 const settings = State({
   initial: {
-    baseUrl: '/',
+    baseUrl: "/",
     isPolling: true,
     pollingHasInitialized: false,
     interval: 15000,
@@ -12,7 +16,7 @@ const settings = State({
     threadsEndpoint: generateThreadsEndpoint(),
     pollingFailures: 0,
     runtime: getRuntime(),
-    threadsFilter: 'all'
+    threadsFilter: "all"
   },
   setBaseUrl(state, payload) {
     return { ...state, baseUrl: payload };

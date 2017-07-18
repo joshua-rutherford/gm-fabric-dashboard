@@ -1,4 +1,4 @@
-import { State } from 'jumpstate';
+import { State } from "jumpstate";
 
 const dashboards = State({
   initial: {},

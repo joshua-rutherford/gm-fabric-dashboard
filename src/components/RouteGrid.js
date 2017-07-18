@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from "lodash";
 import { PropTypes } from "prop-types";
 import React, { Component } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
@@ -20,13 +20,13 @@ class SummaryGrid extends Component {
     match: PropTypes.object,
     routeMetrics: PropTypes.object,
     routeTree: PropTypes.object
-  }
+  };
 
   state = {
     requestsPerSecond: [],
     routeVerbs: [],
-    selectedRoute: ''
-  }
+    selectedRoute: ""
+  };
 
   componentWillMount() {
     this.updateState(this.props);
@@ -37,29 +37,35 @@ class SummaryGrid extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !_.isEqual(nextProps.routeMetrics, this.props.routeMetrics) ||
+    return (
+      !_.isEqual(nextProps.routeMetrics, this.props.routeMetrics) ||
       !_.isEqual(nextProps.routeTree, this.props.routeTree) ||
       !_.isEqual(nextState.selectedRoute, this.state.selectedRoute) ||
       !_.isEqual(nextState.requestsPerSecond, this.state.requestsPerSecond) ||
-      !_.isEqual(nextState.routeVerbs, this.state.routeVerbs);
+      !_.isEqual(nextState.routeVerbs, this.state.routeVerbs)
+    );
   }
 
   updateState({ routeMetrics, routeTree, match }) {
     // Pull the selected route from React Router, replacing %2F with slashes
-    const selectedRoute = _.hasIn(match, ['params', 'routeName']) ? match.params.routeName.replace(/%2F/gi, '/') : '';
+    const selectedRoute = _.hasIn(match, ["params", "routeName"])
+      ? match.params.routeName.replace(/%2F/gi, "/")
+      : "";
     // Get the HTTP verbs used on the selected route
     const routeVerbs =
       routeTree && selectedRoute && routeTree[selectedRoute]
-        ? (Object.keys(routeTree[selectedRoute]))
+        ? Object.keys(routeTree[selectedRoute])
         : [];
-    const arrayOfRequestMetrics = routeVerbs.map(routeVerb => (
+    const arrayOfRequestMetrics = routeVerbs.map(routeVerb =>
       getTimeSeriesOfNetChange(
         routeMetrics,
         // Replace the root route with an empty string to avoid having an extra slash
-        `route${selectedRoute !== '/' ? selectedRoute : ''}/${routeVerb}/requests`,
-          `${routeVerb.toLowerCase()} ${selectedRoute.slice(1)} Requests`
-        )
-    ));
+        `route${selectedRoute !== "/"
+          ? selectedRoute
+          : ""}/${routeVerb}/requests`,
+        `${routeVerb.toLowerCase()} ${selectedRoute.slice(1)} Requests`
+      )
+    );
     const requestsPerSecond = mergeTimeSeries(arrayOfRequestMetrics);
     this.setState({
       selectedRoute,
@@ -103,7 +109,8 @@ class SummaryGrid extends Component {
                 }}
               >
                 <div className="uk-card uk-card-small uk-card-body">
-                  <h3 className="uk-card-title">{`${verbName} ${this.state.selectedRoute}`}</h3>
+                  <h3 className="uk-card-title">{`${verbName} ${this.state
+                    .selectedRoute}`}</h3>
                   <p>
                     Requests:{" "}
                     {getLatestAttribute(

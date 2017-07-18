@@ -2,6 +2,8 @@
   <h1>Gray Matter Fabric Dashboard</h1>
 </div>
 
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+
 Gray Matter Fabric Dashboard is an administrative interface for managing microservices and distributed systems running on the [Gray Matter microservice framework](https://github.com/DecipherNow/gm-fabric-jvm).
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
@@ -62,6 +64,8 @@ Additionally, if you are a VSCode user, this project supports in-editor debuggin
 
 This launches the Jest test runner in interactive watch mode.<br>
 See the Create React App section about [running tests](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests) for more information.
+
+Note: If you are running on Mac OS, tests might fail with the error `Error: Error watching file for changes: EMFILE`. If you see this, install watchman via brew with the command `brew install watchman`. Read more about this workaround [on this Jest issue](https://github.com/facebook/jest/issues/1767)
 
 #### `npm run build` to prepare the Dashboard for deployment to the core `gm-fabric-jvm` project
 

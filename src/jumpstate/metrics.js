@@ -1,5 +1,5 @@
-import { State } from 'jumpstate';
-import _ from 'lodash';
+import { State } from "jumpstate";
+import _ from "lodash";
 
 // State Objects
 const metrics = State({

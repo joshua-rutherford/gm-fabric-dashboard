@@ -1,9 +1,9 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
-import JVMThreadsTableLineItem from './JVMThreadsTableLineItem';
+import React from "react";
+import { PropTypes } from "prop-types";
+import JVMThreadsTableLineItem from "./JVMThreadsTableLineItem";
 
 JVMThreadsTable.propTypes = {
-  filteredThreadData: PropTypes.array,
+  filteredThreadData: PropTypes.array
 };
 
 export default function JVMThreadsTable({ filteredThreadData = [] }) {
@@ -19,16 +19,18 @@ export default function JVMThreadsTable({ filteredThreadData = [] }) {
       </h4>
       <hr />
       <ol className="threads-list uk-list">
-        {filteredThreadData.map(({ daemon, id, name, priority, stack, state }, arrIndex) => {
-          return (
-            <JVMThreadsTableLineItem
-              {...{ daemon, name, priority, stack, state }}
-              arrIndex={arrIndex}
-              id={Number(id)}
-              key={id}
-            />
-          );
-        })}
+        {filteredThreadData.map(
+          ({ daemon, id, name, priority, stack, state }, arrIndex) => {
+            return (
+              <JVMThreadsTableLineItem
+                {...{ daemon, name, priority, stack, state }}
+                arrIndex={arrIndex}
+                id={Number(id)}
+                key={id}
+              />
+            );
+          }
+        )}
       </ol>
     </div>
   );

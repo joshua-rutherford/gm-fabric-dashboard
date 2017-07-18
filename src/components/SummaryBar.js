@@ -1,10 +1,15 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
-import { connect } from 'react-redux';
-import ms from 'ms';
-import _ from 'lodash';
-import { getLatestAttribute, getSparkLineOfValue, getSparkLineOfNetChange, parseJSONString } from '../utils';
-import SummaryBarCard from './SummaryBarCard';
+import React from "react";
+import { PropTypes } from "prop-types";
+import { connect } from "react-redux";
+import ms from "ms";
+import _ from "lodash";
+import {
+  getLatestAttribute,
+  getSparkLineOfValue,
+  getSparkLineOfNetChange,
+  parseJSONString
+} from "../utils";
+import SummaryBarCard from "./SummaryBarCard";
 
 SummaryBar.propTypes = {
   dashboards: PropTypes.object.isRequired,
@@ -23,35 +28,38 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
       >
         <SummaryBarCard
           href="/summary"
-          lineOne={`${ms(getLatestAttribute(metrics, 'jvm/uptime'))} UPTIME`}
+          lineOne={`${ms(getLatestAttribute(metrics, "jvm/uptime"))} UPTIME`}
           tabIndex={1}
           title="Summary"
         />
         {runtime === "JVM" &&
-          <SummaryBarCard
-            href="/route"
-            tabIndex={3}
-            title="Routes"
-          />
-        }
+          <SummaryBarCard href="/route" tabIndex={3} title="Routes" />}
         {runtime === "JVM" &&
           <SummaryBarCard
-            chartData={getSparkLineOfValue(metrics, 'jvm/thread/count')}
+            chartData={getSparkLineOfValue(metrics, "jvm/thread/count")}
             href="/threads"
-            lineOne={getLatestAttribute(metrics, 'jvm/thread/count')}
+            lineOne={getLatestAttribute(metrics, "jvm/thread/count")}
             tabIndex={4}
             title="Threads"
-          />
-        }
+          />}
         {_.toPairs(dashboards).map(pair => {
-          const hasValidChart = _.has(pair[1], 'summaryCard.chart.type'); // && _.has(dashboard, 'summaryCard.chart.dataAttribute')
+          const hasValidChart = _.has(pair[1], "summaryCard.chart.type"); // && _.has(dashboard, 'summaryCard.chart.dataAttribute')
           const lineOne = parseJSONString(pair[1].summaryCard.lineOne, metrics);
           const lineTwo = parseJSONString(pair[1].summaryCard.lineTwo, metrics);
           let chartData;
-          if (hasValidChart && pair[1].summaryCard.chart.type === 'value') {
-            chartData = getSparkLineOfValue(metrics, pair[1].summaryCard.chart.dataAttribute);
-          } else if (hasValidChart &&  pair[1].summaryCard.chart.type === 'netChange') {
-            chartData = getSparkLineOfNetChange(metrics, pair[1].summaryCard.chart.dataAttribute);
+          if (hasValidChart && pair[1].summaryCard.chart.type === "value") {
+            chartData = getSparkLineOfValue(
+              metrics,
+              pair[1].summaryCard.chart.dataAttribute
+            );
+          } else if (
+            hasValidChart &&
+            pair[1].summaryCard.chart.type === "netChange"
+          ) {
+            chartData = getSparkLineOfNetChange(
+              metrics,
+              pair[1].summaryCard.chart.dataAttribute
+            );
           } else {
             chartData = undefined;
           }
@@ -75,17 +83,21 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
         />
         <SummaryBarCard
           href={`/settings`}
-          lineOne={<span data-uk-icon="icon: cog; ratio: 1.5"></span>}
+          lineOne={<span data-uk-icon="icon: cog; ratio: 1.5" />}
           tabIndex={9}
           title="Settings"
         />
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }
 
-function mapStateToProps({ dashboards, metrics, settings: { interval, runtime } }) {
+function mapStateToProps({
+  dashboards,
+  metrics,
+  settings: { interval, runtime }
+}) {
   return { dashboards, metrics, interval, runtime };
-};
+}
 
 export default connect(mapStateToProps)(SummaryBar);
