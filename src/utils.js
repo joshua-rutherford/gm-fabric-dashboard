@@ -357,8 +357,8 @@ export const getRouteMetrics = createSelector(getMetrics, metrics => {
 });
 
 /**
- * A Reselect selector that generates a special hierarchical tree structure from
- * the timeseries keys. It's used to render the special Route dashboards for the JVM
+ * A Reselect selector that generates a special hierarchical tree structure of route data
+ * from the timeseries keys. It's used to render the special Route dashboards for the JVM
  */
 export const getRouteTree = createSelector(getRouteMetrics, routeMetrics => {
   const keys = Object.keys(routeMetrics);
@@ -369,8 +369,14 @@ export const getRouteTree = createSelector(getRouteMetrics, routeMetrics => {
     const routeRegex = /route(.*)\/(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)\/(.*)/;
     const routePath = route.replace(routeRegex, "$1") || "/"; // Path with trailing slash or root
     const httpVerb = route.replace(routeRegex, "$2"); // Valid HTTP Verb
-    // route just keeps overriding the previous value, but route seems to be unused
-    _.set(routeList, [routePath, httpVerb], route);
+    // If an array of values already exists at the key, add the new value to the array
+    const previousValue = _.get(routeList, [routePath, httpVerb], "notFound");
+    if (previousValue !== "notFound") {
+      _.set(routeList, [routePath, httpVerb], [...previousValue, route]);
+      // Otherwise add the value as the sold value of an array at that key
+    } else {
+      _.set(routeList, [routePath, httpVerb], [route]);
+    }
   });
   return routeList;
 });
