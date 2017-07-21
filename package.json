@@ -7,7 +7,6 @@
     "dateformat": "~2.0.0",
     "filesize": "~3.5.6",
     "history": "~4.6.3",
-    "humps": "~2.0.0",
     "jquery": "~3.2.1",
     "jumpstate": "~2.2.2",
     "localforage": "^1.5.0",
@@ -20,7 +19,6 @@
     "react-collapse": "~4.0.2",
     "react-dom": "~15.6.1",
     "react-grid-layout": "^0.14.6",
-    "react-height": "~3.0.0",
     "react-input-range": "~1.1.2",
     "react-json-inspector": "~7.0.0",
     "react-motion": "~0.5.0",
@@ -28,10 +26,11 @@
     "react-router": "~4.1.1",
     "react-router-dom": "^4.1.1",
     "react-router-redux": "^5.0.0-alpha.6",
+    "react-scripts": "1.0.10",
     "react-sparklines": "~1.6.0",
+    "react-transition-group": "^1.2.0",
     "recharts": "~1.0.0-alpha.1",
     "redux": "~3.7.0",
-    "redux-devtools": "~3.4.0",
     "redux-logger": "~3.0.0",
     "reselect": "~3.0.0",
     "uikit": "~3.0.0-beta.21"
@@ -39,19 +38,15 @@
   "devDependencies": {
     "enzyme": "~2.8.2",
     "eslint-config-prettier": "^2.3.0",
-    "eslint-plugin-flowtype": "^2.35.0",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-prettier": "^2.1.2",
     "eslint-plugin-react": "^7.1.0",
+    "jest-cli": "^20.0.4",
     "jest-junit": "^2.1.0",
     "less": "~2.7.2",
     "npm-run-all": "~4.0.2",
     "npm-watch": "~0.1.8",
     "prettier": "^1.5.3",
-    "react-a11y": "~0.3.3",
     "react-addons-test-utils": "~15.6.0",
-    "react-scripts": "1.0.7",
     "stylelint": "~7.11.1",
     "stylelint-config-standard": "~16.0.0"
   },
@@ -104,5 +99,5 @@
     "usePathForSuiteName": "true"
   },
   "proxy": "http://localhost:9990",
-  "homepage": "."
+  "homepage": "__BASE_URL__"
 }

@@ -39,24 +39,7 @@ UIkit.use(Icons);
 const createHistory = !!(window.history && window.history.pushState)
   ? createBrowserHistory
   : createHashHistory;
-export const history = createHistory({ basename: `${getBasename()}gmadmin/` });
-
-// Load react-a11y in dev mode
-if (process.env.NODE_ENV === "development") {
-  const a11y = require("react-a11y");
-  const commentListFailures = (name, id, msg) => {
-    // Filter out known accessibility defects with submitted GitHub Issues
-    if (
-      name === "AnimationDecorator(ComposedDataDecorator(LineChart))" || // See Issue 47
-      name === "AnimationDecorator(ComposedDataDecorator(AreaChart))" || // See Issue 47
-      name === "Slider" // See Issue 48
-    )
-      return false;
-    return true;
-  };
-
-  a11y(React, { filterFn: commentListFailures });
-}
+export const history = createHistory({ basename: `${getBasename()}` });
 
 ReactDOM.render(
   <Provider store={store}>

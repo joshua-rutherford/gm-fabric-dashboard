@@ -25,6 +25,16 @@ const Navbar = () => {
           </span>
         </div>
       </div>
+      <div className="uk-navbar-right">
+        <div className="uk-navbar-item">
+          <a
+            className="uk-link-muted"
+            href="https://github.com/DecipherNow/gm-fabric-dashboard/blob/master/CHANGELOG.md"
+          >
+            v0.1.1
+          </a>
+        </div>
+      </div>
     </nav>
   );
 };

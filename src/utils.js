@@ -212,10 +212,11 @@ export function mergeTimeSeries(arrayOfTimeSeries) {
  * @returns {String}
  */
 export function getBasename() {
-  const metaBaseUrl = document.head.querySelector("[property=baseUrl]").content;
-  const baseUrl =
-    metaBaseUrl.indexOf("__BASE_") !== -1 ? "/" : `${metaBaseUrl}`;
-  return baseUrl;
+  if (process.env.NODE_ENV === "production") {
+    return document.head.querySelector("[property=baseUrl]").content;
+  } else {
+    return "/gmadmin/";
+  }
 }
 
 /**
@@ -238,9 +239,9 @@ export function getRuntime() {
 export function generateEndpoints() {
   switch (getRuntime()) {
     case "JVM":
-      return ["admin/metrics.json"];
+      return [getBasename().replace("/gmadmin/", "/admin/metrics.json")];
     case "GOLANG":
-      return ["metrics"];
+      return [getBasename().replace("/gmadmin/", "/admin/metrics")];
     default:
       return [];
   }
@@ -254,7 +255,7 @@ export function generateEndpoints() {
 export function generateThreadsEndpoint() {
   switch (getRuntime()) {
     case "JVM":
-      return "admin/threads";
+      return getBasename().replace("/gmadmin/", "/admin/threads");
     case "GOLANG":
     default:
       return "";

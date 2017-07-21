@@ -28,11 +28,8 @@ import defaultDashboards from "./json/dashboards.json";
  */
 Effect("fetchMetrics", endpoints => {
   if (!endpoints) return;
-  const basename = getBasename();
   Promise.all(
-    endpoints.map(endpoint =>
-      axios.get(`${basename}${endpoint}`, { responseType: "json" })
-    )
+    endpoints.map(endpoint => axios.get(endpoint, { responseType: "json" }))
   )
     .then(jsons => jsons.map(json => json.data))
     .then(jsons => {
@@ -62,7 +59,7 @@ Effect("fetchMetricsFailure", err => {
 Effect("fetchThreads", (endpoint = generateThreadsEndpoint()) => {
   if (!endpoint) return;
   axios
-    .get(`${getBasename()}${endpoint}`, { responseType: "json" })
+    .get(endpoint, { responseType: "json" })
     .then(json => Actions.fetchThreadsSuccess(json.data))
     .catch(err => Actions.fetchThreadsFailure(err));
 });
