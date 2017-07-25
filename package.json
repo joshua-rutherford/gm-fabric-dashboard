@@ -52,11 +52,7 @@
   },
   "watch": {
     "build-css": {
-      "patterns": [
-        "src/style",
-        "src/style/components/",
-        "src/style/views"
-      ],
+      "patterns": ["src/style", "src/style/components/", "src/style/views"],
       "extensions": "less"
     }
   },
@@ -74,18 +70,9 @@
     "watch": "npm-watch"
   },
   "lint-staged": {
-    "*.js": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.less": [
-      "stylelint --fix",
-      "git add"
-    ],
-    "*.css": [
-      "stylelint --fix",
-      "git add"
-    ]
+    "*.js": ["prettier --write", "git add"],
+    "*.less": ["stylelint --fix", "git add"],
+    "*.css": ["stylelint --fix", "git add"]
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -98,6 +85,7 @@
     "ancestorSeparator": " › ",
     "usePathForSuiteName": "true"
   },
-  "proxy": "http://localhost:9990",
+  "proxy-howto": "Use 9990 for gm-fabric-jvm, 9092 for gm-fabric-go, or 8001 for Envoy",
+  "proxy": "http://localhost:8001",
   "homepage": "__BASE_URL__"
 }

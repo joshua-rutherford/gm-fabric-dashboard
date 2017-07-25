@@ -46,14 +46,18 @@ ReactDOM.render(
     <Router history={history}>
       <main>
         <Route component={Container} path="/" />
-        <Route exact path="/" render={() => <Redirect to="/summary" />} />
+        {getState().settings.runtime === "JVM"
+          ? <Route exact path="/" render={() => <Redirect to="/summary" />} />
+          : <Route exact path="/" render={() => <Redirect to="/explorer" />} />}
         <Switch>
-          <Route component={SummaryGrid} path="/summary" />
+          {getState().settings.runtime === "JVM" &&
+            <Route component={SummaryGrid} path="/summary" />}
           {getState().settings.runtime === "JVM" &&
             <Route component={ThreadsGrid} path="/threads" />}
           <Route component={Explorer} path="/explorer" />
           <Route component={SettingsGrid} path="/settings" />
-          <Route component={RouteBar} path="/route" />
+          {getState().settings.runtime === "JVM" &&
+            <Route component={RouteBar} path="/route" />}
           <Route component={GMGrid} path="/dashboard/:dashboardName" />
           <Route component={NotFound} path="*" />
         </Switch>

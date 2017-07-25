@@ -26,12 +26,13 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
         data-uk-grid
         id="summary-bar"
       >
-        <SummaryBarCard
-          href="/summary"
-          lineOne={`${ms(getLatestAttribute(metrics, "jvm/uptime"))} UPTIME`}
-          tabIndex={1}
-          title="Summary"
-        />
+        {runtime === "JVM" &&
+          <SummaryBarCard
+            href="/summary"
+            lineOne={`${ms(getLatestAttribute(metrics, "jvm/uptime"))} UPTIME`}
+            tabIndex={1}
+            title="Summary"
+          />}
         {runtime === "JVM" &&
           <SummaryBarCard href="/route" tabIndex={3} title="Routes" />}
         {runtime === "JVM" &&

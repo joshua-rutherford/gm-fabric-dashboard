@@ -227,8 +227,12 @@ export function getBasename() {
 export function getRuntime() {
   const metaRuntime = document.head.querySelector("[property=runtime]").content;
   const runtime =
-    metaRuntime.indexOf("__BASE_") !== -1 ? "JVM" : `${metaRuntime}`; //default to JVM
+    metaRuntime.indexOf("__BASE_RUNTIME") !== -1 ? "JVM" : `${metaRuntime}`; //default to JVM
   return runtime;
+}
+
+export function filterDashboardsByRuntime(dashboardsObj, runtime) {
+  return _.pickBy(dashboardsObj, dashboard => dashboard.runtime === runtime);
 }
 
 /**
@@ -238,6 +242,8 @@ export function getRuntime() {
  */
 export function generateEndpoints() {
   switch (getRuntime()) {
+    case "ENVOY":
+      return [getBasename().replace("/gmadmin/", "/stats")];
     case "JVM":
       return [getBasename().replace("/gmadmin/", "/admin/metrics.json")];
     case "GOLANG":
