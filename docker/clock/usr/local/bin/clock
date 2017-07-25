@@ -1,0 +1,14 @@
+#!/usr/local/bin/ruby
+
+require 'sinatra'
+
+set :bind, '0.0.0.0'
+
+get '/now' do
+    "#{(Time.now.to_f.round(3)*1000).to_i}"
+end
+
+get '/later/:seconds' do
+    sleep params['seconds'].to_i
+    "#{(Time.now.to_f.round(3)*1000).to_i}"
+end

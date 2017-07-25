@@ -1,0 +1,69 @@
+{
+  "listeners": [
+    {
+      "address": "tcp://0.0.0.0:8080",
+      "filters": [
+        {
+          "type": "read",
+          "name": "http_connection_manager",
+          "config": {
+            "codec_type": "auto",
+            "stat_prefix": "ingress_http",
+            "route_config": {
+              "virtual_hosts": [
+                {
+                  "name": "backend",
+                  "domains": [
+                    "*"
+                  ],
+                  "routes": [
+                    {
+                      "timeout_ms": 0,
+                      "prefix": "/services/clock/1.0",
+                      "prefix_rewrite": "/",
+                      "cluster": "clock"
+                    }
+                  ]
+                }
+              ]
+            },
+            "filters": [
+              {
+                "type": "decoder",
+                "name": "router",
+                "config": {
+                  "dynamic_stats": true
+                }
+              }
+            ],
+            "access_log": [
+              {
+                "path": "/dev/stdout"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "admin": {
+    "access_log_path": "/dev/stdout",
+    "address": "tcp://0.0.0.0:8081"
+  },
+  "cluster_manager": {
+    "clusters": [
+      {
+        "name": "clock",
+        "connect_timeout_ms": 500,
+        "type": "strict_dns",
+        "lb_type": "round_robin",
+        "features": "http2",
+        "hosts": [
+          {
+            "url": "tcp://sidecar:7080"
+          }
+        ]
+      }
+    ]
+  }
+}
