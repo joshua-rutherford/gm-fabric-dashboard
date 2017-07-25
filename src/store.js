@@ -13,7 +13,12 @@ import { createStore, applyMiddleware, combineReducers } from "redux";
 import logger from "redux-logger";
 import { notification } from "uikit";
 
-import { getBasename, generateThreadsEndpoint } from "./utils";
+import {
+  getBasename,
+  getRuntime,
+  generateThreadsEndpoint,
+  filterDashboardsByRuntime
+} from "./utils";
 import { history } from "./index";
 import metrics from "./jumpstate/metrics";
 import settings from "./jumpstate/settings";
@@ -25,22 +30,48 @@ import defaultDashboards from "./json/dashboards.json";
 
 /**
  * Async Action that fetches metrics and calls success or failure actions.
+ * endpoints is an array of strings containing URL endpoints
  */
 Effect("fetchMetrics", endpoints => {
   if (!endpoints) return;
-  Promise.all(
-    endpoints.map(endpoint => axios.get(endpoint, { responseType: "json" }))
-  )
-    .then(jsons => jsons.map(json => json.data))
-    .then(jsons => {
-      let results = {};
-      jsons.forEach(json => {
-        results = { ...results, ...json };
-      });
-      return results;
-    })
-    .then(json => Actions.fetchMetricsSuccess(json))
-    .catch(err => Actions.fetchMetricsFailure(err));
+  const runtime = getRuntime();
+  // This block allows us to direclty poll Envoy metrics from a single source
+  // Everything beyond the first endpoint is discarded
+  // The data is transformed from statsd format into a flat object of key/value pairs
+  if (runtime === "ENVOY") {
+    axios
+      .get(endpoints[0], { responseType: "text" }) // Only poll the first endpoint
+      .then(response => response.data)
+      // A statsd file contains key value pairs delimited by : and terminated by \n
+      .then(statsdTextFile => {
+        let results = {};
+        statsdTextFile
+          .split("\n")
+          .map(kv => kv.split(": "))
+          .forEach(([key, value]) => {
+            if (key) {
+              results[key] = Number(value);
+            }
+          });
+        return results;
+      })
+      .then(json => Actions.fetchMetricsSuccess(json))
+      .catch(err => Actions.fetchMetricsFailure(err));
+  } else {
+    Promise.all(
+      endpoints.map(endpoint => axios.get(endpoint, { responseType: "json" }))
+    )
+      .then(jsons => jsons.map(json => json.data))
+      .then(jsons => {
+        let results = {};
+        jsons.forEach(json => {
+          results = { ...results, ...json };
+        });
+        return results;
+      })
+      .then(json => Actions.fetchMetricsSuccess(json))
+      .catch(err => Actions.fetchMetricsFailure(err));
+  }
 });
 
 /**
@@ -111,15 +142,34 @@ Effect("initLocalForage", () => {
 Effect("fetchDashboards", () => {
   localforage
     .getItem("dashboards")
-    .then(data => {
-      if (data) {
-        console.log("fetchDashboards returned valid data: ", data);
-        Actions.updateDashboardsRedux(data);
+    .then(savedDashboards => {
+      const runtime = getState().settings.runtime;
+      if (
+        savedDashboards &&
+        _.every(savedDashboards, dashboard => dashboard.runtime === runtime)
+      ) {
+        console.log("fetchDashboards returned valid data: ", savedDashboards);
+        const dashboardsForRuntime = filterDashboardsByRuntime(
+          savedDashboards,
+          getState().settings.runtime
+        );
+        console.log("DBs: ", dashboardsForRuntime);
+        if (Object.keys(dashboardsForRuntime).length > 0) {
+          Actions.updateDashboardsRedux(dashboardsForRuntime);
+        }
+        Actions.updateDashboardsRedux(savedDashboards);
       } else {
         console.log(
           "fetchDashboards data was null, so loading default dashboards"
         );
-        Actions.updateDashboardsRedux(defaultDashboards);
+        const dashboardsForRuntime = filterDashboardsByRuntime(
+          defaultDashboards,
+          runtime
+        );
+        console.log("DBs: ", dashboardsForRuntime);
+        if (Object.keys(dashboardsForRuntime).length > 0) {
+          Actions.updateDashboardsRedux(dashboardsForRuntime);
+        }
       }
     })
     .catch(err => console.log("fetchDashboards failed with ", err));
