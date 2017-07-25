@@ -21,11 +21,7 @@ SummaryBar.propTypes = {
 function SummaryBar({ dashboards, metrics, interval, runtime }) {
   return (
     <div className="summary-bar-container">
-      <div
-        className="uk-grid-collapse uk-grid-match uk-flex-center uk-child-width-small"
-        data-uk-grid
-        id="summary-bar"
-      >
+      <div id="summary-bar">
         {runtime === "JVM" &&
           <SummaryBarCard
             href="/summary"
@@ -81,12 +77,6 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
           lineOne={`{ ... }`}
           tabIndex={8}
           title="Explorer"
-        />
-        <SummaryBarCard
-          href={`/settings`}
-          lineOne={<span data-uk-icon="icon: cog; ratio: 1.5" />}
-          tabIndex={9}
-          title="Settings"
         />
       </div>
     </div>
