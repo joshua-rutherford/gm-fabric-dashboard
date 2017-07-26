@@ -85,7 +85,7 @@
     "ancestorSeparator": " › ",
     "usePathForSuiteName": "true"
   },
-  "proxy-howto": "Use 9990 for gm-fabric-jvm, 9092 for gm-fabric-go, or 8001 for Envoy",
-  "proxy": "http://localhost:8001",
+  "proxy-howto": "Use 9990 for gm-fabric-jvm, 9092 for gm-fabric-go, or 8081 for Envoy",
+  "proxy": "http://localhost:8081",
   "homepage": "__BASE_URL__"
 }

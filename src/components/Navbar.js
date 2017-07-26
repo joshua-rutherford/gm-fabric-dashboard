@@ -1,40 +1,36 @@
 import React from "react";
 import decipherLogo from "../images/decipherLogo.svg";
-import gmLogo from "../images/gmFabricLogo.svg";
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="uk-navbar">
-      <div className="uk-navbar-left">
-        <div className="uk-navbar-item uk-logo">
-          <img
-            alt="Decipher Logo"
-            className="logo"
-            src={decipherLogo}
-            style={{ width: "20px" }}
-          />
-          <img
-            alt="Gray Matter Logo"
-            className="logo"
-            id="product-logo"
-            src={gmLogo}
-            style={{ width: "20px" }}
-          />
-          <span className="logo" id="logo-text">
-            Fabric
-          </span>
-        </div>
+    <nav className="app-header">
+      <div className="brand">
+        <img
+          alt="Decipher Logo"
+          className="brand-logo"
+          src={decipherLogo}
+          style={{ width: "20px" }}
+        />
+        <span className="brand-text" id="logo-text">{'Fabric'}</span>
       </div>
-      <div className="uk-navbar-right">
-        <div className="uk-navbar-item">
-          <a
-            className="uk-link-muted"
-            href="https://github.com/DecipherNow/gm-fabric-dashboard/blob/master/CHANGELOG.md"
-          >
-            v0.1.1
-          </a>
-        </div>
-      </div>
+
+      <a
+        className="app-version"
+        href="https://github.com/DecipherNow/gm-fabric-dashboard/blob/master/CHANGELOG.md"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {'0.1.1'}
+      </a>
+
+      <NavLink
+        className="uk-button settings-button"
+        to="/settings"
+      >
+        <span className="settings-cog" data-uk-icon="icon: cog; ratio: .84" />
+      </NavLink>
+
     </nav>
   );
 };

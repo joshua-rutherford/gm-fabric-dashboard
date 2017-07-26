@@ -4,32 +4,132 @@
 
 // Local Variables
 
+           @button-color-base: @color-white;
+    @button-border-color-base: @color-highlight;
+@button-background-color-base: @color-highlight;
+   @button-border-radius-base: @border-radius-default;
+    @button-border-width-base: 1px;
+
+
 // Helpers
-.hook-button-default {
-  border-radius: @border-radius-default;
-  border: 0;
+
+.mixin-button-height(
+  @height: 1em){
+
+  height: @height;
+  line-height: @height;
 }
+
+.mixin-button-style(
+  @color: @button-color-base;
+  @border-color: @button-border-color-base;
+  @background-color: @button-background-color-base;
+  @mode: darken;
+  @degree: 6%;
+  @hover-degree: @degree * 1;
+  @active-degree: @degree * 2){
+
+  color: @color;
+  border: @button-border-width-base solid @border-color;
+  border-radius: @button-border-radius-base;
+  background-color: @background-color;
+  user-select: none;
+}
+
+.mixin-button-style(
+  @color: @color-highlight;
+  @border-color: @color;
+  @background-color: @color;
+  @mode: darken;
+  @degree: 6%;
+  @hover-degree: @degree * 1;
+  @active-degree: @degree * 2)
+
+  when (@mode=lighten) {
+
+  &:hover {
+    color: desaturate(lighten(@color, @hover-degree), @hover-degree);
+    border-color: desaturate(lighten(@border-color, @hover-degree), @hover-degree);
+    background-color: desaturate(lighten(@background-color, @hover-degree), @hover-degree);
+  }
+
+  &.active,
+  &:active,
+  &.uk-active,
+  &:focus {
+    color: desaturate(lighten(@color, @active-degree), @active-degree);
+    border-color: desaturate(lighten(@border-color, @active-degree), @active-degree);
+    background-color: desaturate(lighten(@background-color, @active-degree), @active-degree);
+  }
+}
+
+.mixin-button-style(
+  @color: @color-highlight;
+  @border-color: @color;
+  @background-color: @color;
+  @mode: darken;
+  @degree: 6%;
+  @hover-degree: @degree * 1;
+  @active-degree: @degree * 2)
+
+  when (@mode=darken) {
+
+  &:hover {
+    color: saturate(darken(@color, @hover-degree), @hover-degree);
+    border-color: saturate(darken(@border-color, @hover-degree), @hover-degree);
+    background-color: saturate(darken(@background-color, @hover-degree), @hover-degree);
+  }
+
+  &.active,
+  &.uk-active,
+  &:active,
+  &:focus {
+    color: saturate(darken(@color, @active-degree), @active-degree);
+    border-color: saturate(darken(@border-color, @active-degree), @active-degree);
+    background-color: saturate(darken(@background-color, @active-degree), @active-degree);
+  }
+}
+
+
 
 // Styles
 
-.uk-button-decipher {
-  background-color: @decipher-green;
-  color: #FFF;
-  .hook-button-default;
-}
+// .uk-button {
+//   background-color: @color-white;
+//   color: @color-content;
+//   .hook-button-default;
+//
+//   &:hover,
+//   &:focus {
+//     background-color: @decipher-green-hover;
+//     .hook-button-default-hover;
+//   }
+//
+//   &:active,
+//   &.uk-active {
+//     background-color: @decipher-green-active;
+//     .hook-button-default-active;
+//   }
+//
+//   &.uk-button-outline {
+//     background-color: transparent;
+//   }
+// }
 
-/* Hover + Focus */
-.uk-button-decipher:hover,
-.uk-button-decipher:focus {
-  background-color: @decipher-green-hover;
-  color: #FFF;
-  .hook-button-default-hover;
-}
 
-/* OnClick + Active */
-.uk-button-decipher:active,
-.uk-button-decipher.uk-active {
-  background-color: @decipher-green-active;
-  color: #FFF;
-  .hook-button-default-active;
+:root {
+
+  .uk-button {
+    padding: @padding-base/4 @padding-base;
+    border-radius: @button-border-radius-base;
+    // .mixin-button-height(24px);
+
+    .mixin-button-style(
+      @color: @color-content;
+      @border-color: @color-grey-4;
+      @background-color: @color-grey-4;
+      @degree: 4%;
+      @mode: darken
+    );
+  }
 }

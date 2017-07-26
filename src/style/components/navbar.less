@@ -3,24 +3,90 @@
 @import '../mixins.less';
 
 // Local Variables
-@navbar-nav-item-height: 40px; // Warning: Increasing the border width above 1px impacts uk-grid flows
-@navbar-bottom-border-color: #DDD;
-@logo-text-color: #30B44A;
+@navbar-height: @padding-base*4.25 ;
+@navbar-text-color: @color-white;
+@navbar-brand-logo-size: 26px;
+@navbar-brand-text-size: 16px;
+@navbar-brand-spacing: @padding-base;
+@navbar-background-color: @color-sidebar-background;
+
 
 // Helpers
 
+.mixin-brand-text-styles {
+  font-weight: 500;
+  letter-spacing: .03em;
+}
+
+.mixin-version-text-styles {
+  font-weight: 600;
+  font-size: @font-size-sm;
+}
+
+.mixin-temporary-fix-for-button-icon-placement {
+  position: relative;
+  top: 2px;
+  svg {
+    position: relative;
+    top: -5px;
+  }
+}
+
+
 // Styles
-.uk-navbar {
-  height: @navbar-nav-item-height;
-  background: @decipher-black;
-}
+.app-header {
+  height: @navbar-height;
+  background: @navbar-background-color;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: @padding-base / 2;
 
-#product-logo {
-  margin-left: 20px;
-}
+  > * {
+    flex: 1 1 auto;
+  }
 
-#logo-text {
-  margin-left: 5px;
-  font-size: x-large;
-  color: @logo-text-color;
+  .brand {
+    flex: 1 1 100%;
+    display: flex;
+  }
+
+  .brand-logo {
+    @brand-logo-width: @navbar-brand-logo-size + @navbar-brand-spacing;
+    flex: 0 0 @brand-logo-width;
+    padding: 0 @navbar-brand-spacing;
+  }
+
+  .brand-text {
+    .mixin-brand-text-styles();
+    flex: 0 0 auto;
+    font-size: @navbar-brand-text-size;
+    color: @navbar-text-color;
+  }
+
+  .app-version {
+    .mixin-version-text-styles;
+    flex: 0 0 auto;
+    color: fade(@navbar-text-color, 50%);
+    padding: 0 @padding-base;
+
+    &:hover {
+      color: @navbar-text-color;
+    }
+  }
+
+  .settings-button {
+    justify-self: flex-end;
+    flex: 0 0 2em;
+
+    .mixin-button-style(
+      @color: @navbar-text-color;
+      @border-color: @navbar-background-color;
+      @background-color: @navbar-background-color;
+      @degree: 12%;
+      @mode: lighten
+    );
+    .mixin-button-height(@navbar-height * .85);
+    .mixin-temporary-fix-for-button-icon-placement();
+  }
 }

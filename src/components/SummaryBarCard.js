@@ -1,68 +1,95 @@
-import React from "react";
+import React, { PureComponent } from "react";
 import { PropTypes } from "prop-types";
 import { NavLink } from "react-router-dom";
 import { Sparklines, SparklinesLine } from "react-sparklines";
 
-SummaryBarCard.propTypes = {
-  chartData: PropTypes.array,
-  href: PropTypes.string,
-  isActive: PropTypes.bool,
-  lineOne: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-    PropTypes.object
-  ]),
-  lineTwo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  tabIndex: PropTypes.number,
-  title: PropTypes.string,
-  width: PropTypes.string
-};
+export default class SummaryBarCard extends PureComponent {
+  static propTypes = {
+    chartData: PropTypes.array,
+    chartTitle: PropTypes.string,
+    href: PropTypes.string,
+    icon: PropTypes.string,
+    isActive: PropTypes.bool,
+    lines: PropTypes.array,
+    tabIndex: PropTypes.number,
+    title: PropTypes.string,
+  };
 
-export default function SummaryBarCard({
-  chartData,
-  href,
-  isActive,
-  lineOne,
-  lineTwo,
-  tabIndex,
-  title,
-  width
-}) {
-  width = width || "uk-width-small";
-  return (
-    <NavLink
-      activeClassName="summary-bar-card-active"
-      className={`uk-card uk-card-small summary-bar-card ${width}`}
-      tabIndex={tabIndex}
-      to={href}
-    >
-      <div className="summary-bar-card-title">
-        {title}
-      </div>
-      <div className="uk-card-body summary-bar-card-body">
-        {lineOne &&
-          <div className="uk-text-small">
-            {lineOne}
-          </div>}
-        {lineTwo &&
-          <div className="uk-text-small">
-            {lineTwo}
-          </div>}
-        {chartData &&
-          <Sparklines
-            data={chartData}
-            preserveAspectRatio="xMaxYMin"
-            style={{ width: "100%" }}
+  static defaultProps = {
+    lines: []
+  };
+
+  state = {
+    isOpen: false
+  };
+
+  render() {
+    const {
+      chartData,
+      chartTitle,
+      href,
+      icon,
+      isActive,
+      lines,
+      tabIndex,
+      title,
+    } = this.props;
+    return (
+      <NavLink
+        activeClassName="active"
+        className={this.state.isOpen ? 'summary-bar-card open' : 'summary-bar-card'}
+        tabIndex={tabIndex}
+        to={href}
+      >
+        <div className="summary-bar-card-title">
+          <span
+            className="summary-bar-card-icon"
+            data-uk-icon={`icon: ${icon || "grid"}; ratio: 1.4`}
+          />
+          <h1 className="summary-bar-card-heading">{title}</h1>
+          <button
+            className="summary-bar-card-show-toggle uk-button"
+            onClick={evt => {
+              evt.preventDefault();
+              this.setState({ isOpen: !this.state.isOpen });
+            }}
           >
-            <SparklinesLine
-              style={{
-                stroke: "#FFF",
-                strokeWidth: 3,
-                fill: "white"
-              }}
-            />
-          </Sparklines>}
-      </div>
-    </NavLink>
-  );
+            <span data-uk-icon={`icon: chevron-left; ratio: 1`} className="summary-card-accordion-arrow"/>
+          </button>
+        </div>
+        {this.state.isOpen &&
+          <div className="uk-card-body summary-bar-card-body">
+            {lines.map(line =>
+              <div className="summary-bar-card-kv">
+                <dt key={line.name} className="summary-bar-card-kv-key">
+                  {line.name}
+                </dt>
+                <dd className="summary-bar-card-kv-value">
+                  {line.value}
+                </dd>
+              </div>
+            )}
+            {chartTitle &&
+              <div>
+                {chartTitle}
+              </div>}
+            {chartData &&
+              <Sparklines
+                data={chartData}
+                preserveAspectRatio="xMaxYMin"
+                style={{ width: "100%" }}
+              >
+                <SparklinesLine
+                  style={{
+                    stroke: "currentColor",
+                    strokeWidth: 1,
+                    fill: "currentColor",
+                    fillOpacity: ".1"
+                  }}
+                />
+              </Sparklines>}
+          </div>}
+      </NavLink>
+    );
+  }
 }

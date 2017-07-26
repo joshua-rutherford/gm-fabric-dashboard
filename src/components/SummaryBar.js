@@ -21,15 +21,29 @@ SummaryBar.propTypes = {
 function SummaryBar({ dashboards, metrics, interval, runtime }) {
   return (
     <div className="summary-bar-container">
-      <div
-        className="uk-grid-collapse uk-grid-match uk-flex-center uk-child-width-small"
-        data-uk-grid
-        id="summary-bar"
-      >
+      <div id="summary-bar">
+
+      <div className="nav-widget">
+        <a className="nav-go-up">
+          <span data-uk-icon={`icon: chevron-left; ratio: 1`} className="icon"/>
+          <span className="label">{'{Service}'}</span>
+        </a>
+        <a
+          className="nav-siblings">
+          <span className="label">{'{Instance Name}'}</span>
+          <span data-uk-icon={`icon: triangle-down; ratio: 1`} className="icon"/>
+        </a>
+      </div>
+
         {runtime === "JVM" &&
           <SummaryBarCard
             href="/summary"
-            lineOne={`${ms(getLatestAttribute(metrics, "jvm/uptime"))} UPTIME`}
+            lines={[
+              {
+                name: "Uptime",
+                value: ms(getLatestAttribute(metrics, "jvm/uptime"))
+              }
+            ]}
             tabIndex={1}
             title="Summary"
           />}
@@ -39,55 +53,55 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
           <SummaryBarCard
             chartData={getSparkLineOfValue(metrics, "jvm/thread/count")}
             href="/threads"
-            lineOne={getLatestAttribute(metrics, "jvm/thread/count")}
+            lines={[
+              {
+                name: "# Threads",
+                value: getLatestAttribute(metrics, "jvm/thread/count")
+              }
+            ]}
             tabIndex={4}
             title="Threads"
           />}
-        {_.toPairs(dashboards).map(pair => {
-          const hasValidChart = _.has(pair[1], "summaryCard.chart.type"); // && _.has(dashboard, 'summaryCard.chart.dataAttribute')
-          const lineOne = parseJSONString(pair[1].summaryCard.lineOne, metrics);
-          const lineTwo = parseJSONString(pair[1].summaryCard.lineTwo, metrics);
-          let chartData;
-          if (hasValidChart && pair[1].summaryCard.chart.type === "value") {
+        {_.toPairs(dashboards).map(([key, value]) => {
+          const hasValidChart = _.has(value, "summaryCard.chart.type"); // && _.has(dashboard, 'summaryCard.chart.dataAttribute')
+          const lines = value.summaryCard.lines.map(line => ({
+            name: line.name,
+            value: parseJSONString(line.value, metrics)
+          }));
+          let chartData, chartTitle;
+          if (hasValidChart && value.summaryCard.chart.type === "value") {
+            chartTitle = value.summaryCard.chart.title;
             chartData = getSparkLineOfValue(
               metrics,
-              pair[1].summaryCard.chart.dataAttribute
+              value.summaryCard.chart.dataAttribute
             );
           } else if (
             hasValidChart &&
-            pair[1].summaryCard.chart.type === "netChange"
+            value.summaryCard.chart.type === "netChange"
           ) {
+            chartTitle = value.summaryCard.chart.title;
             chartData = getSparkLineOfNetChange(
               metrics,
-              pair[1].summaryCard.chart.dataAttribute
+              value.summaryCard.chart.dataAttribute
             );
           } else {
+            chartTitle = undefined;
             chartData = undefined;
           }
           return (
             <SummaryBarCard
               chartData={chartData}
-              href={`/dashboard/${pair[0]}`}
-              key={`/dashboard/${pair[0]}`}
-              lineOne={lineOne}
-              lineTwo={lineTwo}
+              chartTitle={chartTitle}
+              href={`/dashboard/${key}`}
+              icon={value.summaryCard.icon}
+              key={`/dashboard/${key}`}
+              lines={lines}
               tabIndex={9}
-              title={pair[1].name}
+              title={value.name}
             />
           );
         })}
-        <SummaryBarCard
-          href={`/explorer`}
-          lineOne={`{ ... }`}
-          tabIndex={8}
-          title="Explorer"
-        />
-        <SummaryBarCard
-          href={`/settings`}
-          lineOne={<span data-uk-icon="icon: cog; ratio: 1.5" />}
-          tabIndex={9}
-          title="Settings"
-        />
+        <SummaryBarCard href={`/explorer`} tabIndex={8} title="Explorer" />
       </div>
     </div>
   );

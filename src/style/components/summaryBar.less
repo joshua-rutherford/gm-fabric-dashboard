@@ -3,9 +3,9 @@
 @import '../mixins.less';
 
 // Local Variables
-@summary-bar-background-color: #222;
-@summary-bar-card-border-color: #CCC;
-@active-summary-bar-card-background-color: #4F4F4F;
+@summary-bar-background-color: @color-black;
+@summary-bar-card-active-background-color: @color-grey-1;
+@summary-bar-card-text-color: @color-white;
 
 // Helpers
 
@@ -13,82 +13,155 @@
 
 .summary-bar-container {
   background-color: @summary-bar-background-color;
-  padding: 12px 0 0;
+  padding: 0;
+}
+
+[id=summary-bar] {
+  box-shadow: inset -1px 0 rgba(0,0,0,.7);
 }
 
 .summary-bar-card {
-  padding: 8px;
-  border-radius: @border-radius-default @border-radius-default 0 0;
-  border: 1px solid transparent;
-  flex-shrink: 1;
-  flex-grow: 1;
-  min-width: 7em;
-  flex-basis: 10%;
-  text-decoration: none;
-  outline: none;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  transition: all .1s ease;
 
   .summary-bar-card-title {
-    .uk-card-title();
-    .uk-text-small();
-    .uk-text-muted();
-    .uk-text-uppercase();
+    color: @summary-bar-card-text-color;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: @padding-base / 2;
+    border-top: 1px solid rgba(255,255,255,.25);
+    border-bottom: 1px solid transparent;
 
-    font-size: 0.8em;
+    > * {
+      flex: 0 0 @padding-base*3;
+    }
   }
 
-  // Conflicts with UK-Card styles.
-  .summary-bar-card-body {
-    .uk-card-body();
+  .summary-bar-card-icon {
+    margin-right: @padding-base / 2;
+  }
 
+  .summary-bar-card-heading {
+    font-size: @font-size-base;
+    margin: 0;
+    flex: 1 1 100%;
+    white-space: nowrap;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    color: @summary-bar-card-text-color;
+  }
+
+  .summary-bar-card-show-toggle {
+    width: @padding-base * 3;
     padding: 0;
-    color: #FFF;
+    text-align: center;
+
+    svg {
+      transition: transform .05s ease;
+    }
+
+    .mixin-button-height(@padding-base * 3);
+    .mixin-button-style(
+      @color: @summary-bar-card-text-color;
+      @border-color: fadeout(@summary-bar-background-color, 80%);
+      @background-color: fadeout(@summary-bar-background-color, 100%);
+      @degree: 12%;
+      @mode: lighten
+    )
   }
 
-  &:hover {
-    background-color: darken(@summary-bar-background-color, 6%);
-    border-color: rgba(255, 255, 255, 0.1);
-    text-decoration: none;
+  .summary-bar-card-body {
+    padding: 0 0;
+    color: @summary-bar-card-text-color;
+  }
 
-    .summary-bar-card-title {
-      .uk-text-primary();
+  .summary-bar-card-kv {
+    display: flex;
+    padding: 0 @padding-base;
+
+    &:last-child {
+      margin-bottom: @padding-base;
     }
   }
 
-  &:focus {
-    background-color: darken(@summary-bar-background-color, 6%);
-    border-color: rgba(255, 255, 255, 0.1);
-    text-decoration: none;
-
-    .summary-bar-card-title {
-      color: @decipher-green;
-    }
+  .summary-bar-card-kv-key,
+  .summary-bar-card-kv-value {
+    font-size: @font-size-sm;
+    font-weight: 500;
+    flex: 1 1;
+    padding: @padding-base / 4;
   }
 
-  &:active,
-  &:focus {
-    background-color: darken(@summary-bar-background-color, 6%);
-
-    .summary-bar-card-title {
-      color: @decipher-green;
-    }
+  .summary-bar-card-kv-key {
+    color: fadeout(@summary-bar-card-text-color, 30%);
+    flex-basis: 40%;
+    text-align: right;
   }
-
-  &.summary-bar-card-active {
-    &,
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: darken(@summary-bar-background-color, 12%);
-      border-color: 1px rgba(255, 255, 255, 0.1);
-
-      .summary-bar-card-title {
-        color: @decipher-green;
-      }
-    }
+  .summary-bar-card-kv-value {
+    color: @color-white;
+    flex-basis: 60%;
   }
 
   .summary-datapoint-line {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  &:first-of-type {
+    .summary-bar-card-title {
+      border-top: 0;
+    }
+  }
+
+  &:hover {
+    background-color: mix(@summary-bar-background-color, @summary-bar-card-active-background-color, 60%);
+  }
+
+  &:active,
+  &:focus {
+    outline: none;
+  }
+
+  &.open {
+
+    .summary-bar-card-body:not(:empty) {
+    }
+
+    .summary-bar-card-show-toggle {
+      svg {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  &.active {
+    background-color: @summary-bar-card-active-background-color;
+
+    &.open {
+      .summary-bar-card-title {
+        margin-bottom: @padding-base;
+      }
+    }
+
+    &,
+    &:hover,
+    &:active,
+    &:focus {
+
+      .summary-bar-card-title {
+        border-top-color: transparent;
+        border-bottom-color: @color-highlight;
+      }
+
+      .summary-bar-card-heading {
+        font-weight: 600;
+      }
+    }
   }
 }
 

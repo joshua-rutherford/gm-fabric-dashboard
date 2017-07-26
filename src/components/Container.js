@@ -2,9 +2,19 @@ import React, { Component } from "react";
 import { PropTypes } from "prop-types";
 import { Actions } from "jumpstate";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 import Navbar from "./Navbar";
 import SummaryBar from "./SummaryBar";
+import Explorer from "./Explorer";
+import GMGrid from "./GMGrid";
+import SummaryGrid from "./SummaryGrid";
+import SettingsGrid from "./SettingsGrid";
+import RouteBar from "./RouteBar";
+import RouteGrid from "./RouteGrid";
+import ThreadsGrid from "./ThreadsGrid";
+import { Route, Redirect, Switch } from "react-router-dom";
+import NotFound from "./NotFound";
 
 class Container extends Component {
   static propTypes = {
@@ -24,13 +34,29 @@ class Container extends Component {
 
   render() {
     return (
-      <div className="uk-container uk-container-expand" id="app-container">
-        <Navbar />
-        <SummaryBar />
-        <div className="uk-background-default" data-uk-grid data-uk-grid-margin>
-          <main className="uk-width-1-1@s">
-            {this.props.children}
-          </main>
+      <div id="app-container">
+        <nav
+          className="uk-width-1-6@s sidebar"
+          style={{ backgroundColor: "black" }}
+        >
+          <Navbar />
+          <SummaryBar />
+        </nav>
+        <div className="uk-width-5-6@s">
+          <Route exact path="/" render={() => <Redirect to="/summary" />} />
+          <Switch>
+            {this.props.runtime === "JVM" &&
+              <Route component={SummaryGrid} path="/summary" />}
+            {this.props.runtime === "JVM" &&
+              <Route component={ThreadsGrid} path="/threads" />}
+            <Route component={Explorer} path="/explorer" />
+            <Route component={SettingsGrid} path="/settings" />
+            {this.props.runtime === "JVM" &&
+              <Route component={RouteBar} path="/route" />}
+            <Route component={GMGrid} path="/dashboard/:dashboardName" />
+            <Route component={NotFound} path="*" />
+          </Switch>
+          <Route component={RouteGrid} path="/route/:routeName" />
         </div>
       </div>
     );
@@ -41,4 +67,4 @@ function mapStateToProps({ settings: { metricsEndpoints, runtime } }) {
   return { metricsEndpoints, runtime };
 }
 
-export default connect(mapStateToProps)(Container);
+export default withRouter(connect(mapStateToProps)(Container));

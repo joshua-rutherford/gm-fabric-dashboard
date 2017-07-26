@@ -3,40 +3,41 @@
     "name": "HTTP",
     "runtime": "JVM",
     "summaryCard": {
-      "lineOne": [
+      "icon": "heart",
+      "lines": [
         {
-          "type": "string",
-          "value": "HTTP:"
+          "name": "HTTP",
+          "value": [
+            {
+              "type": "latest",
+              "value": "http/success"
+            },
+            {
+              "type": "string",
+              "value": "/"
+            },
+            {
+              "type": "latest",
+              "value": "http/requests"
+            }
+          ]
         },
         {
-          "type": "latest",
-          "value": "http/success"
-        },
-        {
-          "type": "string",
-          "value": "/"
-        },
-        {
-          "type": "latest",
-          "value": "http/requests"
-        }
-      ],
-      "lineTwo": [
-        {
-          "type": "string",
-          "value": "HTTPS:"
-        },
-        {
-          "type": "latest",
-          "value": "https/success"
-        },
-        {
-          "type": "string",
-          "value": "/"
-        },
-        {
-          "type": "latest",
-          "value": "https/requests"
+          "name": "HTTPS",
+          "value": [
+            {
+              "type": "latest",
+              "value": "https/success"
+            },
+            {
+              "type": "string",
+              "value": "/"
+            },
+            {
+              "type": "latest",
+              "value": "https/requests"
+            }
+          ]
         }
       ]
     },
@@ -222,20 +223,24 @@
         "type": "value",
         "dataAttribute": "jvm/mem/current/used"
       },
-      "lineOne": [
+      "lines": [
         {
-          "type": "latest",
-          "value": "jvm/mem/current/used",
-          "baseUnit": "B",
-          "resultUnit": "MB",
-          "precision": 3
-        },
-        {
-          "type": "string",
-          "value": "MB"
+          "name": "MEM USED",
+          "value": [
+            {
+              "type": "latest",
+              "value": "jvm/mem/current/used",
+              "baseUnit": "B",
+              "resultUnit": "MB",
+              "precision": 3
+            },
+            {
+              "type": "string",
+              "value": "MB"
+            }
+          ]
         }
-      ],
-      "lineTwo": []
+      ]
     },
     "grid": {
       "breakpoints": {
@@ -373,24 +378,24 @@
     "name": "Finagle",
     "runtime": "JVM",
     "summaryCard": {
-      "lineOne": [
+      "lines": [
         {
-          "type": "latest",
-          "value": "finagle/future_pool/active_tasks"
+          "name": "Active Tasks",
+          "value": [
+            {
+              "type": "latest",
+              "value": "finagle/future_pool/active_tasks"
+            }
+          ]
         },
         {
-          "type": "string",
-          "value": "Active"
-        }
-      ],
-      "lineTwo": [
-        {
-          "type": "latest",
-          "value": "finagle/timer/pending_tasks.count"
-        },
-        {
-          "type": "string",
-          "value": "Pending"
+          "name": "Pend. Tasks",
+          "value": [
+            {
+              "type": "latest",
+              "value": "finagle/timer/pending_tasks.count"
+            }
+          ]
         }
       ]
     },
