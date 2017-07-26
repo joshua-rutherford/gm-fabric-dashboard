@@ -10,6 +10,9 @@
             "codec_type": "auto",
             "stat_prefix": "clock",
             "use_remote_address": true,
+            "tracing": {
+              "operation_name": "egress"
+            },
             "route_config": {
               "virtual_hosts": [
                 {
@@ -50,6 +53,17 @@
     "access_log_path": "/dev/stdout",
     "address": "tcp://0.0.0.0:7081"
   },
+  "tracing": {
+    "http": {
+      "driver": {
+        "type": "zipkin",
+        "config": {
+          "collector_cluster": "zipkin",
+          "collector_endpoint": "/api/v1/spans"
+        }
+      }
+    }
+  },
   "cluster_manager": {
     "clusters": [
       {
@@ -60,6 +74,17 @@
         "hosts": [
           {
             "url": "tcp://clock:4567"
+          }
+        ]
+      },
+      {
+        "name": "zipkin",
+        "connect_timeout_ms": 1000,
+        "type": "strict_dns",
+        "lb_type": "round_robin",
+        "hosts": [
+          {
+            "url": "tcp://zipkin:9411"
           }
         ]
       }

@@ -31,3 +31,11 @@ services:
     ports:
       - 8080:8080
       - 8081:8081
+
+  zipkin:
+
+    image: openzipkin/zipkin:1.28.1
+    networks:
+      - fabric
+    ports:
+      - 9411:9411
