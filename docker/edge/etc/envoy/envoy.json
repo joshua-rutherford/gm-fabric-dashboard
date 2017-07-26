@@ -50,6 +50,7 @@
     "access_log_path": "/dev/stdout",
     "address": "tcp://0.0.0.0:8081"
   },
+  "statsd_tcp_cluster_name": "statsd",
   "cluster_manager": {
     "clusters": [
       {
@@ -61,6 +62,17 @@
         "hosts": [
           {
             "url": "tcp://sidecar:7080"
+          }
+        ]
+      },
+      {
+        "name": "statsd",
+        "connect_timeout_ms": 1000,
+        "type": "strict_dns",
+        "lb_type": "round_robin",
+        "hosts": [
+          {
+            "url": "tcp://statsd:9125"
           }
         ]
       }

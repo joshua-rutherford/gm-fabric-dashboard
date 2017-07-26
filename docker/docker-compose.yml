@@ -32,6 +32,16 @@ services:
       - 8080:8080
       - 8081:8081
 
+  statsd:
+
+    image: prom/statsd-exporter:v0.4.0
+    command: "/bin/statsd_exporter -log.level=debug"
+    networks:
+      - fabric
+    ports:
+      - 9102:9102
+      - 9125:9125
+
   zipkin:
 
     image: openzipkin/zipkin:1.28.1
