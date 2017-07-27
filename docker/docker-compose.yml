@@ -1,8 +1,17 @@
+# Envoy sends statsd metrics to Prometheus via the Prometheus Statsd exporter
 version: '3'
 
 networks:
 
-  fabric: {}
+  fabric:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      -
+        subnet: 172.16.238.0/24
+      -
+        subnet: 2001:3984:3989::/64
 
 services:
 
@@ -10,7 +19,8 @@ services:
 
     build: ./clock
     networks:
-      - fabric
+      fabric:
+        ipv4_address: 172.16.238.07
     ports:
       - 4567:4567
 
@@ -18,7 +28,8 @@ services:
 
     build: ./sidecar
     networks:
-      - fabric
+      fabric:
+        ipv4_address: 172.16.238.08
     ports:
       - 7080:7080
       - 7081:7081
@@ -26,8 +37,11 @@ services:
   edge:
 
     build: ./edge
+    volumes:
+      - ./edge/etc/envoy/envoy.json:/etc/envoy.json
     networks:
-      - fabric
+      fabric:
+        ipv4_address: 172.16.238.09
     ports:
       - 8080:8080
       - 8081:8081
@@ -36,6 +50,27 @@ services:
 
     image: openzipkin/zipkin:1.28.1
     networks:
-      - fabric
+      fabric:
+        ipv4_address: 172.16.238.11
     ports:
       - 9411:9411
+
+  statsd:
+
+    image: prom/statsd-exporter
+    networks:
+      fabric:
+        ipv4_address: 172.16.238.10
+    ports:
+      - 9102:9102
+      - 9125:9125/udp
+
+  prometheus:
+
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - fabric
+    ports:
+      - 9091:9090

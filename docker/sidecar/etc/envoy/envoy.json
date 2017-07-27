@@ -17,9 +17,7 @@
               "virtual_hosts": [
                 {
                   "name": "clock",
-                  "domains": [
-                    "*"
-                  ],
+                  "domains": ["*"],
                   "routes": [
                     {
                       "timeout_ms": 0,

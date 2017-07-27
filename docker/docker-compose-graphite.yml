@@ -1,0 +1,64 @@
+# Envoy sends statsd metrics to Graphite
+version: '3'
+
+networks:
+
+  fabric:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+      - subnet: 2001:3984:3989::/64
+
+services:
+
+  clock:
+
+    build: ./clock
+    networks:
+      - fabric
+    ports:
+      - 4567:4567
+
+  sidecar:
+
+    build: ./sidecar
+    networks:
+      - fabric
+    ports:
+      - 7080:7080
+      - 7081:7081
+
+  edge:
+
+    build: ./edge
+    volumes:
+      - ./edge/etc/envoy/envoy-graphite.json:/etc/envoy.json
+    networks:
+      - fabric
+    ports:
+      - 8080:8080
+      - 8081:8081
+
+  graphite:
+   
+    image: hopsoft/graphite-statsd
+    networks:
+      fabric:
+        ipv4_address: 172.16.238.10
+    ports:
+      - "1337:80"
+      - "2003-2004:2003-2004"
+      - "2023-2024:2023-2024"
+      - "8125:8125/udp"
+      - "8126:8126"
+
+  zipkin:
+
+    image: openzipkin/zipkin:1.28.1
+    networks:
+      fabric:
+        ipv4_address: 172.16.238.11
+    ports:
+      - 9411:9411

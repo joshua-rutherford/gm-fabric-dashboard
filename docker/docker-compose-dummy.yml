@@ -1,0 +1,60 @@
+# Envoy sends statsd metrics to a dummy Node.js service that logs everything it receives to the console 
+version: '3'
+
+networks:
+
+  fabric:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+      - subnet: 2001:3984:3989::/64
+
+services:
+
+  clock:
+
+    build: ./clock
+    networks:
+      - fabric
+    ports:
+      - 4567:4567
+
+  sidecar:
+
+    build: ./sidecar
+    networks:
+      - fabric
+    ports:
+      - 7080:7080
+      - 7081:7081
+
+  edge:
+
+    build: ./edge
+    volumes:
+      - ./edge/etc/envoy/envoy.json:/etc/envoy.json
+    networks:
+      - fabric
+    ports:
+      - 8080:8080
+      - 8081:8081
+
+  dummy:
+
+    # Dummy Node.js service that logs UDP traffic to console
+    build: ./dummy
+    networks:
+      fabric:
+        ipv4_address: 172.16.238.10
+    ports:
+      - "9125:9125/udp"
+
+  zipkin:
+
+    image: openzipkin/zipkin:1.28.1
+    networks:
+      - fabric
+    ports:
+      - 9411:9411

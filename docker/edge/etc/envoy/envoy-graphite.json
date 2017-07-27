@@ -48,7 +48,7 @@
     "access_log_path": "/dev/stdout",
     "address": "tcp://0.0.0.0:8081"
   },
-  "statsd_udp_ip_address": "172.16.238.10:9125",
+  "statsd_udp_ip_address": "172.16.238.10:8125",
   "stats_flush_interval_ms": 5000,
   "cluster_manager": {
     "clusters": [
