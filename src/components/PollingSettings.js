@@ -21,33 +21,55 @@ class PollingSettings extends Component {
   render() {
     const { isPolling } = this.props;
     const buttonClass = isPolling
-      ? "uk-button uk-button-danger"
-      : "uk-button uk-button-decipher";
+      ? "uk-button uk-button-vertical uk-button-danger"
+      : "uk-button uk-button-vertical";
+    const buttonIcon = isPolling
+      ? "ban"
+      : "play-circle";
+    const buttonLabel = isPolling
+      ? "Stop Polling"
+      : "Resume Polling";
     return (
-      <div className="uk-card uk-card-small uk-card-body">
-        <h3 className="uk-card-title" id="polling">
-          Polling
-        </h3>
-        <button
-          className={buttonClass}
-          onClick={() => Actions.togglePolling()}
-          tabIndex={20}
-        >
-          {isPolling ? "Stop Polling" : "Start Polling"}
-        </button>
-        <h4 id="interval-name">Interval (seconds)</h4>
-        <InputRange
-          aria-labelledby="polling interval-name"
-          maxValue={120}
-          minValue={5}
-          onChange={value => {
-            this.setState({ localInterval: value });
-            this.state.debouncedSetInterval(value * 1000);
-          }}
-          tabIndex={21}
-          value={this.state.localInterval}
-        />
-      </div>
+      <section className="layout-section settings-group-polling">
+        <header>
+          <span data-uk-icon={`icon: grid; ratio: 1`} className="section-icon"/>
+          <h3 className="section-title">{'Polling'}</h3>
+        </header>
+        <div className="section-content">
+
+          <div className="control-group control-group-polling-start-stop">
+            <button
+              className={buttonClass}
+              onClick={() => Actions.togglePolling()}
+              tabIndex={20}
+            >
+              <span
+                data-uk-icon={`icon: ` + buttonIcon + `; ratio: 2`}
+                className="icon"
+              />
+              <span className="label">
+                {buttonLabel}
+              </span>
+            </button>
+          </div>
+
+          <div className="control-group control-group-polling-interval">
+            <InputRange
+              aria-labelledby="polling interval-name"
+              maxValue={120}
+              minValue={5}
+              onChange={value => {
+                this.setState({ localInterval: value });
+                this.state.debouncedSetInterval(value * 1000);
+              }}
+              tabIndex={21}
+              value={this.state.localInterval}
+            />
+            <span className="label" id="interval-name">{'Polling Interval (seconds)'}</span>
+          </div>
+
+        </div>
+      </section>
     );
   }
 }

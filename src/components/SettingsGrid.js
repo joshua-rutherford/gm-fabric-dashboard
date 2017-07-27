@@ -12,22 +12,29 @@ SettingsGrid.propTypes = {
 
 function SettingsGrid({ settings }) {
   return (
-    <div>
-      <div
-        className="uk-grid-match uk-grid-collapse uk-text-center"
-        data-uk-grid
-      >
-        <div className="uk-width-1-3@m">
-          <PollingSettings
-            interval={settings.interval}
-            isPolling={settings.isPolling}
-          />
-        </div>
-        <div className="uk-width-1-3@m">
-          <div className="uk-card uk-card-small uk-card-body">
-            <h3 className="uk-card-title">Metrics Cache</h3>
+    <div className="view-app-settings settings-grid">
+
+      <PollingSettings
+        interval={settings.interval}
+        isPolling={settings.isPolling}
+      />
+
+      <section className="layout-section settings-group-metrics-cache">
+        <header>
+          <span data-uk-icon={`icon: grid; ratio: 1`} className="section-icon"/>
+          <h3 className="section-title">Metrics Cache</h3>
+        </header>
+
+        <div className="section-content">
+
+          <div className="control-group">
+            <div className="readout">
+              <span className="readout-text">162.12 MB</span>
+              <span className="readout-label">Cache Size</span>
+            </div>
+
             <button
-              className="uk-button uk-button-decipher"
+              className="uk-button"
               onClick={() => {
                 UIkit.modal
                   .confirm(
@@ -37,15 +44,27 @@ function SettingsGrid({ settings }) {
               }}
               tabIndex={30}
             >
-              Clear Metrics Cache
+              <span data-uk-icon={`icon: close; ratio: 1`} className="icon"/>
+              <span className="label">Clear Metrics Cache</span>
             </button>
           </div>
         </div>
-        <div className="uk-width-1-3@m">
-          <div className="uk-card uk-card-small uk-card-body">
-            <h3 className="uk-card-title">Dashboards</h3>
+      </section>
+
+      <section className="layout-section settings-group-user-dashboards">
+        <header>
+          <span data-uk-icon={`icon: grid; ratio: 1`} className="section-icon"/>
+          <h3 className="section-title">Custom Dashboards</h3>
+        </header>
+        <div className="section-content">
+
+          <div className="control-group control-group-clear-dashboards">
+            <div className="readout">
+              <span className="readout-text">0</span>
+              <span className="readout-label">Custom Dashboards</span>
+            </div>
             <button
-              className="uk-button uk-button-decipher"
+              className="uk-button"
               onClick={() => {
                 UIkit.modal
                   .confirm(
@@ -54,12 +73,15 @@ function SettingsGrid({ settings }) {
                   .then(() => Actions.clearDashboards());
               }}
               tabIndex={31}
+              disabled="disabled"
             >
-              Reset Dashboards
+              <span data-uk-icon={`icon: close; ratio: 1`} className="icon"/>
+              <span className="label">Reset Dashboards</span>
             </button>
+
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

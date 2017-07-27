@@ -1,0 +1,59 @@
+// components/section.less
+@import '../variables.less';
+@import '../mixins.less';
+
+// Local Variables
+  @section-icon-size: @padding-base * 3;
+  @section-border-color: @color-grey-3;
+  @section-border-width: 1px;
+  @section-header-spacing: @padding-base @padding-base*2;
+  @section-header-icon-spacing: @padding-base;
+  @section-header-title-size: @font-size-lg;
+  @section-content-padding: @padding-base;
+
+
+// Helpers
+
+.mixin-section-title-styles {
+
+}
+
+
+// Styles
+.layout-section {
+  margin-bottom: @padding-base * 4;
+  padding: @section-content-padding;
+
+  > header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: @section-header-spacing;
+    border-top: @section-border-width solid @section-border-color;
+    margin: -@section-content-padding -@section-content-padding @section-content-padding;
+
+
+    > .section-icon {
+      flex: 0 0 auto;
+      padding-right: @section-header-icon-spacing;
+    }
+
+    > .section-title {
+      .mixin-section-title-styles();
+      margin: 0;
+      flex: 1 0 100%;
+      font-size: @section-header-title-size;
+      max-width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    > .section-tools {
+      flex: 0 0 auto;
+    }
+  }
+
+  > .section-content {
+    width: 100%;
+  }
+}
