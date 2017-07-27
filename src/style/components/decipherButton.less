@@ -69,6 +69,7 @@
   &.active,
   &:active,
   &.uk-active,
+  &.uk-open,
   &:focus {
     color: desaturate(lighten(@color, @active-degree), @active-degree);
     border-color: desaturate(lighten(@border-color, @active-degree), @active-degree);
@@ -94,8 +95,9 @@
   }
 
   &.active,
-  &.uk-active,
   &:active,
+  &.uk-active,
+  &.uk-open,
   &:focus {
     color: saturate(darken(@color, @active-degree), @active-degree);
     border-color: saturate(darken(@border-color, @active-degree), @active-degree);

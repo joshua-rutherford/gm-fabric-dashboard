@@ -1,6 +1,7 @@
 import React from "react";
 import { PropTypes } from "prop-types";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import ms from "ms";
 import _ from "lodash";
 import {
@@ -33,6 +34,20 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
           <span className="label">{'{Instance Name}'}</span>
           <span data-uk-icon={`icon: triangle-down; ratio: 1`} className="icon"/>
         </a>
+        <div
+          data-uk-dropdown="mode: click; pos: bottom-justify; boundary: .nav-widget; boundary-align: true; offset: 1;"
+          className="nav-siblings-dropdown"
+        >
+          <ol className="instances">
+            {Array(90).fill("shanberg").map((val, idx) =>
+              <li key={idx}>
+                <Link to="">
+                  Instance {idx + 1}
+                </Link>
+              </li>
+            )}
+          </ol>
+        </div>
       </div>
 
         {runtime === "JVM" &&
