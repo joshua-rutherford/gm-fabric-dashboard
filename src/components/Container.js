@@ -4,7 +4,8 @@ import { Actions } from "jumpstate";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import Navbar from "./Navbar";
+import AppBrandBar from "./AppBrandBar";
+import AppToolBar from "./AppToolBar";
 import SummaryBar from "./SummaryBar";
 import Explorer from "./Explorer";
 import GMGrid from "./GMGrid";
@@ -39,10 +40,11 @@ class Container extends Component {
           className="uk-width-1-6@s sidebar"
           style={{ backgroundColor: "black" }}
         >
-          <Navbar />
+          <AppBrandBar />
           <SummaryBar />
         </nav>
         <div className="uk-width-5-6@s">
+          <AppToolBar />
           <Route exact path="/" render={() => <Redirect to="/summary" />} />
           <Switch>
             {this.props.runtime === "JVM" &&

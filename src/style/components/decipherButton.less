@@ -13,9 +13,7 @@
 
 // Helpers
 
-.mixin-button-height(
-  @height: 1em){
-
+.mixin-button-height(@height: 1em){
   height: @height;
   line-height: @height;
 }
@@ -92,37 +90,31 @@
 
 
 
-// Styles
-
-// .uk-button {
-//   background-color: @color-white;
-//   color: @color-content;
-//   .hook-button-default;
-//
-//   &:hover,
-//   &:focus {
-//     background-color: @decipher-green-hover;
-//     .hook-button-default-hover;
-//   }
-//
-//   &:active,
-//   &.uk-active {
-//     background-color: @decipher-green-active;
-//     .hook-button-default-active;
-//   }
-//
-//   &.uk-button-outline {
-//     background-color: transparent;
-//   }
-// }
-
-
 :root {
 
   .uk-button {
     padding: @padding-base/4 @padding-base;
     border-radius: @button-border-radius-base;
-    // .mixin-button-height(24px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    [class*="icon"] { }
+
+    .label {
+      display: inline;
+      text-transform: none;
+      vertical-align: middle;
+    }
+
+    [class*="icon"] + .label,
+    .label + [class*="icon"] {
+      margin-left: @padding-base / 2;
+    }
+
+    &:active {
+      transition-duration: 0;
+    }
 
     .mixin-button-style(
       @color: @color-content;
