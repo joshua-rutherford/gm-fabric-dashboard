@@ -9,10 +9,9 @@ export default class SummaryBarCard extends PureComponent {
     chartTitle: PropTypes.string,
     href: PropTypes.string,
     icon: PropTypes.string,
-    isActive: PropTypes.bool,
     lines: PropTypes.array,
     tabIndex: PropTypes.number,
-    title: PropTypes.string,
+    title: PropTypes.string
   };
 
   static defaultProps = {
@@ -29,15 +28,16 @@ export default class SummaryBarCard extends PureComponent {
       chartTitle,
       href,
       icon,
-      isActive,
       lines,
       tabIndex,
-      title,
+      title
     } = this.props;
     return (
       <NavLink
         activeClassName="active"
-        className={this.state.isOpen ? 'summary-bar-card open' : 'summary-bar-card'}
+        className={
+          this.state.isOpen ? "summary-bar-card open" : "summary-bar-card"
+        }
         tabIndex={tabIndex}
         to={href}
       >
@@ -46,22 +46,30 @@ export default class SummaryBarCard extends PureComponent {
             className="summary-bar-card-icon"
             data-uk-icon={`icon: ${icon || "grid"}; ratio: 1.4`}
           />
-          <h1 className="summary-bar-card-heading">{title}</h1>
-          <button
-            className="summary-bar-card-show-toggle uk-button"
-            onClick={evt => {
-              evt.preventDefault();
-              this.setState({ isOpen: !this.state.isOpen });
-            }}
-          >
-            <span data-uk-icon={`icon: chevron-left; ratio: 1`} className="summary-card-accordion-arrow"/>
-          </button>
+          <h1 className="summary-bar-card-heading">
+            {title}
+          </h1>
+          {(this.props.lines.length > 0 ||
+            this.props.chartTitle ||
+            this.props.chartData) &&
+            <button
+              className="summary-bar-card-show-toggle uk-button"
+              onClick={evt => {
+                evt.preventDefault();
+                this.setState({ isOpen: !this.state.isOpen });
+              }}
+            >
+              <span
+                className="summary-card-accordion-arrow"
+                data-uk-icon={`icon: chevron-left; ratio: 1`}
+              />
+            </button>}
         </div>
         {this.state.isOpen &&
           <div className="uk-card-body summary-bar-card-body">
             {lines.map(line =>
               <div className="summary-bar-card-kv">
-                <dt key={line.name} className="summary-bar-card-kv-key">
+                <dt className="summary-bar-card-kv-key" key={line.name}>
                   {line.name}
                 </dt>
                 <dd className="summary-bar-card-kv-value">
