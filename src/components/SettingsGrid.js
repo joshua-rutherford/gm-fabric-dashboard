@@ -13,7 +13,6 @@ SettingsGrid.propTypes = {
 function SettingsGrid({ settings }) {
   return (
     <div className="view-app-settings settings-grid">
-
       <PollingSettings
         interval={settings.interval}
         isPolling={settings.isPolling}
@@ -21,12 +20,14 @@ function SettingsGrid({ settings }) {
 
       <section className="layout-section settings-group-metrics-cache">
         <header>
-          <span data-uk-icon={`icon: grid; ratio: 1`} className="section-icon"/>
+          <span
+            className="section-icon"
+            data-uk-icon={`icon: grid; ratio: 1`}
+          />
           <h3 className="section-title">Metrics Cache</h3>
         </header>
 
         <div className="section-content">
-
           <div className="control-group">
             <div className="readout">
               <span className="readout-text">162.12 MB</span>
@@ -44,7 +45,7 @@ function SettingsGrid({ settings }) {
               }}
               tabIndex={30}
             >
-              <span data-uk-icon={`icon: close; ratio: 1`} className="icon"/>
+              <span className="icon" data-uk-icon={`icon: close; ratio: 1`} />
               <span className="label">Clear Metrics Cache</span>
             </button>
           </div>
@@ -53,11 +54,13 @@ function SettingsGrid({ settings }) {
 
       <section className="layout-section settings-group-user-dashboards">
         <header>
-          <span data-uk-icon={`icon: grid; ratio: 1`} className="section-icon"/>
+          <span
+            className="section-icon"
+            data-uk-icon={`icon: grid; ratio: 1`}
+          />
           <h3 className="section-title">Custom Dashboards</h3>
         </header>
         <div className="section-content">
-
           <div className="control-group control-group-clear-dashboards">
             <div className="readout">
               <span className="readout-text">0</span>
@@ -73,12 +76,10 @@ function SettingsGrid({ settings }) {
                   .then(() => Actions.clearDashboards());
               }}
               tabIndex={31}
-              disabled="disabled"
             >
-              <span data-uk-icon={`icon: close; ratio: 1`} className="icon"/>
+              <span className="icon" data-uk-icon={`icon: close; ratio: 1`} />
               <span className="label">Reset Dashboards</span>
             </button>
-
           </div>
         </div>
       </section>
