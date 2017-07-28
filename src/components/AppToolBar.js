@@ -15,7 +15,7 @@ function AppToolBar({ pathname }) {
         </li>
         {//strip out leading slashes to get route as array
         pathname.replace(/^\/|\/$/g, "").split("/").map((val, idx) =>
-          <li className="app-breadcrumb">
+          <li className="app-breadcrumb" key={val}>
             <Link to={`${pathname.substr(0, pathname.indexOf(val))}${val}`}>
               {val}
             </Link>

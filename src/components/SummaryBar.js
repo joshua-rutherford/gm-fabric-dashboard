@@ -1,7 +1,7 @@
 import React from "react";
 import { PropTypes } from "prop-types";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import ms from "ms";
 import _ from "lodash";
 import {
@@ -27,8 +27,8 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
         <div className="nav-widget">
           <a className="nav-go-up">
             <span
-              data-uk-icon={`icon: chevron-left; ratio: 1`}
               className="icon"
+              data-uk-icon={`icon: chevron-left; ratio: 1`}
             />
             <span className="label">
               {getServicename()}
@@ -39,13 +39,13 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
               {"Instance 1"}
             </span>
             <span
-              data-uk-icon={`icon: triangle-down; ratio: 1`}
               className="icon"
+              data-uk-icon={`icon: triangle-down; ratio: 1`}
             />
           </a>
           <div
-            data-uk-dropdown="mode: click; pos: bottom-justify; boundary: .nav-widget; boundary-align: true; offset: 1;"
             className="nav-siblings-dropdown"
+            data-uk-dropdown="mode: click; pos: bottom-justify; boundary: .nav-widget; boundary-align: true; offset: 1;"
           >
             <ol className="instances">
               {Array(90).fill("shanberg").map((val, idx) =>
@@ -139,4 +139,4 @@ function mapStateToProps({
   return { dashboards, metrics, interval, runtime };
 }
 
-export default connect(mapStateToProps)(SummaryBar);
+export default withRouter(connect(mapStateToProps)(SummaryBar));

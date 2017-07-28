@@ -1,9 +1,9 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { PropTypes } from "prop-types";
 import { NavLink } from "react-router-dom";
 import { Sparklines, SparklinesLine } from "react-sparklines";
 
-export default class SummaryBarCard extends PureComponent {
+export default class SummaryBarCard extends Component {
   static propTypes = {
     chartData: PropTypes.array,
     chartTitle: PropTypes.string,
@@ -68,8 +68,8 @@ export default class SummaryBarCard extends PureComponent {
         {this.state.isOpen &&
           <div className="uk-card-body summary-bar-card-body">
             {lines.map(line =>
-              <div className="summary-bar-card-kv">
-                <dt className="summary-bar-card-kv-key" key={line.name}>
+              <div className="summary-bar-card-kv" key={line.name}>
+                <dt className="summary-bar-card-kv-key">
                   {line.name}
                 </dt>
                 <dd className="summary-bar-card-kv-value">
