@@ -4,7 +4,7 @@
 
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
-Gray Matter Fabric Dashboard is an administrative interface for managing microservices and distributed systems running on the [Gray Matter microservice framework](https://github.com/DecipherNow/gm-fabric-jvm).
+Gray Matter Fabric Dashboard is an administrative interface for managing microservices and distributed systems running on the [Gray Matter microservice framework](http://deciphernow.com/grey-matter#fabric). The framework currently includes support for [JVM-based microservices](https://github.com/DecipherNow/gm-fabric-jvm) and provides a [pass-through agent](https://github.com/DecipherNow/gm-fabric-jvmagent) to provide instrumentation around existing applications. Support for Golang and other languages is currently in progress.
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
@@ -12,21 +12,34 @@ You can find the most recent version of the Create React App guide [here](https:
 
 ## Prerequisites
 
-### 1. Install the Gray Matter Fabric Starter Kit and any dependencies
+### 1. Install Docker
 
-Follow the instructions in the [gm-fabric-jvm README](https://github.com/DecipherNow/gm-fabric-jvm)
+Download and install the binary for [Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac), [Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows), or [Linux](https://store.docker.com/search?architecture=amd64&offering=community&operating_system=linux&platform=server&q=&type=edition)
 
-### 2. Create and start a microservice on your localhost 
+### 2. Use docker to start an example Grey Matter Microservice
 
-Follow the instructions in the [Create a new Microservice guide](https://github.com/DecipherNow/gm-fabric-jvm/blob/master/documentation/CreatingNewMS.md)
+#### For a JVM-based microservice:
 
-Note: This Dashboard is not yet integrated into the core Framework. Currently, the dashboard is hard-coded to poll metrics from `http://localhost:9990/admin/metrics.json`
+Open ./public.index.html and ensure that `__BASE_RUNTIME__` is unset or set to `JVM`. (JVM is the default value).
 
-After starting your microservice, you should see a valid JSON file. You can easily test this by clicking [this link to the expected endpoint](http://localhost:9990/admin/metrics.json). If you see JSON data, you are ready to proceed.
+Run `docker run -it -p 9990:9990 spmcbride1201/gm-fab-jvm`
+
+After starting your microservice, you should see a valid JSON file [at this endpoint](http://localhost:9990/admin/metrics.json). If you see JSON data, you are ready to proceed.
+
+#### For experimental Envoy support:
+
+Open ./public.index.html and replace `__BASE_RUNTIME__` with `ENVOY`
+
+```bash
+cd docker
+docker-compose up -d
+```
+
+After starting the Envoy infrastructure, you should see a valid JSON file [at this endpoint](http://localhost:8081/stats). If you see JSON data, you are ready to proceed.
 
 ### 3. Install Node.js and the npm package manager via a version management tool
 
-Because new major versions of the Node.js runtime are releases major versions every six months, half of which are not tied to the [Node.js Long Term Support (LTS) cycle](https://github.com/nodejs/LTS), it is advisable to use a version manager to be able to move between Node.js versions via a version management tool.
+Because new major versions of the Node.js runtime are released every six months, half of which are not tied to the [Node.js Long Term Support (LTS) cycle](https://github.com/nodejs/LTS), it is advisable to use a version manager to be able to move between Node.js versions via a version management tool.
 
 If you are using Linux, Mac OS, or the new Windows System for Linux, we suggest using [nvm](https://github.com/creationix/nvm)
 If you are using the standard Windows CMD.exe/PowerShell environment, we suggest using [nvm-windows](https://github.com/coreybutler/nvm-windows)
@@ -56,7 +69,7 @@ npm install
 
 This runs the app in the development mode and automatically opens [http://localhost:3000](http://localhost:3000) in your browser. You can open the source code in your editor of choice, and the page will reload if you make edits. 
 
-We suggest use of [EditorConfig](http://editorconfig.org/#download), [ESList](http://eslint.org/docs/user-guide/integrations), and [stylelint](https://stylelint.io/user-guide/complementary-tools/#editor-plugins) plugins in your editor to use the projects style rules.
+We suggest use of [Prettier](https://github.com/prettier/prettier#editor-integration), [EditorConfig](http://editorconfig.org/#download), [ESList](http://eslint.org/docs/user-guide/integrations), and [stylelint](https://stylelint.io/user-guide/complementary-tools/#editor-plugins) plugins in your editor to use the projects style rules.
 
 Additionally, if you are a VSCode user, this project supports in-editor debugging via the [Debugger for Chrome extension](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome) and has a custom dictionary for the [Code Spellchecker extension](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
 
@@ -72,7 +85,7 @@ Note: If you are running on Mac OS, tests might fail with the error `Error: Erro
 This builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-Once built, the production bundle is minified and configured to be integrated into the core `gm-fabric-jvm` project. The dashboard assumes that it is monitoring a microservice at the root path with Twitter Server metrics accessible at `/admin/metrics.json` and `/admin/threads`. The dashboard itself is served from `/gmadmin/`. 
+Once built, the production bundle is minified and ready for deployment. The dashboard assumes that it is monitoring a microservice at the root path with Twitter Server metrics accessible at `/admin/metrics.json` and `/admin/threads`. The dashboard itself is served from `/gmadmin/`. 
 
 In order to support deployment of the dashboard to monitor a microservice that doesn't own the root path, this projects injects the string template `__BASE_URL__` in the minified index.html file and JS bundle that can be replaced to set the desired path. For your convenience, a BASH script is provided to simplify this deployment process and provide an undo option.
 
@@ -82,7 +95,7 @@ If you intend to retrofit this dashboard on an existing Twitter Server based mic
 
 In case of error or mis-configuration, your original `index.html` has been backed up to `index.html.old`. To revert to the backup, run `sudo ./setPath.sh undo` and rerun with the correct argument.
 
-In addition to `__BASE_URL__`, the HEAD of index.html also has an meta attribute with a `__BASE_RUNTIME__` template string. This signifies to the dashboard whether the dashboard intends to scrape a Finagle-style `metrics.json` or an alternate Decipher-designed metrics endpoint provided by a Go microservice. The permissable values are `JVM` or `GOLANG`, defaulting to `JVM` if `__BASE_RUNTIME__` is not replaced. Currently, the `setPath.sh` script does not modify this template.
+In addition to `__BASE_URL__`, the HEAD of index.html also has an meta attribute with a `__BASE_RUNTIME__` template string. This signifies to the dashboard whether the dashboard intends to scrape a Finagle-style `metrics.json` or an alternate Decipher-designed metrics endpoint provided by a Go microservice. The permissable values are `JVM`, `GOLANG`, or `ENVOY`, defaulting to `JVM` if `__BASE_RUNTIME__` is not replaced. Currently, the `setPath.sh` script does not modify this template.
 
 #### `npm run lint-css` to validate that css follows the project style
 
