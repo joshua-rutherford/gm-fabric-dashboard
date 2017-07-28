@@ -1,21 +1,19 @@
 import React from "react";
 import decipherLogo from "../images/decipherLogo.svg";
 
-const AppVersion="0.1.1"
+const AppVersion = "0.2.0";
 
-const BrandName="Fabric"
-const BrandLogo=decipherLogo
+const BrandName = "Fabric";
+const BrandLogo = decipherLogo;
 
 const AppBrandBar = () => {
   return (
     <nav className="app-header app-brandbar">
       <div className="brand">
-        <img
-          alt={BrandName + 'Logo'}
-          className="brand-logo"
-          src={BrandLogo}
-        />
-        <span className="brand-text" id="logo-text">{BrandName}</span>
+        <img alt={BrandName + "Logo"} className="brand-logo" src={BrandLogo} />
+        <span className="brand-text" id="logo-text">
+          {BrandName}
+        </span>
       </div>
 
       <a
@@ -26,7 +24,6 @@ const AppBrandBar = () => {
       >
         {AppVersion}
       </a>
-
     </nav>
   );
 };
