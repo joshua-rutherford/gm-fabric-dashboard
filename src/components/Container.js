@@ -21,6 +21,7 @@ class Container extends Component {
   static propTypes = {
     children: PropTypes.any,
     metricsEndpoints: PropTypes.array,
+    pathname: PropTypes.string,
     runtime: PropTypes.string
   };
 
@@ -44,7 +45,7 @@ class Container extends Component {
           <SummaryBar />
         </nav>
         <div className="uk-width-5-6@s">
-          <AppToolBar />
+          <AppToolBar pathname={this.props.pathname} />
           <Route exact path="/" render={() => <Redirect to="/summary" />} />
           <Switch>
             {this.props.runtime === "JVM" &&
@@ -65,8 +66,11 @@ class Container extends Component {
   }
 }
 
-function mapStateToProps({ settings: { metricsEndpoints, runtime } }) {
-  return { metricsEndpoints, runtime };
+function mapStateToProps({
+  settings: { metricsEndpoints, runtime },
+  routing: { location: { pathname } }
+}) {
+  return { metricsEndpoints, runtime, pathname };
 }
 
 export default withRouter(connect(mapStateToProps)(Container));
