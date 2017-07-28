@@ -6,12 +6,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.0] - 2017-07-28
+### Added
+- Added preliminary docker-compose infrastructure for developing against Envoy and a timeseries database
+- Added breadcrumbs and a new bar at the top of the main view
+- Added summary and instance links (currently mocked out) at the top of the new sidebar
+
+### Changed
+- Replaced horizontal nav with vertical sidebar style nav
+- Nav cards now place metrics and sparklines in a drawer that can be collapsed or opened
+- Nav cards now can render icons from UIKit 3
+- Moved settings to an icon at the new bar at the top of the main view
+- Restored active nav highlighting regression introduced by React Router v4 update
+- Updated README with new information about use of Docker during development
+
+### Test Coverage: 3.7% ([0.2.0 Coverage Report])
+
 ## [0.1.1] - 2017-07-21
 ### Added
 - Added Prettier with default settings, refactored all source JS code, and set a pre-commit hook for Prettier and stylelint
 - Add text to README about a workaround if Jest fails test unexpectedly
 
-### Change
+### Changed
 - Updated the CircleCI config to follow version 2 standards
 - Changed from `jest-junit-reporter` to `jest-junit` an alternate junior formatter for Jest test results
 - Changed the production build process and tooling to fix issues with deep React Router routes interfering with JS bundle loading
@@ -41,7 +57,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Test Coverage: 2%
 
-[Unreleased]: https://github.com/DecipherNow/gm-fabric-dashboard/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/DecipherNow/gm-fabric-dashboard/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/DecipherNow/gm-fabric-dashboard/compare/v0.2.0...v0.1.1
+[0.2.0 Coverage Report]: https://309-85883218-gh.circle-artifacts.com/0/home/circleci/repo/coverage/lcov-report/index.html
 [0.1.1]: https://github.com/DecipherNow/gm-fabric-dashboard/compare/v0.1.1...v0.1.0
 [0.1.1 Coverage Report]: https://258-85883218-gh.circle-artifacts.com/0/home/circleci/repo/coverage/lcov-report/index.html
 [0.1.0]: https://github.com/DecipherNow/gm-fabric-dashboard/compare/5a0e78...v0.1.0
