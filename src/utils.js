@@ -220,6 +220,20 @@ export function getBasename() {
 }
 
 /**
+ * getServicename is a utility function that extracts the service property from the HEAD of the index.html file. This is
+ * the means by which a dashboard is configured to be served out on a deeply nested path.
+ * @returns {String}
+ */
+export function getServicename() {
+  const serviceName = document.head.querySelector("[property=service]").content;
+  if (serviceName === "__SERVICE_NAME__") {
+    return "Service";
+  } else {
+    return serviceName;
+  }
+}
+
+/**
  * getRuntime is a utility function that extracts the runtime from the HEAD of the index.html file. It's used to determine
  * how the app should scrape metrics and render React components
  * @returns {String}

@@ -6,6 +6,7 @@ import ms from "ms";
 import _ from "lodash";
 import {
   getLatestAttribute,
+  getServicename,
   getSparkLineOfValue,
   getSparkLineOfNetChange,
   parseJSONString
@@ -23,32 +24,40 @@ function SummaryBar({ dashboards, metrics, interval, runtime }) {
   return (
     <div className="summary-bar-container">
       <div id="summary-bar">
-
-      <div className="nav-widget">
-        <a className="nav-go-up">
-          <span data-uk-icon={`icon: chevron-left; ratio: 1`} className="icon"/>
-          <span className="label">{'{Service}'}</span>
-        </a>
-        <a
-          className="nav-siblings">
-          <span className="label">{'{Instance Name}'}</span>
-          <span data-uk-icon={`icon: triangle-down; ratio: 1`} className="icon"/>
-        </a>
-        <div
-          data-uk-dropdown="mode: click; pos: bottom-justify; boundary: .nav-widget; boundary-align: true; offset: 1;"
-          className="nav-siblings-dropdown"
-        >
-          <ol className="instances">
-            {Array(90).fill("shanberg").map((val, idx) =>
-              <li key={idx}>
-                <Link to="">
-                  Instance {idx + 1}
-                </Link>
-              </li>
-            )}
-          </ol>
+        <div className="nav-widget">
+          <a className="nav-go-up">
+            <span
+              data-uk-icon={`icon: chevron-left; ratio: 1`}
+              className="icon"
+            />
+            <span className="label">
+              {getServicename()}
+            </span>
+          </a>
+          <a className="nav-siblings">
+            <span className="label">
+              {"Instance 1"}
+            </span>
+            <span
+              data-uk-icon={`icon: triangle-down; ratio: 1`}
+              className="icon"
+            />
+          </a>
+          <div
+            data-uk-dropdown="mode: click; pos: bottom-justify; boundary: .nav-widget; boundary-align: true; offset: 1;"
+            className="nav-siblings-dropdown"
+          >
+            <ol className="instances">
+              {Array(90).fill("shanberg").map((val, idx) =>
+                <li key={idx}>
+                  <Link to="">
+                    Instance {idx + 1}
+                  </Link>
+                </li>
+              )}
+            </ol>
+          </div>
         </div>
-      </div>
 
         {runtime === "JVM" &&
           <SummaryBarCard
