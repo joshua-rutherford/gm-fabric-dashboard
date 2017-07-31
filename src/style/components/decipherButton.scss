@@ -1,0 +1,169 @@
+// components/decipherButton.scss
+@import '../variables.scss';
+@import '../mixins.scss';
+
+// Local Variables
+
+$button-color-base: $color-white;
+$button-background-color-base: $color-highlight;
+$button-border-color-base: $button-background-color-base;
+$button-border-radius-base: $border-radius-default;
+$button-border-width-base: 1px;
+$button-content-spacing-base: $padding-base / 2;
+$button-font-size-base: $font-size-base;
+$button-font-weight: 500;
+
+// Helpers
+
+@mixin mixin-button-height($height: 1em) {
+  height: $height;
+}
+
+.mixin-button-style(
+  $color: $button-color-base;
+  $border-color: $button-border-color-base;
+  $background-color: $button-background-color-base;
+  $mode: darken;
+  $degree: 6%;
+  $hover-degree: $degree * 1;
+  $active-degree: $degree * 2) {
+  color: $color;
+  border: $button-border-width-base solid $border-color;
+  border-radius: $button-border-radius-base;
+  background-color: $background-color;
+  user-select: none;
+
+  &[disabled] {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      opacity: @include 5;
+      color: desaturate($color, 100%);
+      border-color: desaturate($border-color, 100%);
+      background-color: desaturate($background-color, 100%);
+    }
+  }
+}
+
+.mixin-button-style(
+  $color: $button-color-base;
+  $border-color: $button-border-color-base;
+  $background-color: $button-background-color-base;
+  $mode: darken;
+  $degree: 6%;
+  $hover-degree: $degree * 1;
+  $active-degree: $degree * 2)
+
+  when ($mode=lighten) {
+  &:hover {
+    color: desaturate(lighten($color, $hover-degree), $hover-degree);
+    border-color: desaturate(
+      lighten($border-color, $hover-degree),
+      $hover-degree
+    );
+    background-color: desaturate(
+      lighten($background-color, $hover-degree),
+      $hover-degree
+    );
+  }
+
+  &.active,
+  &:active,
+  &.uk-active,
+  &.uk-open,
+  &:focus {
+    color: desaturate(lighten($color, $active-degree), $active-degree);
+    border-color: desaturate(
+      lighten($border-color, $active-degree),
+      $active-degree
+    );
+    background-color: desaturate(
+      lighten($background-color, $active-degree),
+      $active-degree
+    );
+  }
+}
+
+.mixin-button-style(
+  $color: $button-color-base;
+  $border-color: $button-border-color-base;
+  $background-color: $button-background-color-base;
+  $mode: darken;
+  $degree: 6%;
+  $hover-degree: $degree * 1;
+  $active-degree: $degree * 2)
+
+  when ($mode=darken) {
+  &:hover {
+    color: saturate(darken($color, $hover-degree), $hover-degree);
+    border-color: saturate(darken($border-color, $hover-degree), $hover-degree);
+    background-color: saturate(
+      darken($background-color, $hover-degree),
+      $hover-degree
+    );
+  }
+
+  &.active,
+  &:active,
+  &.uk-active,
+  &.uk-open,
+  &:focus {
+    color: saturate(darken($color, $active-degree), $active-degree);
+    border-color: saturate(
+      darken($border-color, $active-degree),
+      $active-degree
+    );
+    background-color: saturate(
+      darken($background-color, $active-degree),
+      $active-degree
+    );
+  }
+}
+
+:root {
+  .uk-button {
+    padding: $button-content-spacing-base/2 $button-content-spacing-base*2;
+    border-radius: $button-border-radius-base;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-transform: none;
+    font-weight: $button-font-weight;
+    line-height: $line-height-base;
+
+    [class*="icon"] {
+    }
+
+    .label {
+      display: inline;
+      text-transform: none;
+      vertical-align: middle;
+      padding: $button-content-spacing-base;
+    }
+
+    [class*="icon"] + .label,
+    .label + [class*="icon"] {
+      margin-left: $button-content-spacing-base;
+    }
+
+    &:active {
+      transition-duration: 0;
+    }
+
+    @include mixin-button-style();
+
+    &.uk-button-vertical {
+      flex-direction: column;
+      padding-top: $button-content-spacing-base*2;
+
+      [class*="icon"] + .label,
+      .label + [class*="icon"] {
+        margin-left: 0;
+        margin-top: $button-content-spacing-base;
+      }
+    }
+  }
+}

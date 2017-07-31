@@ -1,0 +1,148 @@
+// components/navbar.scss
+@import '../variables.scss';
+@import '../mixins.scss';
+
+// Local Variables
+$app-header-height: $padding-base*4.25;
+$app-header-font-size: $font-size-base;
+
+$brandbar-text-color: $color-white;
+$brandbar-brand-logo-size: 26px;
+$brandbar-brand-text-size: 16px;
+$brandbar-brand-spacing: $padding-base;
+$brandbar-background-color: $color-sidebar-background;
+
+$toolbar-text-color: $color-content;
+$toolbar-background-color: $color-content-background;
+
+$app-breadcrumb-color: $color-content;
+
+// Helpers
+
+.mixin-brand-text-styles {
+  font-weight: 500;
+  letter-spacing: @include 03em;
+}
+
+.mixin-version-text-styles {
+  font-weight: 600;
+  font-size: $font-size-sm;
+}
+
+// Styles
+.app-header {
+  height: $app-header-height;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: $padding-base / 2;
+  font-size: $app-header-font-size;
+
+  &.app-brandbar {
+    background: $brandbar-background-color;
+  }
+
+  > * {
+    flex: 1 1 auto;
+  }
+
+  .brand {
+    flex: 1 1 100%;
+    display: flex;
+  }
+
+  .brand-logo {
+    $brand-logo-width: $brandbar-brand-logo-size + $brandbar-brand-spacing;
+    flex: 0 0 $brand-logo-width;
+    padding: 0 $brandbar-brand-spacing;
+  }
+
+  .brand-text {
+    @include mixin-brand-text-styles();
+    flex: 0 0 auto;
+    font-size: $brandbar-brand-text-size;
+    color: $brandbar-text-color;
+  }
+
+  .app-version {
+    @include mixin-version-text-styles;
+    flex: 0 0 auto;
+    color: fade($brandbar-text-color, 50%);
+    padding: 0 $padding-base;
+
+    &:hover {
+      color: $brandbar-text-color;
+    }
+  }
+
+  .uk-button {
+    justify-self: flex-end;
+    flex: 0 0 auto;
+
+    .mixin-button-style(
+      $color: $toolbar-text-color;
+      $border-color: $toolbar-background-color;
+      $background-color: $toolbar-background-color;
+      $degree: 6%;
+      $mode: darken
+    );
+    @include mixin-button-height($app-header-height * .85);
+  }
+
+  .uk-button + .uk-button {
+    margin-left: $padding-base;
+    position: relative;
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: (-$padding-base / 2) - 1px;
+      height: 1em;
+      width: 1px;
+      background-color: $color-grey-3;
+    }
+  }
+
+  .app-breadcrumbs {
+    flex: 1 1 auto;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    flex-direction: row;
+    height: inherit;
+    align-items: stretch;
+
+    li {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+
+      &:before {
+        content: '>';
+        transform: scaleX(.5);
+        display: flex;
+        opacity: @include 5;
+        padding: 0 $padding-base*@include 5;
+      }
+
+      a {
+        display: flex;
+        max-width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding: $padding-base 0;
+        color: $app-breadcrumb-color;
+      }
+
+      &:first-child {
+        &:before {
+          content: none;
+        }
+
+        a {
+          padding-left: $padding-base * 2;
+        }
+      }
+    }
+  }
+}

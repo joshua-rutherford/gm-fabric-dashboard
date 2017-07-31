@@ -1,0 +1,30 @@
+// components/summaryGrid.scss
+@import '../variables.scss';
+@import '../mixins.scss';
+
+// Local Variables
+
+// Helpers
+
+// Styles
+
+#summary-grid {
+  padding-left: 50px;
+  padding-right: 50px;
+
+  .uk-panel {
+    h3 {
+      margin-top: 30px;
+    }
+
+    .summary-grid-title {
+      margin-top: 20px;
+    }
+  }
+}
+
+.summary-grid-title {
+  @include uk-text-small();
+  @include uk-text-muted();
+  @include uk-text-uppercase();
+}

@@ -1,0 +1,60 @@
+// components/routeBar.scss
+@import '../variables.scss';
+@import '../mixins.scss';
+
+// Local Variables
+$route-bar-background: #fff;
+$route-bar-card-border: #ccc;
+$active-route-bar-card-background: $decipher-green;
+
+// Helpers
+
+// Styles
+
+.route-bar-container {
+  background-color: $route-bar-background;
+}
+
+.route-bar-hr {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.route-bar-card {
+  padding: 5px;
+  text-decoration: none;
+
+  // Conflicts with UK-Card styles.
+  .route-bar-card-body {
+    @include uk-card-body();
+
+    padding: 5px !important;
+    color: black;
+  }
+
+  &:hover {
+    background-color: lighten($decipher-green, 10%);
+    text-decoration: none;
+
+    * {
+      color: #000 !important;
+    }
+  }
+
+  &:active,
+  &:focus {
+    background-color: $decipher-green;
+  }
+
+  &.active {
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $decipher-green;
+    }
+  }
+}
+
+.route-bar-card-active {
+  background-color: $decipher-green;
+}

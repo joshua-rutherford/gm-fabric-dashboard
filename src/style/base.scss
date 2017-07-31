@@ -1,0 +1,13 @@
+// base.scss
+@import 'variables.scss';
+
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+html {
+  color: $color-content;
+  font-size: $font-size-base;
+}

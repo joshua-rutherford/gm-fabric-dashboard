@@ -1,0 +1,20 @@
+// views/view-service-instance-dashboard.scss
+@import '../variables.scss';
+@import '../mixins.scss';
+
+// Local Variables
+
+// Helpers
+
+// Styles
+.view-finagle-stats {
+  .data-table-group {
+    display: flex;
+    flex-direction: row;
+
+    .data-table {
+      flex: 25% 1 1;
+      min-width: 300px;
+    }
+  }
+}
