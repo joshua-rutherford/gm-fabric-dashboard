@@ -19,8 +19,8 @@ const AppBrandBar = () => {
       <a
         className="app-version"
         href="https://github.com/DecipherNow/gm-fabric-dashboard/blob/master/CHANGELOG.md"
-        target="_blank"
         rel="noopener noreferrer"
+        target="_blank"
       >
         {AppVersion}
       </a>

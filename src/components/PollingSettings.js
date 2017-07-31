@@ -29,8 +29,8 @@ class PollingSettings extends Component {
       <section className="layout-section settings-group-polling">
         <header>
           <span
-            data-uk-icon={`icon: grid; ratio: 1`}
             className="section-icon"
+            data-uk-icon={`icon: grid; ratio: 1`}
           />
           <h3 className="section-title">
             {"Polling"}
@@ -44,8 +44,8 @@ class PollingSettings extends Component {
               tabIndex={20}
             >
               <span
-                data-uk-icon={`icon: ` + buttonIcon + `; ratio: 2`}
                 className="icon"
+                data-uk-icon={`icon: ` + buttonIcon + `; ratio: 2`}
               />
               <span className="label">
                 {buttonLabel}
