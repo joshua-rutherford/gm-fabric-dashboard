@@ -13,26 +13,25 @@
   color: @color-white;
   font-size: @font-size-base;
   border-radius: @border-radius-default;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.2);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .2);
 
   a {
     color: @color-white;
-    box-shadow: inset 0 -1px rgba(0,0,0,.25);
+    box-shadow: inset 0 -1px rgba(0, 0, 0, .25);
 
     &:hover {
       background-color: lighten(@color-grey-1, 6%);
     }
   }
 
-  li:first-child a{
+  li:first-child a {
     padding-top: @padding-base * 1.5;
   }
-  li:last-child a{
+  li:last-child a {
     padding-bottom: @padding-base * 1.5;
     box-shadow: none;
   }
 }
-
 
 // Styles
 .nav-widget {
@@ -40,7 +39,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   border-radius: @border-radius-default;
-  margin: @padding-base / 4 ;
+  margin: @padding-base / 4;
   overflow: hidden;
 
   > * {
@@ -64,7 +63,7 @@
     flex-direction: row;
     align-items: center;
     border-radius: 0;
-    box-shadow: 0 0 0 1px rgba(0,0,0,.5);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .5);
 
     .icon {
       color: @color-highlight;
@@ -85,7 +84,6 @@
   }
 
   .nav-go-up {
-
     .label {
       text-align: left;
     }

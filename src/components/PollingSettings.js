@@ -23,20 +23,20 @@ class PollingSettings extends Component {
     const buttonClass = isPolling
       ? "uk-button uk-button-vertical uk-button-danger"
       : "uk-button uk-button-vertical";
-    const buttonIcon = isPolling
-      ? "ban"
-      : "play-circle";
-    const buttonLabel = isPolling
-      ? "Stop Polling"
-      : "Resume Polling";
+    const buttonIcon = isPolling ? "ban" : "play-circle";
+    const buttonLabel = isPolling ? "Stop Polling" : "Resume Polling";
     return (
       <section className="layout-section settings-group-polling">
         <header>
-          <span data-uk-icon={`icon: grid; ratio: 1`} className="section-icon"/>
-          <h3 className="section-title">{'Polling'}</h3>
+          <span
+            data-uk-icon={`icon: grid; ratio: 1`}
+            className="section-icon"
+          />
+          <h3 className="section-title">
+            {"Polling"}
+          </h3>
         </header>
         <div className="section-content">
-
           <div className="control-group control-group-polling-start-stop">
             <button
               className={buttonClass}
@@ -65,9 +65,10 @@ class PollingSettings extends Component {
               tabIndex={21}
               value={this.state.localInterval}
             />
-            <span className="label" id="interval-name">{'Polling Interval (seconds)'}</span>
+            <span className="label" id="interval-name">
+              {"Polling Interval (seconds)"}
+            </span>
           </div>
-
         </div>
       </section>
     );

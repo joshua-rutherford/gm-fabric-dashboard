@@ -1,6 +1,6 @@
 {
   "name": "gm-fabric-dashboard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "axios": "~0.16.1",
@@ -19,7 +19,7 @@
     "react-collapse": "~4.0.2",
     "react-dom": "~15.6.1",
     "react-grid-layout": "^0.14.6",
-    "react-input-range": "~1.1.2",
+    "react-input-range": "^1.2.1",
     "react-json-inspector": "~7.0.0",
     "react-motion": "~0.5.0",
     "react-redux": "~5.0.3",
@@ -27,7 +27,7 @@
     "react-router-dom": "^4.1.1",
     "react-router-redux": "^5.0.0-alpha.6",
     "react-scripts": "1.0.10",
-    "react-sparklines": "~1.6.0",
+    "react-sparklines": "^1.7.0",
     "react-transition-group": "^1.2.0",
     "recharts": "~1.0.0-alpha.1",
     "redux": "~3.7.0",
@@ -36,7 +36,7 @@
     "uikit": "~3.0.0-beta.21"
   },
   "devDependencies": {
-    "enzyme": "~2.8.2",
+    "enzyme": "^2.9.1",
     "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-prettier": "^2.1.2",
     "eslint-plugin-react": "^7.1.0",
@@ -44,15 +44,17 @@
     "jest-junit": "^2.1.0",
     "less": "~2.7.2",
     "npm-run-all": "~4.0.2",
-    "npm-watch": "~0.1.8",
+    "npm-watch": "^0.2.0",
     "prettier": "^1.5.3",
-    "react-addons-test-utils": "~15.6.0",
-    "stylelint": "~7.11.1",
-    "stylelint-config-standard": "~16.0.0"
+    "react-addons-test-utils": "~15.6.0"
   },
   "watch": {
     "build-css": {
-      "patterns": ["src/style", "src/style/components/", "src/style/views"],
+      "patterns": [
+        "src/style",
+        "src/style/components/",
+        "src/style/views"
+      ],
       "extensions": "less"
     }
   },
@@ -61,7 +63,6 @@
     "build-css": "./node_modules/less/bin/lessc -ru src/style/index.less src/style/index.css",
     "eslint-prettier-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "eject": "react-scripts eject",
-    "lint-css": "stylelint 'src/style/**/*.less'",
     "lint-js": "eslint 'src'",
     "precommit": "lint-staged",
     "start": "npm-run-all -p watch start-js",
@@ -70,9 +71,14 @@
     "watch": "npm-watch"
   },
   "lint-staged": {
-    "*.js": ["prettier --write", "git add"],
-    "*.less": ["stylelint --fix", "git add"],
-    "*.css": ["stylelint --fix", "git add"]
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.less": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "eslintConfig": {
     "extends": "react-app"

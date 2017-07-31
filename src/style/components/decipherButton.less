@@ -4,19 +4,18 @@
 
 // Local Variables
 
-           @button-color-base: @color-white;
+@button-color-base: @color-white;
 @button-background-color-base: @color-highlight;
-    @button-border-color-base: @button-background-color-base;
-   @button-border-radius-base: @border-radius-default;
-    @button-border-width-base: 1px;
- @button-content-spacing-base: @padding-base / 2;
-       @button-font-size-base: @font-size-base;
-          @button-font-weight: 500;
-
+@button-border-color-base: @button-background-color-base;
+@button-border-radius-base: @border-radius-default;
+@button-border-width-base: 1px;
+@button-content-spacing-base: @padding-base / 2;
+@button-font-size-base: @font-size-base;
+@button-font-weight: 500;
 
 // Helpers
 
-.mixin-button-height(@height: 1em){
+.mixin-button-height(@height: 1em) {
   height: @height;
 }
 
@@ -27,8 +26,7 @@
   @mode: darken;
   @degree: 6%;
   @hover-degree: @degree * 1;
-  @active-degree: @degree * 2){
-
+  @active-degree: @degree * 2) {
   color: @color;
   border: @button-border-width-base solid @border-color;
   border-radius: @button-border-radius-base;
@@ -36,7 +34,6 @@
   user-select: none;
 
   &[disabled] {
-
     &,
     &:hover,
     &:focus,
@@ -59,11 +56,16 @@
   @active-degree: @degree * 2)
 
   when (@mode=lighten) {
-
   &:hover {
     color: desaturate(lighten(@color, @hover-degree), @hover-degree);
-    border-color: desaturate(lighten(@border-color, @hover-degree), @hover-degree);
-    background-color: desaturate(lighten(@background-color, @hover-degree), @hover-degree);
+    border-color: desaturate(
+      lighten(@border-color, @hover-degree),
+      @hover-degree
+    );
+    background-color: desaturate(
+      lighten(@background-color, @hover-degree),
+      @hover-degree
+    );
   }
 
   &.active,
@@ -72,8 +74,14 @@
   &.uk-open,
   &:focus {
     color: desaturate(lighten(@color, @active-degree), @active-degree);
-    border-color: desaturate(lighten(@border-color, @active-degree), @active-degree);
-    background-color: desaturate(lighten(@background-color, @active-degree), @active-degree);
+    border-color: desaturate(
+      lighten(@border-color, @active-degree),
+      @active-degree
+    );
+    background-color: desaturate(
+      lighten(@background-color, @active-degree),
+      @active-degree
+    );
   }
 }
 
@@ -87,11 +95,13 @@
   @active-degree: @degree * 2)
 
   when (@mode=darken) {
-
   &:hover {
     color: saturate(darken(@color, @hover-degree), @hover-degree);
     border-color: saturate(darken(@border-color, @hover-degree), @hover-degree);
-    background-color: saturate(darken(@background-color, @hover-degree), @hover-degree);
+    background-color: saturate(
+      darken(@background-color, @hover-degree),
+      @hover-degree
+    );
   }
 
   &.active,
@@ -100,15 +110,18 @@
   &.uk-open,
   &:focus {
     color: saturate(darken(@color, @active-degree), @active-degree);
-    border-color: saturate(darken(@border-color, @active-degree), @active-degree);
-    background-color: saturate(darken(@background-color, @active-degree), @active-degree);
+    border-color: saturate(
+      darken(@border-color, @active-degree),
+      @active-degree
+    );
+    background-color: saturate(
+      darken(@background-color, @active-degree),
+      @active-degree
+    );
   }
 }
 
-
-
 :root {
-
   .uk-button {
     padding: @button-content-spacing-base/2 @button-content-spacing-base*2;
     border-radius: @button-border-radius-base;
@@ -121,7 +134,8 @@
     font-weight: @button-font-weight;
     line-height: @line-height-base;
 
-    [class*="icon"] { }
+    [class*="icon"] {
+    }
 
     .label {
       display: inline;
