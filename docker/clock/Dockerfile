@@ -1,7 +1,16 @@
-FROM ruby:2.4.1-alpine
+FROM lyft/envoy-alpine:latest
 
-RUN gem install sinatra
+MAINTAINER Decipher Technology Studios <engineeringd@deciphernow.com>
 
+RUN apk --no-cache add \
+    ruby \
+    ruby-json \
+    supervisor
+
+RUN gem install --no-ri --no-rdoc sinatra
+
+COPY etc/envoy /etc/envoy
+COPY etc/supervisor.d /etc/supervisor.d
 COPY usr/local/bin/clock /usr/local/bin/clock
 
-CMD ["/usr/local/bin/clock"]
+CMD ["supervisord", "-n"]

@@ -20,13 +20,6 @@ services:
       - fabric
     ports:
       - 4567:4567
-
-  sidecar:
-
-    build: ./sidecar
-    networks:
-      - fabric
-    ports:
       - 7080:7080
       - 7081:7081
 

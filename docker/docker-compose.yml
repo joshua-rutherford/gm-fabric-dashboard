@@ -23,14 +23,6 @@ services:
         ipv4_address: 172.16.238.07
     ports:
       - 4567:4567
-
-  sidecar:
-
-    build: ./sidecar
-    networks:
-      fabric:
-        ipv4_address: 172.16.238.08
-    ports:
       - 7080:7080
       - 7081:7081
 

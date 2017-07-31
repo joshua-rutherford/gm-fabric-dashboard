@@ -60,7 +60,7 @@
         "features": "http2",
         "hosts": [
           {
-            "url": "tcp://sidecar:7080"
+            "url": "tcp://clock:7080"
           }
         ]
       }

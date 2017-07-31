@@ -71,7 +71,7 @@
         "lb_type": "round_robin",
         "hosts": [
           {
-            "url": "tcp://clock:4567"
+            "url": "tcp://localhost:4567"
           }
         ]
       },
