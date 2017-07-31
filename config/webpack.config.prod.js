@@ -12,6 +12,9 @@ const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const paths = require("./paths");
 const getClientEnvironment = require("./env");
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
+var lodash = require("babel-plugin-lodash");
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -162,7 +165,8 @@ module.exports = {
         include: paths.appSrc,
         loader: require.resolve("babel-loader"),
         options: {
-          compact: true
+          compact: true,
+          plugins: ["lodash"]
         }
       },
       // The notation here is somewhat confusing.
@@ -256,14 +260,9 @@ module.exports = {
     // Otherwise React will be compiled in the very slow development mode.
     new webpack.DefinePlugin(env.stringified),
     // Minify the code.
-    new webpack.optimize.UglifyJsPlugin({
+    new UglifyJSPlugin({
       compress: {
-        warnings: false,
-        // Disabled because of an issue with Uglify breaking seemingly valid code:
-        // https://github.com/facebookincubator/create-react-app/issues/2376
-        // Pending further investigation:
-        // https://github.com/mishoo/UglifyJS2/issues/2011
-        comparisons: false
+        warnings: false
       },
       output: {
         comments: false,
@@ -318,7 +317,18 @@ module.exports = {
     // solution that requires the user to opt into importing specific locales.
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new LodashModuleReplacementPlugin({
+      cachine: true,
+      cloning: true,
+      coercions: true,
+      collections: true,
+      exotics: true,
+      flattening: true,
+      guards: true,
+      paths: true,
+      shorthands: true
+    })
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

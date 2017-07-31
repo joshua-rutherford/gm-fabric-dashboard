@@ -9,8 +9,12 @@ const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const WatchMissingNodeModulesPlugin = require("react-dev-utils/WatchMissingNodeModulesPlugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 const getClientEnvironment = require("./env");
 const paths = require("./paths");
+var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
+var lodash = require("babel-plugin-lodash");
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -169,7 +173,8 @@ module.exports = {
           // This is a feature of `babel-loader` for webpack (not Babel itself).
           // It enables caching results in ./node_modules/.cache/babel-loader/
           // directory for faster rebuilds.
-          cacheDirectory: true
+          cacheDirectory: true,
+          plugins: ["lodash"]
         }
       },
       // "postcss" loader applies autoprefixer to our CSS.
@@ -248,7 +253,49 @@ module.exports = {
     // solution that requires the user to opt into importing specific locales.
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new BundleAnalyzerPlugin({
+      // Can be `server`, `static` or `disabled`.
+      // In `server` mode analyzer will start HTTP server to show bundle report.
+      // In `static` mode single HTML file with bundle report will be generated.
+      // In `disabled` mode you can use this plugin to just generate Webpack Stats JSON file by setting `generateStatsFile` to `true`.
+      analyzerMode: "server",
+      // Host that will be used in `server` mode to start HTTP server.
+      analyzerHost: "127.0.0.1",
+      // Port that will be used in `server` mode to start HTTP server.
+      analyzerPort: 3001,
+      // Path to bundle report file that will be generated in `static` mode.
+      // Relative to bundles output directory.
+      reportFilename: "report.html",
+      // Module sizes to show in report by default.
+      // Should be one of `stat`, `parsed` or `gzip`.
+      // See "Definitions" section for more information.
+      defaultSizes: "parsed",
+      // Automatically open report in default browser
+      openAnalyzer: true,
+      // If `true`, Webpack Stats JSON file will be generated in bundles output directory
+      generateStatsFile: false,
+      // Name of Webpack Stats JSON file that will be generated if `generateStatsFile` is `true`.
+      // Relative to bundles output directory.
+      statsFilename: "stats.json",
+      // Options for `stats.toJson()` method.
+      // For example you can exclude sources of your modules from stats file with `source: false` option.
+      // See more options here: https://github.com/webpack/webpack/blob/webpack-1/lib/Stats.js#L21
+      statsOptions: null,
+      // Log level. Can be 'info', 'warn', 'error' or 'silent'.
+      logLevel: "info"
+    }),
+    new LodashModuleReplacementPlugin({
+      cachine: true,
+      cloning: true,
+      coercions: true,
+      collections: true,
+      exotics: true,
+      flattening: true,
+      guards: true,
+      paths: true,
+      shorthands: true
+    })
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
