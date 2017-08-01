@@ -67,11 +67,11 @@ $summary-bar-card-text-color: $color-white;
     }
 
     @include mixin-button-height($padding-base * 3);
-    .mixin-button-style(
-      $color: $summary-bar-card-text-color;
-      $border-color: fadeout($summary-bar-background-color, 80%);
-      $background-color: fadeout($summary-bar-background-color, 100%);
-      $degree: 12%;
+    @include mixin-button-style(
+      $summary-bar-card-text-color,
+      fadeout($summary-bar-background-color, 80%),
+      fadeout($summary-bar-background-color, 100%),
+      $degree: 12%,
       $mode: lighten
     );
   }

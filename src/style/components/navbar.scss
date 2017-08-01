@@ -19,12 +19,12 @@ $app-breadcrumb-color: $color-content;
 
 // Helpers
 
-.mixin-brand-text-styles {
+@mixin mixin-brand-text-styles {
   font-weight: 500;
-  letter-spacing: @include 03em;
+  letter-spacing: .03em;
 }
 
-.mixin-version-text-styles {
+@mixin mixin-version-text-styles {
   font-weight: 600;
   font-size: $font-size-sm;
 }
@@ -79,12 +79,12 @@ $app-breadcrumb-color: $color-content;
     justify-self: flex-end;
     flex: 0 0 auto;
 
-    .mixin-button-style(
-      $color: $toolbar-text-color;
-      $border-color: $toolbar-background-color;
-      $background-color: $toolbar-background-color;
-      $degree: 6%;
-      $mode: darken
+    @include mixin-button-style(
+      $toolbar-text-color,
+      $toolbar-background-color,
+      $toolbar-background-color,
+      6%,
+      darken
     );
     @include mixin-button-height($app-header-height * .85);
   }
@@ -121,8 +121,8 @@ $app-breadcrumb-color: $color-content;
         content: '>';
         transform: scaleX(.5);
         display: flex;
-        opacity: @include 5;
-        padding: 0 $padding-base*@include 5;
+        opacity: .5;
+        padding: 0 $padding-base * .5;
       }
 
       a {

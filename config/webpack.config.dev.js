@@ -140,7 +140,7 @@ module.exports = {
         exclude: [
           /\.html$/,
           /\.(js|jsx)$/,
-          /\.less$/,
+          /\.scss$/,
           /\.css$/,
           /\.json$/,
           /\.bmp$/,
@@ -183,7 +183,7 @@ module.exports = {
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
       {
-        test: /\.(css|less)$/,
+        test: /\.(css|scss)$/,
         use: [
           require.resolve("style-loader"),
           {
@@ -213,7 +213,7 @@ module.exports = {
             }
           },
           {
-            loader: require.resolve("less-loader")
+            loader: require.resolve("sass-loader")
           }
         ]
       }

@@ -48,11 +48,11 @@ $go-up-icon-size: $padding-base * 2;
 
   .nav-go-up,
   .nav-siblings {
-    .mixin-button-style(
-      $color: $nav-widget-text-color;
-      $border-color: $nav-widget-background-color;
-      $background-color: $nav-widget-background-color;
-      $mode: lighten
+    @include mixin-button-style(
+      $nav-widget-text-color,
+      $nav-widget-background-color,
+      $nav-widget-background-color,
+      lighten
     );
     @include mixin-button-height($padding-base * 4);
     text-align: center;
@@ -74,8 +74,8 @@ $go-up-icon-size: $padding-base * 2;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      padding-left: $padding-base * @include 5;
-      padding-right: $padding-base * @include 5;
+      padding-left: $padding-base * 0.5;
+      padding-right: $padding-base * 0.5;
     }
 
     &:hover {

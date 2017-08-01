@@ -19,13 +19,12 @@ $button-font-weight: 500;
   height: $height;
 }
 
-.mixin-button-style(
-  $color: $button-color-base;
-  $border-color: $button-border-color-base;
-  $background-color: $button-background-color-base;
-  $mode: darken;
-  $degree: 6%;
-  $hover-degree: $degree * 1;
+@mixin mixin-button-style( 
+  $border-color: $button-border-color-base,
+  $background-color: $button-background-color-base,
+  $mode: darken,
+  $degree: 6%,
+  $hover-degree: $degree * 1,
   $active-degree: $degree * 2) {
   color: $color;
   border: $button-border-width-base solid $border-color;
@@ -38,7 +37,7 @@ $button-font-weight: 500;
     &:hover,
     &:focus,
     &:active {
-      opacity: @include 5;
+      opacity: .5;
       color: desaturate($color, 100%);
       border-color: desaturate($border-color, 100%);
       background-color: desaturate($background-color, 100%);
@@ -46,78 +45,83 @@ $button-font-weight: 500;
   }
 }
 
-.mixin-button-style(
+@mixin mixin-button-style() {
   $color: $button-color-base;
   $border-color: $button-border-color-base;
   $background-color: $button-background-color-base;
   $mode: darken;
   $degree: 6%;
   $hover-degree: $degree * 1;
-  $active-degree: $degree * 2)
+  $active-degree: $degree * 2;
 
-  when ($mode=lighten) {
-  &:hover {
-    color: desaturate(lighten($color, $hover-degree), $hover-degree);
-    border-color: desaturate(
-      lighten($border-color, $hover-degree),
-      $hover-degree
-    );
-    background-color: desaturate(
-      lighten($background-color, $hover-degree),
-      $hover-degree
-    );
-  }
+  @if ($mode=lighten) {
+    &:hover {
+      color: desaturate(lighten($color, $hover-degree), $hover-degree);
+      border-color: desaturate(
+        lighten($border-color, $hover-degree),
+        $hover-degree
+      );
+      background-color: desaturate(
+        lighten($background-color, $hover-degree),
+        $hover-degree
+      );
+    }
 
-  &.active,
-  &:active,
-  &.uk-active,
-  &.uk-open,
-  &:focus {
-    color: desaturate(lighten($color, $active-degree), $active-degree);
-    border-color: desaturate(
-      lighten($border-color, $active-degree),
-      $active-degree
-    );
-    background-color: desaturate(
-      lighten($background-color, $active-degree),
-      $active-degree
-    );
+    &.active,
+    &:active,
+    &.uk-active,
+    &.uk-open,
+    &:focus {
+      color: desaturate(lighten($color, $active-degree), $active-degree);
+      border-color: desaturate(
+        lighten($border-color, $active-degree),
+        $active-degree
+      );
+      background-color: desaturate(
+        lighten($background-color, $active-degree),
+        $active-degree
+      );
+    }
   }
 }
 
-.mixin-button-style(
+@mixin mixin-button-style() {
   $color: $button-color-base;
   $border-color: $button-border-color-base;
   $background-color: $button-background-color-base;
   $mode: darken;
   $degree: 6%;
   $hover-degree: $degree * 1;
-  $active-degree: $degree * 2)
+  $active-degree: $degree * 2;
 
-  when ($mode=darken) {
-  &:hover {
-    color: saturate(darken($color, $hover-degree), $hover-degree);
-    border-color: saturate(darken($border-color, $hover-degree), $hover-degree);
-    background-color: saturate(
-      darken($background-color, $hover-degree),
-      $hover-degree
-    );
-  }
+  @if ($mode=darken) {
+    &:hover {
+      color: saturate(darken($color, $hover-degree), $hover-degree);
+      border-color: saturate(
+        darken($border-color, $hover-degree),
+        $hover-degree
+      );
+      background-color: saturate(
+        darken($background-color, $hover-degree),
+        $hover-degree
+      );
+    }
 
-  &.active,
-  &:active,
-  &.uk-active,
-  &.uk-open,
-  &:focus {
-    color: saturate(darken($color, $active-degree), $active-degree);
-    border-color: saturate(
-      darken($border-color, $active-degree),
-      $active-degree
-    );
-    background-color: saturate(
-      darken($background-color, $active-degree),
-      $active-degree
-    );
+    &.active,
+    &:active,
+    &.uk-active,
+    &.uk-open,
+    &:focus {
+      color: saturate(darken($color, $active-degree), $active-degree);
+      border-color: saturate(
+        darken($border-color, $active-degree),
+        $active-degree
+      );
+      background-color: saturate(
+        darken($background-color, $active-degree),
+        $active-degree
+      );
+    }
   }
 }
 
