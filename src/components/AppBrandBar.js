@@ -10,10 +10,12 @@ const AppBrandBar = () => {
   return (
     <nav className="app-header app-brandbar">
       <div className="brand">
-        <img alt={BrandName + "Logo"} className="brand-logo" src={BrandLogo} />
-        <span className="brand-text" id="logo-text">
-          {BrandName}
-        </span>
+        <img
+          alt={BrandName + 'Logo'}
+          className="brand-logo"
+          src={BrandLogo}
+        />
+        <span className="brand-text" id="logo-text">{BrandName}</span>
       </div>
 
       <a

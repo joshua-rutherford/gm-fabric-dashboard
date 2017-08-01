@@ -35,7 +35,7 @@ services:
       - 8081:8081
 
   graphite:
-   
+
     image: hopsoft/graphite-statsd
     networks:
       fabric:

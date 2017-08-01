@@ -24,7 +24,7 @@
 .thread-table-name,
 .thread-table-daemon,
 .thread-table-priority {
-  @include uk-text-truncate();
+  // @include uk-text-truncate();
 
   width: 10%;
   float: left;
@@ -37,7 +37,7 @@
 }
 
 .thread-table-id {
-  @include uk-text-muted();
+  // @include uk-text-muted();
 
   min-width: 25px;
 }
@@ -59,7 +59,7 @@
 }
 
 .thread-table-name {
-  @include uk-text-truncate();
+  // @include uk-text-truncate();
 
   min-width: 100px;
   width: 40%;
@@ -70,9 +70,9 @@
 }
 
 .thread-table-line-item-content {
-  @include uk-background-muted();
-  @include uk-text-left();
-  @include uk-text-break();
+  // @include uk-background-muted();
+  // @include uk-text-left();
+  // @include uk-text-break();
 
   div:first-child {
     padding-top: 25px;

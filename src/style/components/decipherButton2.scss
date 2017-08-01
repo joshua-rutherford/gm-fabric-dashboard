@@ -1,0 +1,737 @@
+// components/decipherButton2.scss
+@import '../variables.scss';
+@import '../mixins.scss';
+
+// Local Variables
+$button-label-color-base-default: $color-grey-1;
+$button-background-color-base-default: $color-white;
+$button-border-color-base-default: $button-background-color-base-default;
+$button-border-width-base-default: 1px;
+$button-border-radius-base-default: $border-radius-default +
+  $button-border-width;
+$button-reaction-style-default: darken; // darken, lighten
+$button-reaction-degree-default: 6%; // 0-100%
+$button-outline-style-default: raised; // shadow, raised, none
+$button-outline-style-depth-default: 50%; // 0–100%
+$button-hover-reaction-degree-default: $button-reaction-degree-default * 1;
+$button-active-reaction-degree-default: $button-reaction-degree-default * 1;
+$button-down-reaction-degree-default: $button-reaction-degree-default * 1;
+//$button-content-orientation-default: horizontal;
+$button-content-spacing-base-default: $padding-base / 2;
+$button-font-size-base-default: $font-size-base;
+$button-font-weight-default: 500;
+
+// Helpers
+
+// Backgrounds
+// @mixin function-button-background(
+//   $button-reaction-style,
+//   $button-hover-reaction-degree,
+//   $button-active-reaction-degree,
+//   $button-down-reaction-degree,
+//   $button-background-color-base) {
+//   background-color: $button-background-color-base;
+//
+//   @if $button-reaction-style == lighten {
+//     &:hover {
+//       $hover-background-styles: (
+//         background-color: lighten($button-background-color-base, $button-hover-reaction-degree)
+//       );
+//     }
+//     &:active {
+//       background-color: lighten(
+//         $button-background-color-base,
+//         $button-hover-reaction-degree + $button-down-reaction-degree
+//       );
+//     }
+//     &.active,
+//     &.open {
+//       background-color: lighten(
+//         $button-background-color-base,
+//         $button-active-reaction-degree
+//       );
+//       &:active {
+//         background-color: lighten(
+//           $button-background-color-base,
+//           $button-active-reaction-degree + $button-down-reaction-degree
+//         );
+//       }
+//     }
+//   } @else if $button-reaction-style == darken {
+//     &:hover {
+//       background-color: darken(
+//         $button-background-color-base,
+//         $button-hover-reaction-degree
+//       );
+//     }
+//     &:active {
+//       background-color: darken(
+//         $button-background-color-base,
+//         $button-hover-reaction-degree + $button-down-reaction-degree
+//       );
+//     }
+//     &.active,
+//     &.open {
+//       background-color: darken(
+//         $button-background-color-base,
+//         $button-active-reaction-degree
+//       );
+//       &:active {
+//         background-color: darken(
+//           $button-background-color-base,
+//           $button-active-reaction-degree + $button-down-reaction-degree
+//         );
+//       }
+//     }
+//   }
+// }
+
+// Borders
+// @mixin function-button-border(
+//   $button-outline-style,
+//   $button-border-color-base,
+//   $button-reaction-style,
+//   $button-reaction-degree,
+//   $button-border-width-base
+//   ) {
+//   $button-border-width: $button-border-width-base;
+//   $button-border-color: $button-border-color-base;
+//   $button-border-color-hover: $button-border-color-base;
+//   $button-border-color-down: $button-border-color-base;
+//   $button-border-color-active: $button-border-color-base;
+//   $button-border-color-active-down: $button-border-color-base;
+//   $button-border-top-color: $button-border-color-base;
+//   $button-border-bottom-color: $button-border-color-base;
+//   $button-border-top-color-active: $button-border-color-active;
+//   $button-border-bottom-color-active: $button-border-color-active;
+//   $button-border-top-color-down: $button-border-color-down;
+//   $button-border-bottom-color-down: $button-border-color-down;
+//   $button-border-top-color-hover: $button-border-color-hover;
+//   $button-border-bottom-color-hover: $button-border-color-hover;
+//   $button-border-top-color-active-down: $button-border-color-active-down;
+//   $button-border-bottom-color-active-down: $button-border-color-active-down;
+// }
+// @mixin function-button-border(
+//   $button-outline-style,
+//   $button-border-color-base,
+//   $button-reaction-style,
+//   $button-reaction-degree,
+//   $button-border-width-base
+//   ) when ($button-reaction-style = lighten) {
+//   $button-border-width: $button-border-width-base;
+//   $button-border-color: $button-border-color-base;
+//   $button-border-color-hover: $button-border-color-base;
+//   $button-border-color-down: $button-border-color-base;
+//   $button-border-color-active: $button-border-color-base;
+//   $button-border-color-active-down: $button-border-color-base;
+//   $button-border-top-color: $button-border-color-base;
+//   $button-border-bottom-color: $button-border-color-base;
+//   $button-border-top-color-active: $button-border-color-active;
+//   $button-border-bottom-color-active: $button-border-color-active;
+//   $button-border-top-color-down: $button-border-color-down;
+//   $button-border-bottom-color-down: $button-border-color-down;
+//   $button-border-top-color-hover: $button-border-color-hover;
+//   $button-border-bottom-color-hover: $button-border-color-hover;
+//   $button-border-top-color-active-down: $button-border-color-active-down;
+//   $button-border-bottom-color-active-down: $button-border-color-active-down;
+//   $button-border-color-hover: lighten(
+//     $button-border-color-base,
+//     $button-hover-reaction-degree
+//   );
+//   $button-border-color-down: lighten(
+//     $button-border-color-base,
+//     $button-down-reaction-degree
+//   );
+//   $button-border-color-active: lighten(
+//     $button-border-color-base,
+//     $button-active-reaction-degree
+//   );
+//   $button-border-color-active-down: lighten(
+//     $button-border-color-base,
+//     $button-active-reaction-degree + $button-down-reaction-degree
+//   );
+// }
+// @mixin function-button-border(
+//   $button-outline-style,
+//   $button-border-color-base,
+//   $button-reaction-style,
+//   $button-reaction-degree,
+//   $button-border-width-base
+//   ) when ($button-reaction-style = darken) {
+//   $button-border-width: $button-border-width-base;
+//   $button-border-color: $button-border-color-base;
+//   $button-border-color-hover: $button-border-color-base;
+//   $button-border-color-down: $button-border-color-base;
+//   $button-border-color-active: $button-border-color-base;
+//   $button-border-color-active-down: $button-border-color-base;
+//   $button-border-top-color: $button-border-color-base;
+//   $button-border-bottom-color: $button-border-color-base;
+//   $button-border-top-color-active: $button-border-color-active;
+//   $button-border-bottom-color-active: $button-border-color-active;
+//   $button-border-top-color-down: $button-border-color-down;
+//   $button-border-bottom-color-down: $button-border-color-down;
+//   $button-border-top-color-hover: $button-border-color-hover;
+//   $button-border-bottom-color-hover: $button-border-color-hover;
+//   $button-border-top-color-active-down: $button-border-color-active-down;
+//   $button-border-bottom-color-active-down: $button-border-color-active-down;
+//   $button-border-color-hover: darken(
+//     $button-border-color-base,
+//     $button-reaction-degree
+//   );
+//   $button-border-color-down: darken(
+//     $button-border-color-base,
+//     $button-down-reaction-degree
+//   );
+//   $button-border-color-active: darken(
+//     $button-border-color-base,
+//     $button-active-reaction-degree
+//   );
+//   $button-border-color-active-down: darken(
+//     $button-border-color-base,
+//     $button-active-reaction-degree + $button-down-reaction-degree
+//   );
+// }
+// @mixin function-button-border(
+//   $button-outline-style,
+//   $button-border-color-base,
+//   $button-reaction-style,
+//   $button-reaction-degree,
+//   $button-border-width-base
+//   ) when ($button-outline-style = raised) {
+//   $button-border-width: $button-border-width-base;
+//   $button-border-color: $button-border-color-base;
+//   $button-border-color-hover: $button-border-color-base;
+//   $button-border-color-down: $button-border-color-base;
+//   $button-border-color-active: $button-border-color-base;
+//   $button-border-color-active-down: $button-border-color-base;
+//   $button-border-top-color: $button-border-color-base;
+//   $button-border-bottom-color: $button-border-color-base;
+//   $button-border-top-color-active: $button-border-color-active;
+//   $button-border-bottom-color-active: $button-border-color-active;
+//   $button-border-top-color-down: $button-border-color-down;
+//   $button-border-bottom-color-down: $button-border-color-down;
+//   $button-border-top-color-hover: $button-border-color-hover;
+//   $button-border-bottom-color-hover: $button-border-color-hover;
+//   $button-border-top-color-active-down: $button-border-color-active-down;
+//   $button-border-bottom-color-active-down: $button-border-color-active-down;
+//   $button-border-color: $button-border-color-base;
+//   $button-border-top-color: lighten(
+//     $button-border-color,
+//     $button-outline-style-depth
+//   );
+//   $button-border-top-color-hover: lighten(
+//     $button-border-color-hover,
+//     $button-outline-style-depth
+//   );
+//   $button-border-top-color-active: lighten(
+//     $button-border-color-active,
+//     $button-outline-style-depth
+//   );
+//   $button-border-top-color-down: lighten(
+//     $button-border-color-down,
+//     $button-outline-style-depth
+//   );
+//   $button-border-top-color-active-down: lighten(
+//     $button-border-color-active-down,
+//     $button-outline-style-depth
+//   );
+//   $button-border-bottom-color: darken(
+//     $button-border-color,
+//     $button-outline-style-depth
+//   );
+//   $button-border-bottom-color-hover: darken(
+//     $button-border-color-hover,
+//     $button-outline-style-depth
+//   );
+//   $button-border-bottom-color-active: darken(
+//     $button-border-color-active,
+//     $button-outline-style-depth
+//   );
+//   $button-border-bottom-color-down: darken(
+//     $button-border-color-down,
+//     $button-outline-style-depth
+//   );
+//   $button-border-bottom-color-active-down: darken(
+//     $button-border-color-active-down,
+//     $button-outline-style-depth
+//   );
+// }
+// @mixin function-button-border(
+//   $button-outline-style,
+//   $button-border-color-base,
+//   $button-reaction-style,
+//   $button-reaction-degree,
+//   $button-border-width-base
+//   ) when ($button-outline-style = shadow) {
+//   $button-border-width: $button-border-width-base;
+//   $button-border-color: $button-border-color-base;
+//   $button-border-color-hover: $button-border-color-base;
+//   $button-border-color-down: $button-border-color-base;
+//   $button-border-color-active: $button-border-color-base;
+//   $button-border-color-active-down: $button-border-color-base;
+//   $button-border-top-color: $button-border-color-base;
+//   $button-border-bottom-color: $button-border-color-base;
+//   $button-border-top-color-active: $button-border-color-active;
+//   $button-border-bottom-color-active: $button-border-color-active;
+//   $button-border-top-color-down: $button-border-color-down;
+//   $button-border-bottom-color-down: $button-border-color-down;
+//   $button-border-top-color-hover: $button-border-color-hover;
+//   $button-border-bottom-color-hover: $button-border-color-hover;
+//   $button-border-top-color-active-down: $button-border-color-active-down;
+//   $button-border-bottom-color-active-down: $button-border-color-active-down;
+//   $button-border-bottom-color: darken(
+//     $button-border-color,
+//     $button-outline-style-depth
+//   );
+//   $button-border-bottom-color-hover: darken(
+//     $button-border-color-hover,
+//     $button-outline-style-depth
+//   );
+//   $button-border-bottom-color-active: darken(
+//     $button-border-color-active,
+//     $button-outline-style-depth
+//   );
+//   $button-border-bottom-color-down: darken(
+//     $button-border-color-down,
+//     $button-outline-style-depth
+//   );
+//   $button-border-bottom-color-active-down: darken(
+//     $button-border-color-active-down,
+//     $button-outline-style-depth
+//   );
+// }
+//
+// // Labels
+// @mixin function-button-label(
+//   $button-label-color-base,
+//   $button-reaction-style,
+//   $button-reaction-degree
+//   ) {
+//   $button-label-color: $button-label-color-base;
+//   $button-label-color-hover: $button-label-color-base;
+//   $button-label-color-down: $button-label-color-base;
+//   $button-label-color-active: $button-label-color-base;
+//   $button-label-color-active-down: $button-label-color-base;
+// }
+// @mixin function-button-label(
+//   $button-label-color-base,
+//   $button-reaction-style,
+//   $button-reaction-degree
+//   ) when ($button-reaction-style = lighten) {
+//   $button-label-color-hover: lighten(
+//     $button-label-color-base,
+//     $button-reaction-degree
+//   );
+//   $button-label-color-down: lighten(
+//     $button-label-color-base,
+//     $button-down-reaction-degree
+//   );
+//   $button-label-color-active: lighten(
+//     $button-label-color-base,
+//     $button-active-reaction-degree
+//   );
+//   $button-label-color-active-down: lighten(
+//     $button-label-color-base,
+//     $button-active-reaction-degree + $button-down-reaction-degree
+//   );
+// }
+// @mixin function-button-label(
+//   $button-label-color-base,
+//   $button-reaction-style,
+//   $button-reaction-degree
+//   ) when ($button-reaction-style = darken) {
+//   $button-label-color-hover: darken(
+//     $button-label-color-base,
+//     $button-reaction-degree
+//   );
+//   $button-label-color-down: darken(
+//     $button-label-color-base,
+//     $button-down-reaction-degree
+//   );
+//   $button-label-color-active: darken(
+//     $button-label-color-base,
+//     $button-active-reaction-degree
+//   );
+//   $button-label-color-active-down: darken(
+//     $button-label-color-base,
+//     $button-active-reaction-degree + $button-down-reaction-degree
+//   );
+// }
+
+// Constructor
+@mixin function-button-style(
+$button-label-color-base: $button-label-color-base-default,
+$button-background-color-base: $button-background-color-base-default,
+$button-border-color-base: $button-border-color-base-default,
+$button-border-width-base: $button-border-width-base-default,
+$button-border-radius-base: $button-border-radius-base-default,
+$button-reaction-style: $button-reaction-style-default,
+$button-reaction-degree: $button-reaction-degree-default,
+$button-outline-style: $button-outline-style-default,
+$button-outline-style-depth: $button-outline-style-depth-default,
+$button-hover-reaction-degree: $button-hover-reaction-degree-default,
+$button-active-reaction-degree: $button-active-reaction-degree-default,
+$button-down-reaction-degree: $button-down-reaction-degree-default,
+$button-content-spacing-base: $button-content-spacing-base-default,
+$button-font-size-base: $button-font-size-base-default,
+$button-font-weight: $button-font-weight-default
+) {
+  border-radius: $button-border-radius-base;
+  border-width: $button-border-width;
+  font-weight: $button-font-weight;
+  border-style: solid;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-transform: none;
+  line-height: $line-height-base;
+  padding: $button-content-spacing-base/2 $button-content-spacing-base*2;
+
+  // $base-styles: (
+  background-color: $button-background-color-base;
+  border-color: $button-border-color-base;
+  color: $button-label-color-base;
+  // );
+
+  $hover-styles: ();
+  $hover-label-styles: ();
+  $hover-border-styles: ();
+  $hover-border-top-styles: ();
+  $hover-border-bottom-styles: ();
+  $hover-background-styles: ();
+  $active-styles: ();
+  $active-label-styles: ();
+  $active-border-styles: ();
+  $active-border-top-styles: ();
+  $active-border-bottom-styles: ();
+  $active-background-styles: ();
+  $down-styles: ();
+  $down-label-styles: ();
+  $down-border-styles: ();
+  $down-border-top-styles: ();
+  $down-border-bottom-styles: ();
+  $down-background-styles: ();
+  $active-down-styles: ();
+  $active-down-label-styles: ();
+  $active-down-border-styles: ();
+  $active-down-border-top-styles: ();
+  $active-down-border-bottom-styles: ();
+  $active-down-background-styles: ();
+
+  // Create styles for each property, in each state, under each processed condition
+
+  @if $button-reaction-style == darken {
+    // Hover styles
+    $hover-background-styles: (
+      background-color: darken($button-background-color-base, $button-hover-reaction-degree)
+    );
+    $hover-label-styles: (
+      color: darken($button-label-color-base, $button-hover-reaction-degree)
+    );
+    $hover-border-styles: (
+      border-color: darken($button-border-color-base, $button-hover-reaction-degree)
+    );
+    // Down styles
+    $down-background-styles: (
+      background-color: darken($button-background-color-base, $button-hover-reaction-degree +
+            $button-down-reaction-degree)
+    );
+    $down-label-styles: (
+      color: darken($button-label-color-base, $button-hover-reaction-degree +
+            $button-down-reaction-degree)
+    );
+    $down-border-styles: (
+      border-color: darken($button-border-color-base, $button-hover-reaction-degree +
+            $button-down-reaction-degree)
+    );
+    // Active styles
+    $active-background-styles: (
+      background-color: darken($button-background-color-base, $button-active-reaction-degree)
+    );
+    $active-label-styles: (
+      color: darken($button-label-color-base, $button-active-reaction-degree)
+    );
+    $active-border-styles: (
+      border-color: darken($button-border-color-base, $button-active-reaction-degree)
+    );
+    // Active Down styles
+    $active-down-background-styles: (
+      background-color: darken($button-background-color-base, $button-active-reaction-degree +
+            $button-down-reaction-degree)
+    );
+    $active-down-label-styles: (
+      color: darken($button-label-color-base, $button-active-reaction-degree +
+            $button-down-reaction-degree)
+    );
+    $active-down-border-styles: (
+      border-color: darken($button-border-color-base, $button-active-reaction-degree +
+            $button-down-reaction-degree)
+    );
+  } @else {
+    // Assume button reaction style == lighten
+    // Hover styles
+    $hover-background-styles: (
+      background-color: lighten($button-background-color-base, $button-hover-reaction-degree)
+    );
+    $hover-label-styles: (
+      color: lighten($button-label-color-base, $button-hover-reaction-degree)
+    );
+    $hover-border-style: (
+      border-color: lighten($button-border-color-base, $button-hover-reaction-degree)
+    );
+    // Down styles
+    $down-background-styles: (
+      background-color: lighten($button-background-color-base, $button-hover-reaction-degree +
+            $button-down-reaction-degree)
+    );
+    $down-label-styles: (
+      color: lighten($button-label-color-base, $button-down-reaction-degree)
+    );
+    $down-border-style: (
+      border-color: lighten($button-border-color-base, $button-down-reaction-degree)
+    );
+    // Active styles
+    $active-background-styles: (
+      background-color: lighten($button-background-color-base, $button-active-reaction-degree)
+    );
+    $active-label-styles: (
+      color: lighten($button-label-color-base, $button-active-reaction-degree)
+    );
+    $active-border-styles: (
+      border-color: lighten($button-border-color-base, $button-active-reaction-degree)
+    );
+    // Active Down styles
+    $active-down-background-styles: (
+      background-color: lighten($button-background-color-base, $button-active-reaction-degree +
+            $button-down-reaction-degree)
+    );
+    $active-down-label-styles: (
+      color: lighten($button-label-color-base, $button-active-reaction-degree +
+            $button-down-reaction-degree)
+    );
+    $active-down-border-styles: (
+      border-color: lighten($button-border-color-base, $button-active-reaction-degree +
+            $button-down-reaction-degree)
+    );
+  }
+  //
+  // @if $button-outline-style == shadow {
+  //   $hover-border-bottom-styles: (
+  //     border-bottom-color: darken(map-get($hover-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  //   $down-border-bottom-styles: (
+  //     border-bottom-color: darken(map-get($down-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  //   $active-border-bottom-styles: (
+  //     border-bottom-color: darken(map-get($active-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  //   $active-down-border-bottom-styles: (
+  //     border-bottom-color: darken(map-get($active-down-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  // } @else if $button-outline-style == raised {
+  //   // Hover styles
+  //   $hover-border-top-styles: (
+  //     border-top-color: lighten(map-get($hover-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  //   $hover-border-bottom-styles: (border-bottom-color: red);
+  //   // Down styles
+  //   $down-border-top-styles: (
+  //     border-top-color: lighten(map-get($down-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  //   $down-border-bottom-styles: (
+  //     border-bottom-color: darken(map-get($down-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  //   // Active styles
+  //   $active-border-top-styles: (
+  //     border-top-color: lighten(map-get($active-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  //   $active-border-bottom-styles: (
+  //     border-bottom-color: darken(map-get($active-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  //   // Active Down styles
+  //   $active-down-border-top-styles: (
+  //     border-top-color: lighten(map-get($active-down-border-styles, border-color), $button-outline-style-depth)
+  //   );
+  //   $active-down-border-bottom-styles: (
+  //     border-bottom-color: darken(
+  //         map-get($active-down-border-styles, border-color),
+  //         $button-outline-style-depth
+  //       );
+  //   );
+  // }
+
+  // Pass properties into style maps
+
+  $hover-styles: map-merge($hover-styles, $hover-background-styles);
+  $hover-styles: map-merge($hover-styles, $hover-label-styles);
+  $hover-styles: map-merge($hover-styles, $hover-border-styles);
+  $hover-styles: map-merge($hover-styles, $hover-border-top-styles);
+  $hover-styles: map-merge($hover-styles, $hover-border-top-styles);
+  $down-styles: map-merge($down-styles, $down-background-styles);
+  $down-styles: map-merge($down-styles, $down-border-styles);
+  $down-styles: map-merge($down-styles, $down-border-top-styles);
+  $down-styles: map-merge($down-styles, $down-border-top-styles);
+  $down-styles: map-merge($down-styles, $down-label-styles);
+  $active-styles: map-merge($active-styles, $active-background-styles);
+  $active-styles: map-merge($active-styles, $active-label-styles);
+  $active-styles: map-merge($active-styles, $active-border-styles);
+  $active-styles: map-merge($active-styles, $active-border-top-styles);
+  $active-styles: map-merge($active-styles, $active-border-bottom-styles);
+  $active-down-styles: map-merge(
+    $active-down-styles,
+    $active-down-label-styles
+  );
+  $active-down-styles: map-merge(
+    $active-down-styles,
+    $active-down-background-styles
+  );
+  $active-down-styles: map-merge(
+    $active-down-styles,
+    $active-down-border-styles
+  );
+  $active-down-styles: map-merge(
+    $active-down-styles,
+    $active-down-border-top-styles
+  );
+  $active-down-styles: map-merge(
+    $active-down-styles,
+    $active-down-border-bottom-styles
+  );
+
+  // Pass mapped properties, when present, into proper pseudo-element
+
+  &:hover {
+    @if map-has-key($hover-styles, background-color) {
+      background-color: map-get($hover-styles, background-color);
+    }
+    @if map-has-key($hover-styles, border-color) {
+      border-color: map-get($hover-styles, border-color);
+    }
+    @if map-has-key($hover-styles, border-top-color) {
+      border-top-color: map-get($hover-styles, border-top-color);
+    }
+    @if map-has-key($hover-styles, border-bottom-color) {
+      border-bottom-color: map-get($hover-styles, border-bottom-color);
+    }
+    @if map-has-key($hover-styles, color) {
+      color: map-get($hover-styles, color);
+    }
+  }
+
+  &:active {
+    // Down styles
+    @if map-has-key($down-styles, background-color) {
+      background-color: map-get($down-styles, background-color);
+    }
+    @if map-has-key($down-styles, border-color) {
+      border-color: map-get($down-styles, border-color);
+    }
+    @if map-has-key($down-styles, border-top-color) {
+      border-top-color: map-get($down-styles, border-top-color);
+    }
+    @if map-has-key($down-styles, border-bottom-color) {
+      border-bottom-color: map-get($down-styles, border-bottom-color);
+    }
+    @if map-has-key($down-styles, color) {
+      color: map-get($down-styles, color);
+    }
+  }
+
+  &.active,
+  &.open
+  &[class*="-active"],
+  &[class*="-open"] {
+    // Active styles
+    @if map-has-key($active-styles, background-color) {
+      background-color: map-get($active-styles, background-color);
+    }
+    @if map-has-key($active-styles, border-color) {
+      border-color: map-get($active-styles, border-color);
+    }
+    @if map-has-key($active-styles, border-top-color) {
+      border-top-color: map-get($active-styles, border-top-color);
+    }
+    @if map-has-key($active-styles, border-bottom-color) {
+      border-bottom-color: map-get($active-styles, border-bottom-color);
+    }
+    @if map-has-key($active-styles, color) {
+      color: map-get($active-styles, color);
+    }
+
+    &:active {
+      // Active Down styles
+      @if map-has-key($active-down-styles, background-color) {
+        background-color: map-get($active-down-styles, background-color);
+      }
+      @if map-has-key($active-down-styles, border-color) {
+        border-color: map-get($active-down-styles, border-color);
+      }
+      @if map-has-key($active-down-styles, border-top-color) {
+        border-top-color: map-get($active-down-styles, border-top-color);
+      }
+      @if map-has-key($active-down-styles, border-bottom-color) {
+        border-bottom-color: map-get($active-down-styles, border-bottom-color);
+      }
+      @if map-has-key($active-down-styles, color) {
+        color: map-get($active-down-styles, color);
+      }
+    }
+  }
+
+  &[disabled],
+  &[disabled]:hover,
+  &[disabled]:focus,
+  &[disabled]:active {
+    opacity: .5;
+    // background-color: desaturate($button-background-color-base, 100%);
+    // border-color: desaturate($button-border-color-base, 100%);
+    // color: desaturate($button-label-color-base, 100%);
+    // & when not ($button-border-top-color = $button-border-color-hover) {
+    //   border-top-color: desaturate($button-border-top-color, 100%);
+    // }
+    // & when not ($button-border-bottom-color = $button-border-color-hover) {
+    //   border-bottom-color: desaturate($button-border-bottom-color, 100%);
+    // }
+  }
+}
+
+// Styles
+
+:root {
+  .uk-button {
+    content: 'test';
+    @include function-button-style();
+
+    [class*="icon"] {
+    }
+
+    .label {
+      display: inline;
+      text-transform: none;
+      vertical-align: middle;
+      // padding: $button-content-spacing-base;
+    }
+
+    [class*="icon"] + .label,
+    .label + [class*="icon"] {
+      // margin-left: $button-content-spacing-base;
+    }
+
+    &:active {
+      transition-duration: 0;
+    }
+
+    &.uk-button-vertical {
+      flex-direction: column;
+      // padding-top: $button-content-spacing-base*2;
+
+      [class*="icon"] + .label,
+      .label + [class*="icon"] {
+        margin-left: 0;
+        // margin-top: $button-content-spacing-base;
+      }
+    }
+  }
+}

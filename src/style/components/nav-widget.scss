@@ -8,7 +8,7 @@ $nav-widget-text-color: $color-white;
 $go-up-icon-size: $padding-base * 2;
 
 // Helpers
-.mixin-nav-siblings-dropdown-style {
+@mixin nav-siblings-dropdown-style {
   background-color: $color-grey-1;
   color: $color-white;
   font-size: $font-size-base;
@@ -48,13 +48,13 @@ $go-up-icon-size: $padding-base * 2;
 
   .nav-go-up,
   .nav-siblings {
-    @include mixin-button-style(
-      $nav-widget-text-color,
-      $nav-widget-background-color,
-      $nav-widget-background-color,
-      lighten
-    );
-    @include mixin-button-height($padding-base * 4);
+    // @include mixin-button-style(
+    //   $nav-widget-text-color,
+    //   $nav-widget-background-color,
+    //   $nav-widget-background-color,
+    //   lighten
+    // );
+    // @include mixin-button-height($padding-base * 4);
     text-align: center;
     position: relative;
     font-size: $font-size-base;
@@ -98,7 +98,7 @@ $go-up-icon-size: $padding-base * 2;
   }
 
   .nav-siblings-dropdown {
-    @include mixin-nav-siblings-dropdown-style();
+    @include nav-siblings-dropdown-style();
     padding: 0;
     max-height: 80vh;
     overflow-y: scroll;

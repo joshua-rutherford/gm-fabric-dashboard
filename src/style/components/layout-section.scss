@@ -13,7 +13,7 @@ $section-content-padding: $padding-base;
 
 // Helpers
 
-.mixin-section-title-styles {
+@mixin section-title-styles {
 }
 
 // Styles
@@ -35,7 +35,7 @@ $section-content-padding: $padding-base;
     }
 
     > .section-title {
-      @include mixin-section-title-styles();
+      @include section-title-styles();
       margin: 0;
       flex: 1 0 100%;
       font-size: $section-header-title-size;

@@ -1,4 +1,4 @@
-# Envoy sends statsd metrics to a dummy Node.js service that logs everything it receives to the console 
+# Envoy sends statsd metrics to a dummy Node.js service that logs everything it receives to the console
 version: '3'
 
 networks:
