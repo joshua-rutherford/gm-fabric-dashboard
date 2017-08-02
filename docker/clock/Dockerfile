@@ -2,6 +2,8 @@ FROM lyft/envoy-alpine:latest
 
 MAINTAINER Decipher Technology Studios <engineeringd@deciphernow.com>
 
+COPY etc/apk/repositories /etc/apk/repositories
+
 RUN apk --no-cache add \
     ruby \
     ruby-json \
